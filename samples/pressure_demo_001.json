@@ -1,0 +1,109 @@
+{
+  "trace_id": "pressure-demo-001",
+  "schema_version": "1.3",
+  "generated_at": "2026-06-18T10:30:00Z",
+  "generator": "DecisionAssure Trace Generator v1.0",
+  "scenario": "One agent, one baseline, one drift, one pressure receipt, one DENY",
+  "baseline": {
+    "agent_id": "agent_alice",
+    "session_id": "session_live",
+    "policy_version": "v1",
+    "delegation_chain": ["root", "admin"],
+    "observer_identity_hash": "abc123def456",
+    "reference_frame_hash": "789ghi012jkl"
+  },
+  "execution_trace": [
+    {
+      "step_index": 0,
+      "step_name": "Genesis_Authorize",
+      "phase": "AUTHORIZATION",
+      "decision": "ADMIT",
+      "continuity_valid": true,
+      "observer_identity_hash": "abc123def456",
+      "reference_frame_hash": "789ghi012jkl",
+      "timestamp": "2026-06-18T10:30:00.000Z",
+      "metadata": {
+        "policy_version": "v1",
+        "delegation_chain": ["root", "admin"]
+      }
+    },
+    {
+      "step_index": 1,
+      "step_name": "Policy_Drift_Event",
+      "phase": "STATE_CHANGE",
+      "decision": "PRESSURE_OBSERVED",
+      "continuity_valid": false,
+      "observer_identity_hash": "abc123def456",
+      "reference_frame_hash": "789ghi012jkl",
+      "timestamp": "2026-06-18T10:30:01.000Z",
+      "metadata": {
+        "policy_version": "v2",
+        "delegation_chain": ["root", "admin", "superadmin", "god"],
+        "drift_type": "policy_update",
+        "pressure_region_entered": true
+      }
+    },
+    {
+      "step_index": 2,
+      "step_name": "Pressure_Receipt",
+      "phase": "PRE_COMMIT",
+      "decision": "RECEIPT_RECORDED",
+      "continuity_valid": false,
+      "observer_identity_hash": "abc123def456",
+      "reference_frame_hash": "789ghi012jkl",
+      "timestamp": "2026-06-18T10:30:01.500Z",
+      "metadata": {
+        "receipt_type": "pressure_receipt",
+        "baseline_hashes": {
+          "observer_identity_hash": "abc123def456",
+          "reference_frame_hash": "789ghi012jkl"
+        },
+        "current_hashes_at_pressure_boundary": {
+          "observer_identity_hash": "abc123def456",
+          "reference_frame_hash": "789ghi012jkl"
+        },
+        "drift_detected": "reference_frame_changed",
+        "drift_details": {
+          "policy_version": "v1 -> v2",
+          "delegation_chain": "['root', 'admin'] -> ['root', 'admin', 'superadmin', 'god']"
+        },
+        "local_predicate_states": {
+          "identity_valid": true,
+          "policy_valid": false,
+          "delegation_valid": false,
+          "evidence_fresh": true
+        },
+        "aggregate_admissibility": false
+      }
+    },
+    {
+      "step_index": 3,
+      "step_name": "Attempted_Commit",
+      "phase": "COMMIT_BOUNDARY",
+      "decision": "DENY",
+      "continuity_valid": false,
+      "observer_identity_hash": "abc123def456",
+      "reference_frame_hash": "789ghi012jkl",
+      "timestamp": "2026-06-18T10:30:02.000Z",
+      "metadata": {
+        "commit_allowed": false,
+        "deny_reason": "Aggregate admissibility failed: reference_frame drift detected without re-authorisation",
+        "pressure_receipt_reference": "step_index_2"
+      }
+    }
+  ],
+  "replay_path": {
+    "policy_v1": {
+      "decision": "ADMIT",
+      "reason": "All governance checks passed"
+    },
+    "policy_v2": {
+      "decision": "DENY",
+      "reason": "Delegation chain length 4 exceeds allowed limit (2)"
+    }
+  },
+  "final_decision": "DENY",
+  "integrity_status": "INTACT",
+  "attestation_signature": "signed_ed25519_payload_here",
+  "evidence_status": "TRUSTED"
+}
