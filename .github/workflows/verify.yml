@@ -1,0 +1,24 @@
+name: Verify Standing Proof
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run sample verifier
+        run: python spe/verify.py samples/pressure_demo_001.json
+
+      - name: Run formalism tests
+        run: python -m unittest discover -s tests -p 'test_*.py'
