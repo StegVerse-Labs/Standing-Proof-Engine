@@ -5,6 +5,7 @@ from pathlib import Path
 
 from spe.verify import FAIL, PASS, Check, render, verify_artifact
 from spe.verify_external_refs import verify_external_ref_artifact
+from spe.verify_pointer import verify_pointer
 from spe.verify_sdk_intake import verify_sdk_intake
 from spe.verify_source_bound import verify_source_bound_artifact
 
@@ -16,6 +17,8 @@ def run_declared_verifier(verifier, artifact, repo_root):
         return verify_source_bound_artifact(artifact)
     if verifier == "spe/verify_sdk_intake.py":
         return verify_sdk_intake(artifact, repo_root)
+    if verifier == "spe/verify_pointer.py":
+        return verify_pointer(artifact, repo_root)
     if verifier == "spe/verify.py":
         return verify_artifact(artifact)
     return FAIL, [Check("select_verifier", FAIL, f"unsupported verifier {verifier}")]
@@ -32,6 +35,9 @@ def governance_result(artifact):
         return evaluation["result"]
     if isinstance(artifact.get("expected_package_status"), str):
         return artifact["expected_package_status"]
+    target = artifact.get("reconstruction_target", {})
+    if isinstance(target, dict) and isinstance(target.get("expected_package_status"), str):
+        return target["expected_package_status"]
     return None
 
 
@@ -87,10 +93,8 @@ def main(argv):
     if len(argv) != 2:
         print("usage: python spe/verify_expected_result.py <expected.json>", file=sys.stderr)
         return 2
-
     repo_root = Path(__file__).resolve().parents[1]
-    fixture_path = Path(argv[1])
-    fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+    fixture = json.loads(Path(argv[1]).read_text(encoding="utf-8"))
     status, checks = verify_expected_result(fixture, repo_root)
     print(render(status, checks))
     return 0 if status == PASS else 1
