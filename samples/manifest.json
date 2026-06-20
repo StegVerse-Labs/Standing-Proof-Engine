@@ -1,0 +1,25 @@
+{
+  "manifest_id": "SPE-SAMPLE-MANIFEST-001",
+  "title": "Standing-Proof-Engine sample route manifest",
+  "description": "Declares the public sample artifacts that must verify for the initial SPE route package.",
+  "samples": [
+    {
+      "path": "samples/pressure_demo_001.json",
+      "expected_spe_result": "PARTIAL",
+      "expected_governance_result": "DENY",
+      "route": "pressure_receipt_trace"
+    },
+    {
+      "path": "samples/stale_state_review_commit_001.json",
+      "expected_spe_result": "PASS",
+      "expected_governance_result": "DENY",
+      "route": "stale_state_review_to_commit"
+    },
+    {
+      "path": "samples/aegis_incident_standing_001.json",
+      "expected_spe_result": "PASS",
+      "expected_governance_result": "DENY",
+      "route": "incident_standing_proof"
+    }
+  ]
+}
