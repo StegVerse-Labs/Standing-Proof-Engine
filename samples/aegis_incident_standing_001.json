@@ -1,0 +1,65 @@
+{
+  "artifact_id": "SPE-AEGIS-INCIDENT-001",
+  "artifact_type": "stale_state_proof",
+  "title": "Aegis Intelligence incident intake to standing proof",
+  "summary": "An Aegis-style defense event remains detectable and replayable, but the attempted defensive consequence is denied because commit-time standing is stale.",
+  "review_time": {
+    "transition_cell_id": "AEGIS-CELL-FOG-GATEWAY-001",
+    "incident_id": "AEGIS-INC-0001",
+    "incident_event": "Anomalous Fog packets detected at the network gateway",
+    "proposed_consequence": "rotate encryption keys and purge local cache",
+    "authority_state_hash": "sha256:aegis-authority-review-v1",
+    "policy_hash": "sha256:aegis-policy-network-defense-v1",
+    "evidence_packet_hash": "sha256:aegis-evidence-fog-packets-001",
+    "context_state_hash": "sha256:aegis-context-gateway-review-v1",
+    "review_result": "APPROVE_FOR_REVIEW_SCOPE",
+    "replayable": true
+  },
+  "commit_time": {
+    "transition_cell_id": "AEGIS-CELL-FOG-GATEWAY-001",
+    "incident_id": "AEGIS-INC-0001",
+    "authority_state_hash": "sha256:aegis-authority-commit-v2",
+    "policy_hash": "sha256:aegis-policy-network-defense-v2",
+    "evidence_packet_hash": "sha256:aegis-evidence-fog-packets-001",
+    "context_state_hash": "sha256:aegis-context-gateway-commit-v1",
+    "evidence_status": "STALE",
+    "commit_requested": true,
+    "requested_consequence": "rotate encryption keys and purge local cache"
+  },
+  "standing_rule": {
+    "rule_id": "SPE-RULE-COMMIT-STANDING-001",
+    "description": "A prior review does not carry execution standing unless authority, policy, evidence, and context remain current or are reauthorized at commit time.",
+    "requires": {
+      "authority_state": "current_or_reauthorized",
+      "policy_state": "current_or_reauthorized",
+      "evidence_state": "fresh_or_revalidated",
+      "context_state": "current_or_reauthorized"
+    }
+  },
+  "standing_evaluation": {
+    "review_artifact_replayable": true,
+    "evidence_packet_useful": true,
+    "authority_current_or_reauthorized": false,
+    "policy_current_or_reauthorized": false,
+    "evidence_fresh_or_revalidated": false,
+    "context_current_or_reauthorized": true,
+    "aggregate_standing": false,
+    "result": "DENY"
+  },
+  "receipt": {
+    "receipt_id": "SPE-RECEIPT-AEGIS-001",
+    "receipt_type": "commit_time_standing_receipt",
+    "transition_cell_id": "AEGIS-CELL-FOG-GATEWAY-001",
+    "prior_review_replayable": true,
+    "incident_detected": true,
+    "defensive_action_requested": true,
+    "commit_allowed": false,
+    "decision": "DENY",
+    "reason": "Detection and review survived, but consequence-binding standing was not current at commit time."
+  },
+  "formalism_expectation": {
+    "expected_spe_status": "PASS",
+    "expected_governance_result": "DENY",
+    "theorem": "Detection does not imply authority; review does not imply standing; consequence requires commit-time standing."
+  }
+}
