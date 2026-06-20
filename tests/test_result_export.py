@@ -8,6 +8,7 @@ sys.path.insert(0, str(ROOT))
 
 from spe.result_export import artifact_type, canonical_sha256, result_dict, section_hashes
 from spe.verify import verify_artifact
+from spe.verify_sdk_intake import verify_sdk_intake
 
 
 class ResultExportTest(unittest.TestCase):
@@ -52,6 +53,21 @@ class ResultExportTest(unittest.TestCase):
         self.assertFalse(summary["commit_allowed"])
         self.assertFalse(summary["aggregate_standing"])
         self.assertIn("standing_evaluation", exported["hashes"])
+
+    def test_sdk_intake_result_export_includes_route_summary(self):
+        artifact_path = ROOT / "samples" / "sdk_intake_receipt_001.json"
+        artifact = json.loads(artifact_path.read_text(encoding="utf-8"))
+        status, checks = verify_sdk_intake(artifact, ROOT)
+        exported = result_dict(artifact, status, checks)
+        summary = exported["governance_summary"]
+
+        self.assertEqual(exported["spe_result"], "PASS")
+        self.assertEqual(exported["artifact_type"], "sdk_intake_receipt")
+        self.assertEqual(summary["receipt_id"], "SDK-INTAKE-SPE-001")
+        self.assertEqual(summary["route"], "standing_proof_engine")
+        self.assertEqual(summary["artifact_package"], "samples/manifest.json")
+        self.assertEqual(summary["expected_package_status"], "PARTIAL")
+        self.assertIn("declared_samples", exported["hashes"])
 
 
 if __name__ == "__main__":
