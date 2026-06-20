@@ -1,0 +1,145 @@
+# Reviewer Execution Checklist
+
+## Assumption
+
+This checklist is for a reviewer evaluating the current SPE activation package from the repository root. It assumes Python 3.11 or later and no external package installation.
+
+## Done Criteria
+
+Review is complete when every command below runs and the reviewer can confirm the expected SPE and governance outcomes.
+
+## 1. Individual Proof Routes
+
+Run:
+
+```bash
+python spe/verify.py samples/pressure_demo_001.json
+python spe/verify.py samples/stale_state_review_commit_001.json
+python spe/verify.py samples/aegis_incident_standing_001.json
+```
+
+Expected:
+
+```text
+pressure_demo_001 -> SPE RESULT: PARTIAL
+stale_state_review_commit_001 -> SPE RESULT: PASS
+aegis_incident_standing_001 -> SPE RESULT: PASS
+```
+
+## 2. Route Package Manifest
+
+Run:
+
+```bash
+python spe/verify_manifest.py samples/manifest.json
+```
+
+Expected:
+
+```text
+"spe_result": "PARTIAL"
+"sample_count": 3
+all samples -> "matches_expectation": true
+```
+
+## 3. Expected Result Corpus
+
+Run:
+
+```bash
+python spe/verify_expected_corpus.py
+```
+
+Expected:
+
+```text
+SPE RESULT: PASS
+```
+
+## 4. Machine-Readable Export
+
+Run:
+
+```bash
+python spe/verify_json.py samples/aegis_incident_standing_001.json
+```
+
+Expected fields:
+
+```text
+spe_result
+artifact_type
+governance_summary
+hashes
+checks
+```
+
+Expected governance summary:
+
+```text
+decision -> DENY
+commit_allowed -> false
+aggregate_standing -> false
+prior_review_replayable -> true
+```
+
+## 5. Formalism Tests
+
+Run:
+
+```bash
+python -m unittest discover -s tests -p 'test_*.py'
+```
+
+Expected:
+
+```text
+OK
+```
+
+## 6. Reviewer Reports
+
+Run:
+
+```bash
+python spe/report.py samples/pressure_demo_001.json reports/pressure_demo_001.md default
+python spe/report.py samples/stale_state_review_commit_001.json reports/stale_state_review_commit_001.md default
+python spe/report.py samples/aegis_incident_standing_001.json reports/aegis_incident_standing_001.md default
+python spe/report_expected_corpus.py expected_results reports/expected_corpus
+```
+
+Expected generated files:
+
+```text
+reports/pressure_demo_001.md
+reports/stale_state_review_commit_001.md
+reports/aegis_incident_standing_001.md
+reports/expected_corpus/README.md
+```
+
+## Reviewer Confirmation
+
+The reviewer should be able to confirm:
+
+```text
+1. The pressure route produces a reconstructable denial with an intentionally partial proof gap.
+2. The stale-state route proves prior review does not carry stale execution standing.
+3. The Aegis route proves incident detection does not authorize defensive consequence by itself.
+4. All declared governance outcomes resolve DENY.
+5. Expected-result fixtures detect drift in either SPE result or governance result.
+6. The current activation package is ready for reviewer handoff but not full repo completion.
+```
+
+## Failure Handling
+
+A failed command means one of these occurred:
+
+```text
+artifact drift
+expected-result drift
+verifier regression
+report generation regression
+missing file
+```
+
+Do not reinterpret a failing result as a successful governance result. Fix the artifact, verifier, expectation, or documentation so the route package is reconstructable again.
