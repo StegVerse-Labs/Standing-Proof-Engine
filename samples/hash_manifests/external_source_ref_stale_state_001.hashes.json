@@ -1,0 +1,42 @@
+{
+  "manifest_id": "external-source-ref-stale-state-001-hashes",
+  "schema_version": "0.1",
+  "artifact": "samples/external_source_ref_stale_state_001.json",
+  "canonicalization": {
+    "format": "json",
+    "sort_keys": true,
+    "separators": [",", ":"],
+    "encoding": "utf-8",
+    "digest": "sha256"
+  },
+  "bindings": {
+    "review_artifact_hash": {
+      "source_ref": "samples/source_objects/review_artifact_002.json",
+      "sha256": "f4418b7065420f6636304ccb5108fce127169763ca386a3c97a3439d0bf598f0"
+    },
+    "evidence_packet_hash": {
+      "source_ref": "samples/source_objects/evidence_packet_002.json",
+      "sha256": "940231287d0c3b7d89f416deb70e2b5b21d9458ba0a4cd64a1128462c44126ac"
+    },
+    "authority_state_review_hash": {
+      "source_ref": "samples/source_objects/authority_state_review_002.json",
+      "sha256": "d386ab27f609f34b07d28c7f3879aa714426e2ead503d022d56127f7c7709f5c"
+    },
+    "authority_state_commit_hash": {
+      "source_ref": "samples/source_objects/authority_state_commit_002.json",
+      "sha256": "aba8bb64016847ed7d120a5fa1d1a9c2bd7ddc845f8f0e5b3d0ecde8f30f3150"
+    },
+    "policy_state_review_hash": {
+      "source_ref": "samples/source_objects/policy_state_review_002.json",
+      "sha256": "cc4c945108366a8b6606009d5e33ebf7f52ccbd9dccbe28089f449e89a16dc19"
+    },
+    "policy_state_commit_hash": {
+      "source_ref": "samples/source_objects/policy_state_runtime_002.json",
+      "sha256": "2c536d836c613b83137e98c746641c458b69f5ad397dd96c20b077dd0595fc71"
+    },
+    "context_state_hash": {
+      "source_ref": "samples/source_objects/context_state_002.json",
+      "sha256": "db258d592146edc4a35beb7c9cb8ae44daf42ce0859618ce2afebb4bf7ba0626"
+    }
+  }
+}
