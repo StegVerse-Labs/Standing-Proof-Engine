@@ -3,15 +3,27 @@ import json
 import sys
 from pathlib import Path
 
-from spe.verify import FAIL, PASS, Check, render
+from spe.verify import FAIL, PASS, Check, render, verify_artifact
 from spe.verify_external_refs import verify_external_ref_artifact
+from spe.verify_source_bound import verify_source_bound_artifact
+
+
+def run_declared_verifier(verifier, artifact, repo_root):
+    if verifier == "spe/verify_external_refs.py":
+        return verify_external_ref_artifact(artifact, repo_root)
+    if verifier == "spe/verify_source_bound.py":
+        return verify_source_bound_artifact(artifact)
+    if verifier == "spe/verify.py":
+        return verify_artifact(artifact)
+    return FAIL, [Check("select_verifier", FAIL, f"unsupported verifier {verifier}")]
 
 
 def verify_expected_result(fixture, repo_root):
     artifact_ref = fixture.get("artifact")
+    verifier = fixture.get("verifier")
     expected = fixture.get("expected", {})
-    if not isinstance(artifact_ref, str) or not isinstance(expected, dict):
-        return FAIL, [Check("parse_expected_fixture", FAIL, "artifact or expected section missing")]
+    if not isinstance(artifact_ref, str) or not isinstance(verifier, str) or not isinstance(expected, dict):
+        return FAIL, [Check("parse_expected_fixture", FAIL, "artifact, verifier, or expected section missing")]
 
     artifact_path = (repo_root / artifact_ref).resolve()
     try:
@@ -20,7 +32,7 @@ def verify_expected_result(fixture, repo_root):
         return FAIL, [Check("parse_expected_fixture", FAIL, "artifact path escapes repo root")]
 
     artifact = json.loads(artifact_path.read_text(encoding="utf-8"))
-    status, checks = verify_external_ref_artifact(artifact, repo_root)
+    status, checks = run_declared_verifier(verifier, artifact, repo_root)
     check_map = {check.name: check.status for check in checks}
 
     result_checks = [Check("parse_expected_fixture", PASS, "expected result fixture parsed")]
