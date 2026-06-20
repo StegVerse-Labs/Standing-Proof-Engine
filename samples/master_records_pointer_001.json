@@ -1,0 +1,22 @@
+{
+  "pointer_id": "MR-SPE-POINTER-001",
+  "pointer_type": "master_records_reconstruction_pointer",
+  "origin_repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "destination_repo": "master-records/core-lite",
+  "route": "spe_to_master_records_reconstruction",
+  "source_receipt": "samples/sdk_intake_receipt_001.json",
+  "source_receipt_sha256": "0c1d1b7dc7455f5f6e503c94edcf6059974c5912b12045b8fbb4a1ad17b34319",
+  "route_manifest": "samples/manifest.json",
+  "route_manifest_sha256": "45bbf8b4690e3a0ae92d50d5ae56cc70af666513751bfafbee6cae60fc1d0fb4",
+  "reconstruction_target": {
+    "package_id": "SPE-SAMPLE-MANIFEST-001",
+    "expected_package_status": "PARTIAL",
+    "expected_sample_count": 3
+  },
+  "handoff": {
+    "pointer_declared": true,
+    "source_receipt_bound": true,
+    "manifest_bound": true,
+    "reconstruction_requested": true
+  }
+}
