@@ -91,6 +91,7 @@ The current activation handoff is recorded in:
 ```text
 docs/activation_status.md
 docs/release_snapshot_v0_1_0.md
+docs/reviewer_execution_checklist.md
 ```
 
 `v0.1.0` is a documentation snapshot, not a GitHub release tag. It marks the first activation-ready reviewer handoff package.
@@ -104,6 +105,7 @@ Primary theorem: IMPLEMENTED IN TESTED SAMPLE ROUTES
 CI route coverage: PRESENT
 Expected governance-result drift detection: PRESENT
 Reviewer report generation: PRESENT
+Reviewer execution checklist: PRESENT
 ```
 
 ## Route Package Verification
@@ -154,7 +156,7 @@ This initial repo is done when it can:
 - verify a declared route package manifest;
 - validate expected SPE and governance results;
 - generate reviewer reports with expected vs actual outcomes;
-- publish activation and release-snapshot handoff documents.
+- publish activation, release-snapshot, and reviewer-execution handoff documents.
 
 ## Quick Start
 
@@ -218,6 +220,12 @@ Expected result:
 SPE RESULT: PASS
 ```
 
+Run the full reviewer checklist:
+
+```text
+docs/reviewer_execution_checklist.md
+```
+
 Why does the stale-state or Aegis proof return `PASS` when the transition is denied?
 
 Because `PASS` means the artifact proves its governance result. In these cases, the proven result is `DENY`.
@@ -278,6 +286,7 @@ docs/machine_readable_results.md            JSON export and canonical hash notes
 docs/sample_manifest_verification.md        route package manifest verification notes
 docs/activation_status.md                   activation handoff status
 docs/release_snapshot_v0_1_0.md             v0.1.0 release snapshot
+docs/reviewer_execution_checklist.md        reviewer execution checklist
 spe/result_export.py                        canonical hashes and JSON result export
 spe/verify.py                               standalone verifier
 spe/verify_json.py                          machine-readable verifier entry point
@@ -303,5 +312,5 @@ Note: `github/workflows/verify.yml` is displayed without the leading dot in this
 SPE should become a small interoperability verifier for governance artifacts from independent systems. It should evaluate whether the artifact proves consequence-binding standing without requiring trust in the originating implementation or narrative explanation.
 
 StegVerse-Labs - 5% complete
-Standing-Proof-Engine - 78% complete
-78% complete vs Repo Activation
+Standing-Proof-Engine - 84% complete
+84% complete vs Repo Activation
