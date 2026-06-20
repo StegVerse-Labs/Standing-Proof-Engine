@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Standing-Proof-Engine verifier.
 
-This first verifier intentionally stays small. It evaluates one trace artifact and
-returns PASS, PARTIAL, or FAIL with reconstructable reasons.
+This verifier evaluates small governance artifacts and returns PASS, PARTIAL,
+or FAIL with reconstructable reasons.
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ def _step(trace: dict[str, Any], index: int) -> dict[str, Any] | None:
     return None
 
 
-def verify_trace(trace: dict[str, Any]) -> tuple[str, list[Check]]:
+def verify_pressure_trace(trace: dict[str, Any]) -> tuple[str, list[Check]]:
     checks: list[Check] = []
 
     baseline = trace.get("baseline")
@@ -194,6 +194,140 @@ def verify_trace(trace: dict[str, Any]) -> tuple[str, list[Check]]:
     return _status(checks), checks
 
 
+def verify_stale_state_proof(proof: dict[str, Any]) -> tuple[str, list[Check]]:
+    checks: list[Check] = []
+
+    required_sections = [
+        "review_time",
+        "commit_time",
+        "standing_rule",
+        "standing_evaluation",
+        "receipt",
+    ]
+    missing = [section for section in required_sections if not isinstance(proof.get(section), dict)]
+    if missing:
+        return FAIL, [Check("parse_proof", FAIL, f"missing sections: {', '.join(missing)}")]
+
+    checks.append(Check("parse_proof", PASS, "proof contains review, commit, rule, evaluation, and receipt sections"))
+
+    review = proof["review_time"]
+    commit = proof["commit_time"]
+    rule = proof["standing_rule"]
+    evaluation = proof["standing_evaluation"]
+    receipt = proof["receipt"]
+
+    same_cell = review.get("transition_cell_id") == commit.get("transition_cell_id") == receipt.get("transition_cell_id")
+    review_replayable = review.get("replayable") is True and evaluation.get("review_artifact_replayable") is True
+    checks.append(
+        Check(
+            "review_artifact",
+            PASS if same_cell and review_replayable else FAIL,
+            "same transition cell remains replayable from review artifact"
+            if same_cell and review_replayable
+            else "review artifact is not tied to the same replayable transition cell",
+        )
+    )
+
+    authority_changed = review.get("authority_state_hash") != commit.get("authority_state_hash")
+    policy_changed = review.get("policy_hash") != commit.get("policy_hash")
+    evidence_same_but_stale = (
+        review.get("evidence_packet_hash") == commit.get("evidence_packet_hash")
+        and commit.get("evidence_status") == "STALE"
+    )
+    commit_requested = commit.get("commit_requested") is True
+    checks.append(
+        Check(
+            "commit_state",
+            PASS if authority_changed and policy_changed and evidence_same_but_stale and commit_requested else FAIL,
+            "commit-time authority/policy changed and retained evidence is stale"
+            if authority_changed and policy_changed and evidence_same_but_stale and commit_requested
+            else "commit-time stale or changed condition is incomplete",
+        )
+    )
+
+    required_rule = rule.get("requires", {})
+    rule_complete = all(
+        key in required_rule
+        for key in ["authority_state", "policy_state", "evidence_state", "context_state"]
+    )
+    checks.append(
+        Check(
+            "standing_rule",
+            PASS if rule_complete else FAIL,
+            "standing rule binds authority, policy, evidence, and context"
+            if rule_complete
+            else "standing rule does not bind all required state dimensions",
+        )
+    )
+
+    expected_false_conditions = [
+        evaluation.get("authority_current_or_reauthorized") is False,
+        evaluation.get("policy_current_or_reauthorized") is False,
+        evaluation.get("evidence_fresh_or_revalidated") is False,
+    ]
+    expected_true_conditions = [
+        evaluation.get("review_artifact_replayable") is True,
+        evaluation.get("evidence_packet_useful") is True,
+        evaluation.get("context_current_or_reauthorized") is True,
+    ]
+    evaluation_denies = evaluation.get("aggregate_standing") is False and evaluation.get("result") == "DENY"
+    evaluation_valid = all(expected_false_conditions) and all(expected_true_conditions) and evaluation_denies
+    checks.append(
+        Check(
+            "standing_evaluation",
+            PASS if evaluation_valid else FAIL,
+            "review remains useful while aggregate commit-time standing is false"
+            if evaluation_valid
+            else "standing evaluation does not support DENY",
+        )
+    )
+
+    receipt_valid = (
+        receipt.get("receipt_type") == "commit_time_standing_receipt"
+        and receipt.get("prior_review_replayable") is True
+        and receipt.get("commit_allowed") is False
+        and receipt.get("decision") == "DENY"
+    )
+    checks.append(
+        Check(
+            "receipt",
+            PASS if receipt_valid else FAIL,
+            "receipt records replayable prior review and commit-time DENY"
+            if receipt_valid
+            else "standing receipt is incomplete or inconsistent",
+        )
+    )
+
+    expected = proof.get("formalism_expectation", {})
+    expected_status = expected.get("expected_spe_status")
+    if expected_status:
+        actual_status = _status(checks)
+        checks.append(
+            Check(
+                "formalism_expectation",
+                PASS if actual_status == expected_status else FAIL,
+                f"actual status {actual_status} matches expectation {expected_status}"
+                if actual_status == expected_status
+                else f"actual status {actual_status} differs from expectation {expected_status}",
+            )
+        )
+
+    return _status(checks), checks
+
+
+def verify_artifact(artifact: dict[str, Any]) -> tuple[str, list[Check]]:
+    if "execution_trace" in artifact:
+        return verify_pressure_trace(artifact)
+    if "review_time" in artifact and "commit_time" in artifact:
+        return verify_stale_state_proof(artifact)
+    return FAIL, [Check("detect_artifact_type", FAIL, "unsupported SPE artifact type")]
+
+
+# Backward-compatible name used by the first test file.
+def verify_trace(trace: dict[str, Any]) -> tuple[str, list[Check]]:
+    return verify_artifact(trace)
+
+
 def render(status: str, checks: list[Check]) -> str:
     lines = [f"SPE RESULT: {status}", "", "Checks:"]
     for check in checks:
@@ -203,14 +337,14 @@ def render(status: str, checks: list[Check]) -> str:
 
 def main(argv: list[str]) -> int:
     if len(argv) != 2:
-        print("usage: python spe/verify.py <trace.json>", file=sys.stderr)
+        print("usage: python spe/verify.py <artifact.json>", file=sys.stderr)
         return 2
 
-    trace_path = Path(argv[1])
-    with trace_path.open("r", encoding="utf-8") as handle:
-        trace = json.load(handle)
+    artifact_path = Path(argv[1])
+    with artifact_path.open("r", encoding="utf-8") as handle:
+        artifact = json.load(handle)
 
-    status, checks = verify_trace(trace)
+    status, checks = verify_artifact(artifact)
     print(render(status, checks))
     return 0 if status in {PASS, PARTIAL} else 1
 
