@@ -21,6 +21,18 @@ class ExpectedCorpusReportTest(unittest.TestCase):
         self.assertIn("Governance Result Match: **YES**", report)
         self.assertIn("**DENY**", report)
 
+    def test_sdk_intake_fixture_report_includes_package_result(self):
+        fixture_path = ROOT / "expected_results" / "sdk_intake_receipt_001.expected.json"
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+
+        report = render_fixture_report(fixture_path.relative_to(ROOT), fixture, ROOT)
+
+        self.assertIn("SPE-EXPECTED-SDK-INTAKE-001", report)
+        self.assertIn("Expected Governance Result", report)
+        self.assertIn("Actual Governance Result", report)
+        self.assertIn("Governance Result Match: **YES**", report)
+        self.assertIn("**PARTIAL**", report)
+
 
 if __name__ == "__main__":
     unittest.main()
