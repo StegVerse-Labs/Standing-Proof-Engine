@@ -38,6 +38,21 @@ class ResultExportTest(unittest.TestCase):
         self.assertIn("commit_time", hashes)
         self.assertIn("receipt", hashes)
 
+    def test_aegis_result_export_includes_governance_summary(self):
+        artifact_path = ROOT / "samples" / "aegis_incident_standing_001.json"
+        artifact = json.loads(artifact_path.read_text(encoding="utf-8"))
+        status, checks = verify_artifact(artifact)
+        exported = result_dict(artifact, status, checks)
+        summary = exported["governance_summary"]
+
+        self.assertEqual(exported["spe_result"], "PASS")
+        self.assertEqual(exported["artifact_type"], "stale_state_proof")
+        self.assertEqual(summary["artifact_id"], "SPE-AEGIS-INCIDENT-001")
+        self.assertEqual(summary["decision"], "DENY")
+        self.assertFalse(summary["commit_allowed"])
+        self.assertFalse(summary["aggregate_standing"])
+        self.assertIn("standing_evaluation", exported["hashes"])
+
 
 if __name__ == "__main__":
     unittest.main()
