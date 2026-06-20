@@ -23,11 +23,17 @@ jobs:
       - name: Run stale state sample verifier
         run: python spe/verify.py samples/stale_state_review_commit_001.json
 
+      - name: Run source-bound sample verifier
+        run: python spe/verify_source_bound.py samples/source_hash_bound_stale_state_001.json
+
       - name: Run pressure receipt JSON export
         run: python spe/verify_json.py samples/pressure_demo_001.json
 
       - name: Run stale state JSON export
         run: python spe/verify_json.py samples/stale_state_review_commit_001.json
+
+      - name: Run source-bound JSON export
+        run: python spe/verify_source_bound.py --json samples/source_hash_bound_stale_state_001.json
 
       - name: Run formalism tests
         run: python -m unittest discover -s tests -p 'test_*.py'
