@@ -17,8 +17,11 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Run sample verifier
+      - name: Run pressure receipt sample verifier
         run: python spe/verify.py samples/pressure_demo_001.json
+
+      - name: Run stale state sample verifier
+        run: python spe/verify.py samples/stale_state_review_commit_001.json
 
       - name: Run formalism tests
         run: python -m unittest discover -s tests -p 'test_*.py'
