@@ -84,6 +84,36 @@ Review does not imply standing.
 Consequence requires commit-time standing.
 ```
 
+## Route Package Verification
+
+The initial public route package is declared in:
+
+```text
+samples/manifest.json
+```
+
+Run the package verifier:
+
+```bash
+python spe/verify_manifest.py samples/manifest.json
+```
+
+Expected package result:
+
+```text
+PARTIAL
+```
+
+The package is `PARTIAL` because the pressure-receipt trace intentionally preserves a partial proof condition. The stale-state and Aegis proof paths are expected to return `PASS`, while all declared governance results are expected to resolve `DENY`.
+
+Expected-result fixtures are stored in:
+
+```text
+expected_results/
+```
+
+They bind verifier choice, expected SPE result, expected governance result, and required check statuses. This means drift in either the proof status or the governance decision can be detected by automation.
+
 ## Done Criteria
 
 This initial repo is done when it can:
@@ -98,7 +128,10 @@ This initial repo is done when it can:
 - replay stated outcomes;
 - compute canonical section hashes;
 - export machine-readable JSON results;
-- report proof gaps as `PASS`, `PARTIAL`, or `FAIL`.
+- report proof gaps as `PASS`, `PARTIAL`, or `FAIL`;
+- verify a declared route package manifest;
+- validate expected SPE and governance results;
+- generate reviewer reports with expected vs actual outcomes.
 
 ## Quick Start
 
@@ -138,6 +171,30 @@ Expected result:
 SPE RESULT: PASS
 ```
 
+Run the route package manifest:
+
+```bash
+python spe/verify_manifest.py samples/manifest.json
+```
+
+Expected result:
+
+```text
+"spe_result": "PARTIAL"
+```
+
+Run the expected-result corpus:
+
+```bash
+python spe/verify_expected_corpus.py
+```
+
+Expected result:
+
+```text
+SPE RESULT: PASS
+```
+
 Why does the stale-state or Aegis proof return `PASS` when the transition is denied?
 
 Because `PASS` means the artifact proves its governance result. In these cases, the proven result is `DENY`.
@@ -153,10 +210,11 @@ python spe/verify_json.py samples/aegis_incident_standing_001.json
 The JSON output includes:
 
 ```text
-spe_result      PASS, PARTIAL, or FAIL
-artifact_type   pressure_trace, stale_state_proof, or unsupported
-hashes          canonical SHA-256 hashes for the artifact and object sections
-checks          ordered verification checks with status and detail
+spe_result           PASS, PARTIAL, or FAIL
+artifact_type        pressure_trace, stale_state_proof, or unsupported
+governance_summary   artifact ID, receipt ID, decision, commit allowance, standing state
+hashes               canonical SHA-256 hashes for the artifact and object sections
+checks               ordered verification checks with status and detail
 ```
 
 ## Status Levels
@@ -189,17 +247,27 @@ SPE is intended to support three related evaluation paths:
 samples/pressure_demo_001.json              sample pressure-receipt trace
 samples/stale_state_review_commit_001.json  sample review-to-commit stale-state proof
 samples/aegis_incident_standing_001.json    sample Aegis incident standing proof
+samples/manifest.json                       route package manifest
+expected_results/                           expected SPE and governance result fixtures
 docs/alane_minimal_proof_path.md            public explanation of the stale-state proof path
 docs/aegis_intelligence_mapping.md          public explanation of the Aegis standing boundary
 docs/machine_readable_results.md            JSON export and canonical hash notes
+docs/sample_manifest_verification.md        route package manifest verification notes
 spe/result_export.py                        canonical hashes and JSON result export
 spe/verify.py                               standalone verifier
 spe/verify_json.py                          machine-readable verifier entry point
+spe/verify_manifest.py                      route package verifier
+spe/verify_expected_result.py               expected-result fixture verifier
+spe/verify_expected_corpus.py               expected-result corpus verifier
+spe/report_expected_corpus.py               expected-result reviewer report generator
 tests/test_pressure_demo.py                 pressure trace formalism test
 tests/test_pressure_demo_unittest.py        unittest-compatible pressure trace test
 tests/test_result_export.py                 canonical hash and JSON result tests
 tests/test_stale_state_case.py              stale-state formalism test
 tests/test_aegis_incident_case.py           Aegis incident standing test
+tests/test_manifest_verifier.py             route package manifest tests
+tests/test_expected_result.py               expected-result fixture tests
+tests/test_expected_corpus_report.py        expected-corpus report tests
 github/workflows/verify.yml                 GitHub Actions verification; leading dot intentionally omitted in this prose display
 ```
 
@@ -210,5 +278,5 @@ Note: `github/workflows/verify.yml` is displayed without the leading dot in this
 SPE should become a small interoperability verifier for governance artifacts from independent systems. It should evaluate whether the artifact proves consequence-binding standing without requiring trust in the originating implementation or narrative explanation.
 
 StegVerse-Labs - 5% complete
-Standing-Proof-Engine - 48% complete
-48% complete vs Repo Activation
+Standing-Proof-Engine - 70% complete
+70% complete vs Repo Activation
