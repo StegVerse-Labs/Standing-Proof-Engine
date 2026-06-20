@@ -62,6 +62,9 @@ jobs:
       - name: Run Aegis incident JSON export
         run: python spe/verify_json.py samples/aegis_incident_standing_001.json
 
+      - name: Run SDK intake JSON export
+        run: python spe/verify_sdk_intake_json.py samples/sdk_intake_receipt_001.json
+
       - name: Run source-bound JSON export
         run: python spe/verify_source_bound.py --json samples/source_hash_bound_stale_state_001.json
 
