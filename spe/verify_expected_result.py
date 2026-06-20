@@ -18,6 +18,21 @@ def run_declared_verifier(verifier, artifact, repo_root):
     return FAIL, [Check("select_verifier", FAIL, f"unsupported verifier {verifier}")]
 
 
+def governance_result(artifact):
+    receipt = artifact.get("receipt", {})
+    if isinstance(receipt, dict) and isinstance(receipt.get("decision"), str):
+        return receipt["decision"]
+
+    if isinstance(artifact.get("final_decision"), str):
+        return artifact["final_decision"]
+
+    evaluation = artifact.get("standing_evaluation", {})
+    if isinstance(evaluation, dict) and isinstance(evaluation.get("result"), str):
+        return evaluation["result"]
+
+    return None
+
+
 def verify_expected_result(fixture, repo_root):
     artifact_ref = fixture.get("artifact")
     verifier = fixture.get("verifier")
@@ -41,6 +56,22 @@ def verify_expected_result(fixture, repo_root):
         result_checks.append(Check("expected_spe_result", PASS, f"status {status} matched"))
     else:
         result_checks.append(Check("expected_spe_result", FAIL, f"expected {expected_status}, got {status}"))
+
+    if "governance_result" in expected:
+        actual_governance_result = governance_result(artifact)
+        expected_governance_result = expected.get("governance_result")
+        if actual_governance_result == expected_governance_result:
+            result_checks.append(
+                Check("expected_governance_result", PASS, f"governance result {actual_governance_result} matched")
+            )
+        else:
+            result_checks.append(
+                Check(
+                    "expected_governance_result",
+                    FAIL,
+                    f"expected {expected_governance_result}, got {actual_governance_result}",
+                )
+            )
 
     required = expected.get("required_checks", {})
     if not isinstance(required, dict):
