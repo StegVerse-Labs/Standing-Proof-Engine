@@ -1,0 +1,18 @@
+{
+  "fixture_id": "SPE-EXPECTED-AEGIS-INCIDENT-001",
+  "artifact": "samples/aegis_incident_standing_001.json",
+  "verifier": "spe/verify.py",
+  "expected": {
+    "spe_result": "PASS",
+    "governance_result": "DENY",
+    "required_checks": {
+      "parse_proof": "PASS",
+      "review_artifact": "PASS",
+      "commit_state": "PASS",
+      "standing_rule": "PASS",
+      "standing_evaluation": "PASS",
+      "receipt": "PASS",
+      "formalism_expectation": "PASS"
+    }
+  }
+}
