@@ -1,0 +1,75 @@
+{
+  "proof_id": "negative-broken-hash-binding-001",
+  "schema_version": "0.2",
+  "scenario": "Declared source hash does not match computed canonical source object hash.",
+  "source_objects": {
+    "review_artifact": {
+      "transition_cell_id": "cell_negative_demo_001",
+      "reviewer": "external_review_group_alpha",
+      "decision": "APPROVED_FOR_REVIEW"
+    },
+    "evidence_packet": {
+      "packet_id": "evidence_negative_001",
+      "subject": "negative_hash_demo"
+    },
+    "authority_state_review": {"authority_version": "authority_v1"},
+    "authority_state_commit": {"authority_version": "authority_v2"},
+    "policy_state_review": {"policy_version": "v1"},
+    "policy_state_commit": {"policy_version": "v2"},
+    "context_state": {"context_id": "negative_context_001"}
+  },
+  "declared_hash_bindings": {
+    "review_artifact_hash": "mismatch",
+    "evidence_packet_hash": "AUTO",
+    "authority_state_review_hash": "AUTO",
+    "authority_state_commit_hash": "AUTO",
+    "policy_state_review_hash": "AUTO",
+    "policy_state_commit_hash": "AUTO",
+    "context_state_hash": "AUTO"
+  },
+  "review_time": {
+    "transition_cell_id": "cell_negative_demo_001",
+    "decision": "APPROVED_FOR_REVIEW",
+    "replayable": true,
+    "review_standing": true
+  },
+  "commit_time": {
+    "transition_cell_id": "cell_negative_demo_001",
+    "evidence_status": "STALE",
+    "authority_status": "CHANGED",
+    "policy_status": "CHANGED",
+    "context_status": "CURRENT",
+    "commit_requested": true
+  },
+  "standing_rule": {
+    "rule_id": "SPE-NEGATIVE-001",
+    "requires": {
+      "authority_state": "CURRENT_OR_REAUTHORIZED",
+      "policy_state": "CURRENT_OR_REAUTHORIZED",
+      "evidence_state": "FRESH_OR_REVALIDATED",
+      "context_state": "CURRENT_OR_REAUTHORIZED"
+    }
+  },
+  "standing_evaluation": {
+    "review_artifact_replayable": true,
+    "evidence_packet_useful": true,
+    "authority_current_or_reauthorized": false,
+    "policy_current_or_reauthorized": false,
+    "evidence_fresh_or_revalidated": false,
+    "context_current_or_reauthorized": true,
+    "aggregate_standing": false,
+    "result": "DENY"
+  },
+  "receipt": {
+    "receipt_id": "receipt_negative_hash_001",
+    "receipt_type": "commit_time_standing_receipt",
+    "transition_cell_id": "cell_negative_demo_001",
+    "prior_review_replayable": true,
+    "commit_allowed": false,
+    "decision": "DENY"
+  },
+  "formalism_expectation": {
+    "expected_result": "DENY",
+    "expected_spe_status": "FAIL"
+  }
+}
