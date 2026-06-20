@@ -18,6 +18,16 @@ class ExpectedResultFixtureTest(unittest.TestCase):
         self.assertEqual(status, "PASS")
         self.assertTrue(all(check.status == "PASS" for check in checks))
 
+    def test_aegis_expected_result_fixture_checks_governance_result(self):
+        fixture_path = ROOT / "expected_results" / "aegis_incident_standing_001.expected.json"
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+
+        status, checks = verify_expected_result(fixture, ROOT)
+        check_map = {check.name: check.status for check in checks}
+
+        self.assertEqual(status, "PASS")
+        self.assertEqual(check_map["expected_governance_result"], "PASS")
+
     def test_expected_result_detects_status_drift(self):
         fixture_path = ROOT / "expected_results" / "external_source_ref_stale_state_001.expected.json"
         fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
@@ -26,6 +36,15 @@ class ExpectedResultFixtureTest(unittest.TestCase):
         status, checks = verify_expected_result(fixture, ROOT)
         self.assertEqual(status, "FAIL")
         self.assertTrue(any(check.name == "expected_spe_result" and check.status == "FAIL" for check in checks))
+
+    def test_expected_result_detects_governance_result_drift(self):
+        fixture_path = ROOT / "expected_results" / "aegis_incident_standing_001.expected.json"
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        fixture["expected"]["governance_result"] = "ALLOW"
+
+        status, checks = verify_expected_result(fixture, ROOT)
+        self.assertEqual(status, "FAIL")
+        self.assertTrue(any(check.name == "expected_governance_result" and check.status == "FAIL" for check in checks))
 
 
 if __name__ == "__main__":
