@@ -1,0 +1,26 @@
+name: Testing Data Loop Contract Validation
+
+on:
+  push:
+    paths:
+      - 'docs/testing_data_loop_contract.md'
+      - '.github/workflows/testing-data-loop-contract-validate.yml'
+  pull_request:
+    paths:
+      - 'docs/testing_data_loop_contract.md'
+      - '.github/workflows/testing-data-loop-contract-validate.yml'
+  workflow_dispatch:
+
+jobs:
+  validate-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required terms
+        run: |
+          grep -q 'StegVerse-org/StegVerse-SDK or LLM Adapter' docs/testing_data_loop_contract.md
+          grep -q 'StegGhost/entity-sandbox-runner ingestion/CGE' docs/testing_data_loop_contract.md
+          grep -q 'ephemeral sandbox batch' docs/testing_data_loop_contract.md
+          grep -q 'master-records action receipt references' docs/testing_data_loop_contract.md
+          grep -q 'formal-testing-route-result.schema.json' docs/testing_data_loop_contract.md
