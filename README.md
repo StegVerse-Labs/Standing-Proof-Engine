@@ -50,6 +50,8 @@ This initial repo is done when it can:
 - evaluate aggregate admissibility or aggregate standing;
 - confirm commit denial;
 - replay stated outcomes;
+- compute canonical section hashes;
+- export machine-readable JSON results;
 - report proof gaps as `PASS`, `PARTIAL`, or `FAIL`.
 
 ## Quick Start
@@ -82,6 +84,23 @@ Why does the stale-state proof return `PASS` when the transition is denied?
 
 Because `PASS` means the artifact proves its governance result. In this case, the proven result is `DENY`.
 
+## Machine-Readable Results
+
+Run:
+
+```bash
+python spe/verify_json.py samples/stale_state_review_commit_001.json
+```
+
+The JSON output includes:
+
+```text
+spe_result      PASS, PARTIAL, or FAIL
+artifact_type   pressure_trace, stale_state_proof, or unsupported
+hashes          canonical SHA-256 hashes for the artifact and object sections
+checks          ordered verification checks with status and detail
+```
+
 ## Status Levels
 
 - `PASS`: the proof path is independently reconstructable from the artifact.
@@ -111,9 +130,13 @@ SPE is intended to support two related evaluation paths:
 samples/pressure_demo_001.json              sample pressure-receipt trace
 samples/stale_state_review_commit_001.json  sample review-to-commit stale-state proof
 docs/alane_minimal_proof_path.md            public explanation of the stale-state proof path
+docs/machine_readable_results.md            JSON export and canonical hash notes
+spe/result_export.py                        canonical hashes and JSON result export
 spe/verify.py                               standalone verifier
+spe/verify_json.py                          machine-readable verifier entry point
 tests/test_pressure_demo.py                 pressure trace formalism test
 tests/test_pressure_demo_unittest.py        unittest-compatible pressure trace test
+tests/test_result_export.py                 canonical hash and JSON result tests
 tests/test_stale_state_case.py              stale-state formalism test
 .github/workflows/verify.yml                GitHub Actions verification
 ```
@@ -125,5 +148,5 @@ Note: the workflow path is displayed here without the leading dot in prose as `g
 SPE should become a small interoperability verifier for governance artifacts from independent systems. It should evaluate whether the artifact proves consequence-binding standing without requiring trust in the originating implementation or narrative explanation.
 
 StegVerse-Labs - 3% complete
-Standing-Proof-Engine - 18% complete
-18% complete vs Repo Activation
+Standing-Proof-Engine - 24% complete
+24% complete vs Repo Activation
