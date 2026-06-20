@@ -12,6 +12,7 @@ SDK intake binding is done when SPE can verify:
 SDK-origin receipt exists
 receipt declares Standing-Proof-Engine route
 receipt identifies the SPE route package manifest
+receipt binds the manifest canonical hash
 receipt binds the declared sample count to the manifest
 receipt expects the manifest package status
 SPE verifies the manifest result against the receipt expectation
@@ -30,6 +31,7 @@ origin_repo: StegVerse-org/StegVerse-SDK
 destination_repo: StegVerse-Labs/Standing-Proof-Engine
 route: standing_proof_engine
 artifact_package: samples/manifest.json
+manifest_sha256: canonical hash of samples/manifest.json
 expected_package_status: PARTIAL
 ```
 
@@ -51,13 +53,14 @@ SPE RESULT: PASS
 parse_sdk_intake
 route_declaration
 handoff_flags
+manifest_hash_binding
 manifest_result_binding
 sample_count_binding
 ```
 
 ## Governance Meaning
 
-The SDK intake receipt does not prove the standing theorem by itself. It proves that an upstream intake layer can declare a route package for SPE and that SPE can check whether the declared package result matches the intake expectation.
+The SDK intake receipt does not prove the standing theorem by itself. It proves that an upstream intake layer can declare a route package for SPE and that SPE can check whether the declared package hash and result match the intake expectation.
 
 That creates this route:
 
@@ -65,10 +68,11 @@ That creates this route:
 SDK intake receipt
 -> route declaration
 -> SPE manifest package
+-> manifest hash binding
 -> SPE route verification
 -> expected package status binding
 ```
 
 ## Current Limitation
 
-This is a local SPE fixture. The next stronger version should add a corresponding SDK-side generated receipt and a stable hash relationship between the SDK receipt and SPE manifest.
+This is a local SPE fixture. The next stronger version should add a corresponding SDK-side generated receipt and a cross-repository handoff record.
