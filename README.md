@@ -4,6 +4,32 @@ Standing-Proof-Engine (SPE) is a governance verification engine for determining 
 
 A review artifact may remain valid, useful, and replayable while no longer carrying execution standing by itself. SPE evaluates that boundary.
 
+## Formal Testing Route
+
+SPE is the standing-proof route in the revised StegVerse formal testing map.
+
+Standing-proof artifacts should enter through `StegVerse-org/StegVerse-SDK` before SPE evaluates them. The SDK binds the dataset or artifact to a manifest and intake receipt, then declares the SPE route.
+
+```text
+Dataset / fixture / governance artifact
+→ StegVerse-org/StegVerse-SDK ingestion
+→ manifest binding
+→ receipt binding
+→ Standing-Proof-Engine route declaration
+→ commit-time standing proof
+→ standing result receipt
+```
+
+Route role:
+
+```text
+SDK ingests.
+SPE proves standing.
+Receipts bind every transition.
+```
+
+SPE is not a replacement for `StegVerse-org/stegverse-demo-suite` or `StegGhost/entity-sandbox-runner`. Demo-suite demonstrates public validation behavior. Entity-sandbox-runner stresses bounded entity behavior. SPE proves whether a reviewed artifact still has consequence-binding standing at commit time.
+
 ## Core Question
 
 > Did this transition possess standing to bind consequence at the moment of commitment?
@@ -147,6 +173,6 @@ Note: the workflow path is displayed here without the leading dot in prose as `g
 
 SPE should become a small interoperability verifier for governance artifacts from independent systems. It should evaluate whether the artifact proves consequence-binding standing without requiring trust in the originating implementation or narrative explanation.
 
-StegVerse-Labs - 3% complete
-Standing-Proof-Engine - 24% complete
-24% complete vs Repo Activation
+StegVerse-Labs - 4% complete
+Standing-Proof-Engine - 27% complete
+27% complete vs Repo Activation
