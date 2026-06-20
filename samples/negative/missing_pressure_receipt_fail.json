@@ -1,0 +1,62 @@
+{
+  "trace_id": "negative-missing-pressure-receipt-001",
+  "schema_version": "1.3",
+  "scenario": "Missing pre-commit receipt should fail verification",
+  "baseline": {
+    "agent_id": "agent_alice",
+    "session_id": "session_live",
+    "policy_version": "v1",
+    "delegation_chain": ["root", "admin"],
+    "observer_identity_hash": "abc123def456",
+    "reference_frame_hash": "789ghi012jkl"
+  },
+  "execution_trace": [
+    {
+      "step_index": 0,
+      "step_name": "Genesis_Authorize",
+      "phase": "AUTHORIZATION",
+      "decision": "ADMIT",
+      "continuity_valid": true,
+      "observer_identity_hash": "abc123def456",
+      "reference_frame_hash": "789ghi012jkl",
+      "metadata": {
+        "policy_version": "v1",
+        "delegation_chain": ["root", "admin"]
+      }
+    },
+    {
+      "step_index": 1,
+      "step_name": "Policy_Drift_Event",
+      "phase": "STATE_CHANGE",
+      "decision": "PRESSURE_OBSERVED",
+      "continuity_valid": false,
+      "observer_identity_hash": "abc123def456",
+      "reference_frame_hash": "789ghi012jkl",
+      "metadata": {
+        "policy_version": "v2",
+        "delegation_chain": ["root", "admin", "extended_operator"],
+        "drift_type": "policy_update",
+        "pressure_region_entered": true
+      }
+    },
+    {
+      "step_index": 3,
+      "step_name": "Attempted_Commit",
+      "phase": "COMMIT_BOUNDARY",
+      "decision": "DENY",
+      "continuity_valid": false,
+      "observer_identity_hash": "abc123def456",
+      "reference_frame_hash": "789ghi012jkl",
+      "metadata": {
+        "commit_allowed": false,
+        "deny_reason": "Aggregate admissibility failed",
+        "pressure_receipt_reference": "step_index_2"
+      }
+    }
+  ],
+  "replay_path": {
+    "policy_v1": {"decision": "ADMIT"},
+    "policy_v2": {"decision": "DENY"}
+  },
+  "final_decision": "DENY"
+}
