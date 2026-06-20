@@ -1,0 +1,23 @@
+{
+  "receipt_id": "SDK-INTAKE-SPE-001",
+  "receipt_type": "sdk_intake_receipt",
+  "origin_repo": "StegVerse-org/StegVerse-SDK",
+  "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "route": "standing_proof_engine",
+  "artifact_package": "samples/manifest.json",
+  "declared_samples": [
+    "samples/pressure_demo_001.json",
+    "samples/stale_state_review_commit_001.json",
+    "samples/aegis_incident_standing_001.json"
+  ],
+  "expected_result_fixture_dir": "expected_results",
+  "spe_route_package_id": "SPE-SAMPLE-MANIFEST-001",
+  "ingested": true,
+  "manifest_bound": true,
+  "receipt_bound": true,
+  "route_declared": true,
+  "spe_evaluation_required": true,
+  "request_type": "commit_time_standing_proof",
+  "requested_result": "verify_declared_route_package",
+  "expected_package_status": "PARTIAL"
+}
