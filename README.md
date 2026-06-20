@@ -164,10 +164,10 @@ tests/test_pressure_demo.py                 pressure trace formalism test
 tests/test_pressure_demo_unittest.py        unittest-compatible pressure trace test
 tests/test_result_export.py                 canonical hash and JSON result tests
 tests/test_stale_state_case.py              stale-state formalism test
-.github/workflows/verify.yml                GitHub Actions verification
+github/workflows/verify.yml                 GitHub Actions verification; leading dot intentionally omitted in this prose display
 ```
 
-Note: the workflow path is displayed here without the leading dot in prose as `github/workflows/verify.yml`; the actual repository path must include the leading dot for GitHub Actions to run.
+Note: `github/workflows/verify.yml` is displayed without the leading dot in this README. The actual repository path must include the leading dot for GitHub Actions to run.
 
 ## Long-Term Goal
 
