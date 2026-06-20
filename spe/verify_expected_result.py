@@ -5,6 +5,7 @@ from pathlib import Path
 
 from spe.verify import FAIL, PASS, Check, render, verify_artifact
 from spe.verify_external_refs import verify_external_ref_artifact
+from spe.verify_sdk_intake import verify_sdk_intake
 from spe.verify_source_bound import verify_source_bound_artifact
 
 
@@ -13,6 +14,8 @@ def run_declared_verifier(verifier, artifact, repo_root):
         return verify_external_ref_artifact(artifact, repo_root)
     if verifier == "spe/verify_source_bound.py":
         return verify_source_bound_artifact(artifact)
+    if verifier == "spe/verify_sdk_intake.py":
+        return verify_sdk_intake(artifact, repo_root)
     if verifier == "spe/verify.py":
         return verify_artifact(artifact)
     return FAIL, [Check("select_verifier", FAIL, f"unsupported verifier {verifier}")]
@@ -22,14 +25,13 @@ def governance_result(artifact):
     receipt = artifact.get("receipt", {})
     if isinstance(receipt, dict) and isinstance(receipt.get("decision"), str):
         return receipt["decision"]
-
     if isinstance(artifact.get("final_decision"), str):
         return artifact["final_decision"]
-
     evaluation = artifact.get("standing_evaluation", {})
     if isinstance(evaluation, dict) and isinstance(evaluation.get("result"), str):
         return evaluation["result"]
-
+    if isinstance(artifact.get("expected_package_status"), str):
+        return artifact["expected_package_status"]
     return None
 
 
@@ -61,17 +63,9 @@ def verify_expected_result(fixture, repo_root):
         actual_governance_result = governance_result(artifact)
         expected_governance_result = expected.get("governance_result")
         if actual_governance_result == expected_governance_result:
-            result_checks.append(
-                Check("expected_governance_result", PASS, f"governance result {actual_governance_result} matched")
-            )
+            result_checks.append(Check("expected_governance_result", PASS, f"governance result {actual_governance_result} matched"))
         else:
-            result_checks.append(
-                Check(
-                    "expected_governance_result",
-                    FAIL,
-                    f"expected {expected_governance_result}, got {actual_governance_result}",
-                )
-            )
+            result_checks.append(Check("expected_governance_result", FAIL, f"expected {expected_governance_result}, got {actual_governance_result}"))
 
     required = expected.get("required_checks", {})
     if not isinstance(required, dict):
