@@ -12,6 +12,8 @@ def verifier_alias(verifier_path):
         return "external_refs"
     if verifier_path == "spe/verify_source_bound.py":
         return "source_bound"
+    if verifier_path == "spe/verify_sdk_intake.py":
+        return "sdk_intake"
     return "default"
 
 
