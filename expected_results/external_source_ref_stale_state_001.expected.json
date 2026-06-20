@@ -1,0 +1,19 @@
+{
+  "fixture_id": "external-source-ref-stale-state-001-expected-result",
+  "artifact": "samples/external_source_ref_stale_state_001.json",
+  "verifier": "spe/verify_external_refs.py",
+  "expected": {
+    "spe_result": "PASS",
+    "required_checks": {
+      "source_object_refs": "PASS",
+      "parse_proof": "PASS",
+      "review_artifact": "PASS",
+      "commit_state": "PASS",
+      "standing_rule": "PASS",
+      "standing_evaluation": "PASS",
+      "receipt": "PASS",
+      "formalism_expectation": "PASS",
+      "source_hash_bindings": "PASS"
+    }
+  }
+}
