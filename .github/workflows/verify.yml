@@ -26,6 +26,9 @@ jobs:
       - name: Run source-bound sample verifier
         run: python spe/verify_source_bound.py samples/source_hash_bound_stale_state_001.json
 
+      - name: Run external source reference verifier
+        run: python spe/verify_external_refs.py samples/external_source_ref_stale_state_001.json
+
       - name: Run pressure receipt JSON export
         run: python spe/verify_json.py samples/pressure_demo_001.json
 
@@ -34,6 +37,9 @@ jobs:
 
       - name: Run source-bound JSON export
         run: python spe/verify_source_bound.py --json samples/source_hash_bound_stale_state_001.json
+
+      - name: Run external source reference JSON export
+        run: python spe/verify_external_refs.py --json samples/external_source_ref_stale_state_001.json
 
       - name: Run formalism tests
         run: python -m unittest discover -s tests -p 'test_*.py'
