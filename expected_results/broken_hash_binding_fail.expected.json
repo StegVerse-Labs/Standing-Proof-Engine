@@ -1,0 +1,18 @@
+{
+  "fixture_id": "broken-hash-binding-fail-expected-result",
+  "artifact": "samples/negative/broken_hash_binding_fail.json",
+  "verifier": "spe/verify_source_bound.py",
+  "expected": {
+    "spe_result": "FAIL",
+    "required_checks": {
+      "parse_proof": "PASS",
+      "review_artifact": "PASS",
+      "commit_state": "PASS",
+      "standing_rule": "PASS",
+      "standing_evaluation": "PASS",
+      "receipt": "PASS",
+      "formalism_expectation": "FAIL",
+      "source_hash_bindings": "FAIL"
+    }
+  }
+}
