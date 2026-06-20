@@ -3,8 +3,8 @@ import json
 import sys
 from pathlib import Path
 
-from spe.report import render_report, select_verifier
-from spe.verify_expected_result import run_declared_verifier
+from spe.report import render_report
+from spe.verify_expected_result import governance_result, run_declared_verifier
 
 
 def verifier_alias(verifier_path):
@@ -23,6 +23,8 @@ def render_fixture_report(fixture_path, fixture, repo_root):
     artifact = json.loads(artifact_path.read_text(encoding="utf-8"))
     actual_status, checks = run_declared_verifier(verifier_path, artifact, repo_root)
     expected_status = expected.get("spe_result")
+    expected_governance = expected.get("governance_result")
+    actual_governance = governance_result(artifact)
 
     title = fixture.get("fixture_id") or fixture_path.stem
     report = render_report(
@@ -34,7 +36,12 @@ def render_fixture_report(fixture_path, fixture, repo_root):
         checks,
     )
 
-    match = "YES" if actual_status == expected_status else "NO"
+    spe_match = "YES" if actual_status == expected_status else "NO"
+    if expected_governance is None:
+        governance_match = "NOT DECLARED"
+    else:
+        governance_match = "YES" if actual_governance == expected_governance else "NO"
+
     appendix = [
         "",
         "## Expected Fixture",
@@ -42,7 +49,10 @@ def render_fixture_report(fixture_path, fixture, repo_root):
         f"- Fixture: `{fixture_path}`",
         f"- Expected SPE Result: **{expected_status}**",
         f"- Actual SPE Result: **{actual_status}**",
-        f"- Expected Match: **{match}**",
+        f"- SPE Result Match: **{spe_match}**",
+        f"- Expected Governance Result: **{expected_governance}**",
+        f"- Actual Governance Result: **{actual_governance}**",
+        f"- Governance Result Match: **{governance_match}**",
         "",
     ]
     return report + "\n".join(appendix) + "\n"
@@ -66,8 +76,8 @@ def main(argv):
         "",
         "This directory contains reviewer reports generated from expected-result fixtures.",
         "",
-        "| Fixture | Expected | Report |",
-        "|---|---:|---|",
+        "| Fixture | Expected SPE | Expected Governance | Report |",
+        "|---|---:|---:|---|",
     ]
 
     for fixture_path in sorted(corpus_dir.glob("*.expected.json")):
@@ -76,8 +86,12 @@ def main(argv):
         output_name = fixture_path.name.replace(".expected.json", ".report.md")
         output_path = output_dir / output_name
         output_path.write_text(report, encoding="utf-8")
-        expected_status = fixture.get("expected", {}).get("spe_result")
-        index_lines.append(f"| `{fixture_path.name}` | **{expected_status}** | `{output_name}` |")
+        expected = fixture.get("expected", {})
+        expected_status = expected.get("spe_result")
+        expected_governance = expected.get("governance_result")
+        index_lines.append(
+            f"| `{fixture_path.name}` | **{expected_status}** | **{expected_governance}** | `{output_name}` |"
+        )
 
     (output_dir / "README.md").write_text("\n".join(index_lines) + "\n", encoding="utf-8")
     print(f"wrote expected corpus reports to {output_dir}")
