@@ -1,0 +1,15 @@
+{
+  "fixture_id": "SPE-EXPECTED-POINTER-001",
+  "artifact": "samples/master_records_pointer_001.json",
+  "verifier": "spe/verify_pointer.py",
+  "expected": {
+    "spe_result": "PASS",
+    "governance_result": "PARTIAL",
+    "required_checks": {
+      "parse_pointer": "PASS",
+      "source_hash_binding": "PASS",
+      "manifest_hash_binding": "PASS",
+      "target_binding": "PASS"
+    }
+  }
+}
