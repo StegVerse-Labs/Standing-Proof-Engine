@@ -1,0 +1,114 @@
+{
+  "proof_id": "source-hash-bound-stale-state-001",
+  "schema_version": "0.2",
+  "generated_at": "2026-06-19T23:10:00Z",
+  "scenario": "Review and commit states include source objects whose declared hashes must match computed canonical hashes.",
+  "source_objects": {
+    "review_artifact": {
+      "transition_cell_id": "cell_public_demo_002",
+      "reviewer": "external_review_group_alpha",
+      "reviewed_policy_version": "v1",
+      "reviewed_authority_version": "authority_v1",
+      "decision": "APPROVED_FOR_REVIEW"
+    },
+    "evidence_packet": {
+      "packet_id": "evidence_packet_002",
+      "subject": "public_minimal_standing_demo",
+      "created_at": "2026-06-19T20:00:00Z",
+      "expires_at": "2026-06-19T21:00:00Z"
+    },
+    "authority_state_review": {
+      "authority_version": "authority_v1",
+      "delegation_chain": ["root", "admin"],
+      "max_delegation_depth": 2
+    },
+    "authority_state_commit": {
+      "authority_version": "authority_v2",
+      "delegation_chain": ["root", "admin", "superadmin"],
+      "max_delegation_depth": 2
+    },
+    "policy_state_review": {
+      "policy_version": "v1",
+      "requires_evidence_freshness": true,
+      "max_delegation_depth": 2
+    },
+    "policy_state_commit": {
+      "policy_version": "v2",
+      "requires_evidence_freshness": true,
+      "max_delegation_depth": 2
+    },
+    "context_state": {
+      "context_id": "public_demo_context_002",
+      "environment": "public_review_demo",
+      "risk_tier": "medium"
+    }
+  },
+  "declared_hash_bindings": {
+    "review_artifact_hash": "AUTO",
+    "evidence_packet_hash": "AUTO",
+    "authority_state_review_hash": "AUTO",
+    "authority_state_commit_hash": "AUTO",
+    "policy_state_review_hash": "AUTO",
+    "policy_state_commit_hash": "AUTO",
+    "context_state_hash": "AUTO"
+  },
+  "review_time": {
+    "transition_cell_id": "cell_public_demo_002",
+    "review_artifact_hash_ref": "review_artifact_hash",
+    "evidence_packet_hash_ref": "evidence_packet_hash",
+    "authority_state_hash_ref": "authority_state_review_hash",
+    "policy_hash_ref": "policy_state_review_hash",
+    "context_hash_ref": "context_state_hash",
+    "decision": "APPROVED_FOR_REVIEW",
+    "replayable": true,
+    "review_standing": true
+  },
+  "commit_time": {
+    "transition_cell_id": "cell_public_demo_002",
+    "review_artifact_hash_ref": "review_artifact_hash",
+    "evidence_packet_hash_ref": "evidence_packet_hash",
+    "authority_state_hash_ref": "authority_state_commit_hash",
+    "policy_hash_ref": "policy_state_commit_hash",
+    "context_hash_ref": "context_state_hash",
+    "evidence_status": "STALE",
+    "authority_status": "CHANGED",
+    "policy_status": "CHANGED",
+    "context_status": "CURRENT",
+    "commit_requested": true
+  },
+  "standing_rule": {
+    "rule_id": "SPE-STANDING-002",
+    "description": "Execution standing requires source-hash-bound authority, policy, evidence, and context to be current or reauthorized at commit time.",
+    "requires": {
+      "authority_state": "CURRENT_OR_REAUTHORIZED",
+      "policy_state": "CURRENT_OR_REAUTHORIZED",
+      "evidence_state": "FRESH_OR_REVALIDATED",
+      "context_state": "CURRENT_OR_REAUTHORIZED",
+      "source_hash_bindings": "MATCH_COMPUTED_CANONICAL_HASHES"
+    }
+  },
+  "standing_evaluation": {
+    "review_artifact_replayable": true,
+    "evidence_packet_useful": true,
+    "authority_current_or_reauthorized": false,
+    "policy_current_or_reauthorized": false,
+    "evidence_fresh_or_revalidated": false,
+    "context_current_or_reauthorized": true,
+    "source_hash_bindings_valid": true,
+    "aggregate_standing": false,
+    "result": "DENY"
+  },
+  "receipt": {
+    "receipt_id": "receipt_source_hash_bound_001",
+    "receipt_type": "commit_time_standing_receipt",
+    "transition_cell_id": "cell_public_demo_002",
+    "prior_review_replayable": true,
+    "commit_allowed": false,
+    "decision": "DENY",
+    "reason": "Prior review remains replayable but source-hash-bound authority, policy, and evidence state are not current or re-authorized at commit time."
+  },
+  "formalism_expectation": {
+    "expected_result": "DENY",
+    "expected_spe_status": "PASS"
+  }
+}
