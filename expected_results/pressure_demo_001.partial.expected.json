@@ -1,0 +1,20 @@
+{
+  "fixture_id": "pressure-demo-001-partial-expected-result",
+  "artifact": "samples/pressure_demo_001.json",
+  "verifier": "spe/verify.py",
+  "expected": {
+    "spe_result": "PARTIAL",
+    "required_checks": {
+      "parse_trace": "PASS",
+      "required_steps": "PASS",
+      "baseline_reconstruction": "PASS",
+      "drift_observation": "PASS",
+      "pressure_receipt": "PASS",
+      "local_predicates": "PASS",
+      "aggregate_admissibility": "PASS",
+      "commit_boundary": "PASS",
+      "replay_path": "PASS",
+      "authority_context_proof": "PARTIAL"
+    }
+  }
+}
