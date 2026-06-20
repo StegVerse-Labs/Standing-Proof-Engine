@@ -84,6 +84,28 @@ Review does not imply standing.
 Consequence requires commit-time standing.
 ```
 
+## Activation Snapshot
+
+The current activation handoff is recorded in:
+
+```text
+docs/activation_status.md
+docs/release_snapshot_v0_1_0.md
+```
+
+`v0.1.0` is a documentation snapshot, not a GitHub release tag. It marks the first activation-ready reviewer handoff package.
+
+Current status:
+
+```text
+Activation package: READY FOR REVIEWER HANDOFF
+Full repo completion: NOT COMPLETE
+Primary theorem: IMPLEMENTED IN TESTED SAMPLE ROUTES
+CI route coverage: PRESENT
+Expected governance-result drift detection: PRESENT
+Reviewer report generation: PRESENT
+```
+
 ## Route Package Verification
 
 The initial public route package is declared in:
@@ -131,7 +153,8 @@ This initial repo is done when it can:
 - report proof gaps as `PASS`, `PARTIAL`, or `FAIL`;
 - verify a declared route package manifest;
 - validate expected SPE and governance results;
-- generate reviewer reports with expected vs actual outcomes.
+- generate reviewer reports with expected vs actual outcomes;
+- publish activation and release-snapshot handoff documents.
 
 ## Quick Start
 
@@ -253,6 +276,8 @@ docs/alane_minimal_proof_path.md            public explanation of the stale-stat
 docs/aegis_intelligence_mapping.md          public explanation of the Aegis standing boundary
 docs/machine_readable_results.md            JSON export and canonical hash notes
 docs/sample_manifest_verification.md        route package manifest verification notes
+docs/activation_status.md                   activation handoff status
+docs/release_snapshot_v0_1_0.md             v0.1.0 release snapshot
 spe/result_export.py                        canonical hashes and JSON result export
 spe/verify.py                               standalone verifier
 spe/verify_json.py                          machine-readable verifier entry point
@@ -278,5 +303,5 @@ Note: `github/workflows/verify.yml` is displayed without the leading dot in this
 SPE should become a small interoperability verifier for governance artifacts from independent systems. It should evaluate whether the artifact proves consequence-binding standing without requiring trust in the originating implementation or narrative explanation.
 
 StegVerse-Labs - 5% complete
-Standing-Proof-Engine - 70% complete
-70% complete vs Repo Activation
+Standing-Proof-Engine - 78% complete
+78% complete vs Repo Activation
