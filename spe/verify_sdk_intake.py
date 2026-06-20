@@ -3,6 +3,7 @@ import json
 import sys
 from pathlib import Path
 
+from spe.result_export import canonical_sha256
 from spe.verify import FAIL, PASS, Check, render
 from spe.verify_manifest import verify_manifest
 
@@ -49,6 +50,20 @@ def verify_sdk_intake(receipt, repo_root):
     )
 
     manifest_path = repo_root / receipt["artifact_package"]
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    expected_manifest_hash = receipt.get("manifest_sha256")
+    actual_manifest_hash = canonical_sha256(manifest)
+    hash_ok = expected_manifest_hash == actual_manifest_hash
+    checks.append(
+        Check(
+            "manifest_hash_binding",
+            PASS if hash_ok else FAIL,
+            f"manifest hash {actual_manifest_hash} matched receipt"
+            if hash_ok
+            else f"expected {expected_manifest_hash}, got {actual_manifest_hash}",
+        )
+    )
+
     manifest_status, manifest_report = verify_manifest(manifest_path)
     expected_status = receipt.get("expected_package_status")
     manifest_ok = manifest_status == expected_status
