@@ -1,0 +1,70 @@
+{
+  "proof_id": "stale-state-review-commit-001",
+  "schema_version": "0.1",
+  "generated_at": "2026-06-19T22:55:00Z",
+  "scenario": "Review artifact remains replayable, but commit-time state is stale and cannot bind consequence",
+  "review_time": {
+    "transition_cell_id": "cell_public_demo_001",
+    "review_artifact_hash": "review_artifact_hash_v1_aaa111",
+    "evidence_packet_hash": "evidence_packet_hash_v1_bbb222",
+    "authority_state_hash": "authority_state_hash_v1_ccc333",
+    "policy_hash": "policy_hash_v1_ddd444",
+    "context_hash": "context_hash_v1_eee555",
+    "decision": "APPROVED_FOR_REVIEW",
+    "replayable": true,
+    "review_standing": true
+  },
+  "commit_time": {
+    "transition_cell_id": "cell_public_demo_001",
+    "review_artifact_hash": "review_artifact_hash_v1_aaa111",
+    "evidence_packet_hash": "evidence_packet_hash_v1_bbb222",
+    "authority_state_hash": "authority_state_hash_v2_changed_999",
+    "policy_hash": "policy_hash_v2_changed_888",
+    "context_hash": "context_hash_v1_eee555",
+    "evidence_status": "STALE",
+    "authority_status": "CHANGED",
+    "policy_status": "CHANGED",
+    "context_status": "CURRENT",
+    "commit_requested": true
+  },
+  "standing_rule": {
+    "rule_id": "SPE-STANDING-001",
+    "description": "Execution standing requires current authority, policy, evidence, and context to remain bound or be re-authorized at commit time.",
+    "requires": {
+      "authority_state": "CURRENT_OR_REAUTHORIZED",
+      "policy_state": "CURRENT_OR_REAUTHORIZED",
+      "evidence_state": "FRESH_OR_REVALIDATED",
+      "context_state": "CURRENT_OR_REAUTHORIZED"
+    }
+  },
+  "standing_evaluation": {
+    "review_artifact_replayable": true,
+    "evidence_packet_useful": true,
+    "authority_current_or_reauthorized": false,
+    "policy_current_or_reauthorized": false,
+    "evidence_fresh_or_revalidated": false,
+    "context_current_or_reauthorized": true,
+    "aggregate_standing": false,
+    "result": "DENY"
+  },
+  "receipt": {
+    "receipt_id": "receipt_stale_state_001",
+    "receipt_type": "commit_time_standing_receipt",
+    "transition_cell_id": "cell_public_demo_001",
+    "prior_review_replayable": true,
+    "commit_allowed": false,
+    "decision": "DENY",
+    "reason": "Prior review remains replayable but authority, policy, and evidence state are not current or re-authorized at commit time."
+  },
+  "formalism_expectation": {
+    "expected_result": "DENY",
+    "expected_spe_status": "PASS",
+    "expected_checks": {
+      "review_artifact": "PASS",
+      "commit_state": "PASS",
+      "standing_rule": "PASS",
+      "standing_evaluation": "PASS",
+      "receipt": "PASS"
+    }
+  }
+}
