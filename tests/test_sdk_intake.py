@@ -21,6 +21,7 @@ class SdkIntakeVerifierTest(unittest.TestCase):
         self.assertEqual(check_map["parse_sdk_intake"], "PASS")
         self.assertEqual(check_map["route_declaration"], "PASS")
         self.assertEqual(check_map["handoff_flags"], "PASS")
+        self.assertEqual(check_map["manifest_hash_binding"], "PASS")
         self.assertEqual(check_map["manifest_result_binding"], "PASS")
         self.assertEqual(check_map["sample_count_binding"], "PASS")
 
@@ -33,6 +34,16 @@ class SdkIntakeVerifierTest(unittest.TestCase):
 
         self.assertEqual(status, "FAIL")
         self.assertTrue(any(check.name == "manifest_result_binding" and check.status == "FAIL" for check in checks))
+
+    def test_sdk_intake_detects_manifest_hash_drift(self):
+        receipt_path = ROOT / "samples" / "sdk_intake_receipt_001.json"
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt["manifest_sha256"] = "wrong"
+
+        status, checks = verify_sdk_intake(receipt, ROOT)
+
+        self.assertEqual(status, "FAIL")
+        self.assertTrue(any(check.name == "manifest_hash_binding" and check.status == "FAIL" for check in checks))
 
 
 if __name__ == "__main__":
