@@ -36,7 +36,7 @@ SPE is not a replacement for `StegVerse-org/stegverse-demo-suite` or `StegGhost/
 
 ## What This Repo Demonstrates First
 
-SPE now includes three minimal proof paths.
+SPE now includes three minimal proof paths and one SDK-to-SPE intake binding path.
 
 ### 1. Pressure-Receipt Trace
 
@@ -84,6 +84,34 @@ Review does not imply standing.
 Consequence requires commit-time standing.
 ```
 
+### 4. SDK Intake Binding
+
+The SDK intake fixture demonstrates upstream route declaration:
+
+1. an SDK-origin intake receipt exists;
+2. the receipt declares the Standing-Proof-Engine route;
+3. the receipt identifies the SPE manifest package;
+4. SPE verifies the manifest result against the intake expectation;
+5. SPE checks declared sample count against the manifest.
+
+Current fixture:
+
+```text
+samples/sdk_intake_receipt_001.json
+```
+
+Current verifier:
+
+```bash
+python spe/verify_sdk_intake.py samples/sdk_intake_receipt_001.json
+```
+
+Expected result:
+
+```text
+SPE RESULT: PASS
+```
+
 ## Activation Snapshot
 
 The current activation handoff is recorded in:
@@ -106,6 +134,7 @@ CI route coverage: PRESENT
 Expected governance-result drift detection: PRESENT
 Reviewer report generation: PRESENT
 Reviewer execution checklist: PRESENT
+SDK intake binding: PRESENT
 ```
 
 ## Route Package Verification
@@ -156,7 +185,8 @@ This initial repo is done when it can:
 - verify a declared route package manifest;
 - validate expected SPE and governance results;
 - generate reviewer reports with expected vs actual outcomes;
-- publish activation, release-snapshot, and reviewer-execution handoff documents.
+- publish activation, release-snapshot, and reviewer-execution handoff documents;
+- verify SDK intake route binding against the SPE route package.
 
 ## Quick Start
 
@@ -206,6 +236,18 @@ Expected result:
 
 ```text
 "spe_result": "PARTIAL"
+```
+
+Run the SDK intake binding verifier:
+
+```bash
+python spe/verify_sdk_intake.py samples/sdk_intake_receipt_001.json
+```
+
+Expected result:
+
+```text
+SPE RESULT: PASS
 ```
 
 Run the expected-result corpus:
@@ -266,11 +308,12 @@ A transition may remain fully reconstructable while no longer possessing authori
 
 ## Initial Public Use Cases
 
-SPE is intended to support three related evaluation paths:
+SPE is intended to support four related evaluation paths:
 
 1. Pressure-receipt evaluation: can a verifier reconstruct why a commit was denied after drift?
 2. Stale-state proof-path presentation: can a verifier show that a prior review remained useful but no longer carried execution standing at commit time?
 3. Incident-standing evaluation: can a verifier show that a detected incident does not authorize a defensive consequence unless commit-time standing is current?
+4. SDK intake binding: can a verifier show that upstream intake declared and bound the SPE route package expectation?
 
 ## Repository Layout
 
@@ -279,11 +322,13 @@ samples/pressure_demo_001.json              sample pressure-receipt trace
 samples/stale_state_review_commit_001.json  sample review-to-commit stale-state proof
 samples/aegis_incident_standing_001.json    sample Aegis incident standing proof
 samples/manifest.json                       route package manifest
+samples/sdk_intake_receipt_001.json         SDK intake route-binding fixture
 expected_results/                           expected SPE and governance result fixtures
 docs/alane_minimal_proof_path.md            public explanation of the stale-state proof path
 docs/aegis_intelligence_mapping.md          public explanation of the Aegis standing boundary
 docs/machine_readable_results.md            JSON export and canonical hash notes
 docs/sample_manifest_verification.md        route package manifest verification notes
+docs/sdk_intake_binding.md                  SDK-to-SPE route binding notes
 docs/activation_status.md                   activation handoff status
 docs/release_snapshot_v0_1_0.md             v0.1.0 release snapshot
 docs/reviewer_execution_checklist.md        reviewer execution checklist
@@ -291,6 +336,7 @@ spe/result_export.py                        canonical hashes and JSON result exp
 spe/verify.py                               standalone verifier
 spe/verify_json.py                          machine-readable verifier entry point
 spe/verify_manifest.py                      route package verifier
+spe/verify_sdk_intake.py                    SDK intake binding verifier
 spe/verify_expected_result.py               expected-result fixture verifier
 spe/verify_expected_corpus.py               expected-result corpus verifier
 spe/report_expected_corpus.py               expected-result reviewer report generator
@@ -300,6 +346,7 @@ tests/test_result_export.py                 canonical hash and JSON result tests
 tests/test_stale_state_case.py              stale-state formalism test
 tests/test_aegis_incident_case.py           Aegis incident standing test
 tests/test_manifest_verifier.py             route package manifest tests
+tests/test_sdk_intake.py                    SDK intake binding tests
 tests/test_expected_result.py               expected-result fixture tests
 tests/test_expected_corpus_report.py        expected-corpus report tests
 github/workflows/verify.yml                 GitHub Actions verification; leading dot intentionally omitted in this prose display
@@ -312,5 +359,5 @@ Note: `github/workflows/verify.yml` is displayed without the leading dot in this
 SPE should become a small interoperability verifier for governance artifacts from independent systems. It should evaluate whether the artifact proves consequence-binding standing without requiring trust in the originating implementation or narrative explanation.
 
 StegVerse-Labs - 5% complete
-Standing-Proof-Engine - 84% complete
-84% complete vs Repo Activation
+Standing-Proof-Engine - 91% complete
+91% complete vs Repo Activation
