@@ -1,0 +1,12 @@
+{
+  "fixture_id": "missing-pressure-receipt-fail-expected-result",
+  "artifact": "samples/negative/missing_pressure_receipt_fail.json",
+  "verifier": "spe/verify.py",
+  "expected": {
+    "spe_result": "FAIL",
+    "required_checks": {
+      "parse_trace": "PASS",
+      "required_steps": "FAIL"
+    }
+  }
+}
