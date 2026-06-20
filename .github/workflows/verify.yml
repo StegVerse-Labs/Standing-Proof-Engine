@@ -47,6 +47,9 @@ jobs:
       - name: Run Aegis expected result fixture verifier
         run: python spe/verify_expected_result.py expected_results/aegis_incident_standing_001.expected.json
 
+      - name: Run SDK intake expected result fixture verifier
+        run: python spe/verify_expected_result.py expected_results/sdk_intake_receipt_001.expected.json
+
       - name: Run expected corpus verifier
         run: python spe/verify_expected_corpus.py
 
