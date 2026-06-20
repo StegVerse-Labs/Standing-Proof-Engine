@@ -12,6 +12,7 @@
   ],
   "expected_result_fixture_dir": "expected_results",
   "spe_route_package_id": "SPE-SAMPLE-MANIFEST-001",
+  "manifest_sha256": "45bbf8b4690e3a0ae92d50d5ae56cc70af666513751bfafbee6cae60fc1d0fb4",
   "ingested": true,
   "manifest_bound": true,
   "receipt_bound": true,
