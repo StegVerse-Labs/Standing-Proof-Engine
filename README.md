@@ -36,7 +36,7 @@ SPE is not a replacement for `StegVerse-org/stegverse-demo-suite` or `StegGhost/
 
 ## What This Repo Demonstrates First
 
-SPE now includes two minimal proof paths.
+SPE now includes three minimal proof paths.
 
 ### 1. Pressure-Receipt Trace
 
@@ -63,6 +63,26 @@ The stale-state sample demonstrates the public proof path requested for review a
 5. prior review no longer carries execution standing by itself;
 6. the receipt resolves deterministic DENY;
 7. the formalism test validates that denial path.
+
+### 3. Aegis Incident Standing Proof
+
+The Aegis sample demonstrates the same standing boundary through an incident-response narrative:
+
+1. an incident is detected;
+2. a defensive consequence is proposed;
+3. the review artifact remains replayable;
+4. the evidence packet remains useful;
+5. commit-time authority, policy, and evidence freshness are no longer sufficient;
+6. SPE denies the consequence;
+7. the receipt preserves both the detection and the denial.
+
+This makes the public theorem concrete:
+
+```text
+Detection does not imply authority.
+Review does not imply standing.
+Consequence requires commit-time standing.
+```
 
 ## Done Criteria
 
@@ -106,16 +126,28 @@ Expected result:
 SPE RESULT: PASS
 ```
 
-Why does the stale-state proof return `PASS` when the transition is denied?
+Run the Aegis incident standing proof:
 
-Because `PASS` means the artifact proves its governance result. In this case, the proven result is `DENY`.
+```bash
+python spe/verify.py samples/aegis_incident_standing_001.json
+```
+
+Expected result:
+
+```text
+SPE RESULT: PASS
+```
+
+Why does the stale-state or Aegis proof return `PASS` when the transition is denied?
+
+Because `PASS` means the artifact proves its governance result. In these cases, the proven result is `DENY`.
 
 ## Machine-Readable Results
 
 Run:
 
 ```bash
-python spe/verify_json.py samples/stale_state_review_commit_001.json
+python spe/verify_json.py samples/aegis_incident_standing_001.json
 ```
 
 The JSON output includes:
@@ -145,17 +177,20 @@ A transition may remain fully reconstructable while no longer possessing authori
 
 ## Initial Public Use Cases
 
-SPE is intended to support two related evaluation paths:
+SPE is intended to support three related evaluation paths:
 
 1. Pressure-receipt evaluation: can a verifier reconstruct why a commit was denied after drift?
 2. Stale-state proof-path presentation: can a verifier show that a prior review remained useful but no longer carried execution standing at commit time?
+3. Incident-standing evaluation: can a verifier show that a detected incident does not authorize a defensive consequence unless commit-time standing is current?
 
 ## Repository Layout
 
 ```text
 samples/pressure_demo_001.json              sample pressure-receipt trace
 samples/stale_state_review_commit_001.json  sample review-to-commit stale-state proof
+samples/aegis_incident_standing_001.json    sample Aegis incident standing proof
 docs/alane_minimal_proof_path.md            public explanation of the stale-state proof path
+docs/aegis_intelligence_mapping.md          public explanation of the Aegis standing boundary
 docs/machine_readable_results.md            JSON export and canonical hash notes
 spe/result_export.py                        canonical hashes and JSON result export
 spe/verify.py                               standalone verifier
@@ -164,6 +199,7 @@ tests/test_pressure_demo.py                 pressure trace formalism test
 tests/test_pressure_demo_unittest.py        unittest-compatible pressure trace test
 tests/test_result_export.py                 canonical hash and JSON result tests
 tests/test_stale_state_case.py              stale-state formalism test
+tests/test_aegis_incident_case.py           Aegis incident standing test
 github/workflows/verify.yml                 GitHub Actions verification; leading dot intentionally omitted in this prose display
 ```
 
@@ -173,6 +209,6 @@ Note: `github/workflows/verify.yml` is displayed without the leading dot in this
 
 SPE should become a small interoperability verifier for governance artifacts from independent systems. It should evaluate whether the artifact proves consequence-binding standing without requiring trust in the originating implementation or narrative explanation.
 
-StegVerse-Labs - 4% complete
-Standing-Proof-Engine - 27% complete
-27% complete vs Repo Activation
+StegVerse-Labs - 5% complete
+Standing-Proof-Engine - 48% complete
+48% complete vs Repo Activation
