@@ -1,0 +1,5 @@
+{
+  "authority_version": "authority_v2",
+  "delegation_chain": ["root", "admin", "extended_operator"],
+  "max_delegation_depth": 2
+}
