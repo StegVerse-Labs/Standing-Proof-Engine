@@ -50,5 +50,18 @@ jobs:
       - name: Run external source reference JSON export
         run: python spe/verify_external_refs.py --json samples/external_source_ref_stale_state_001.json
 
+      - name: Generate reviewer reports
+        run: |
+          python spe/report.py samples/pressure_demo_001.json reports/pressure_demo_001.md default
+          python spe/report.py samples/stale_state_review_commit_001.json reports/stale_state_review_commit_001.md default
+          python spe/report.py samples/source_hash_bound_stale_state_001.json reports/source_hash_bound_stale_state_001.md source_bound
+          python spe/report.py samples/external_source_ref_stale_state_001.json reports/external_source_ref_stale_state_001.md external_refs
+
+      - name: Upload reviewer reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: spe-reviewer-reports
+          path: reports/*.md
+
       - name: Run formalism tests
         run: python -m unittest discover -s tests -p 'test_*.py'
