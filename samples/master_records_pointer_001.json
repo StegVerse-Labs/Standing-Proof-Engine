@@ -5,7 +5,7 @@
   "destination_repo": "master-records/core-lite",
   "route": "spe_to_master_records_reconstruction",
   "source_receipt": "samples/sdk_intake_receipt_001.json",
-  "source_receipt_sha256": "0c1d1b7dc7455f5f6e503c94edcf6059974c5912b12045b8fbb4a1ad17b34319",
+  "source_receipt_sha256": "2f3167cbf2c1a7d1d4d0d91e6563b1d9d6f8e9d8756f2df01879ae3e8c9e365f",
   "route_manifest": "samples/manifest.json",
   "route_manifest_sha256": "45bbf8b4690e3a0ae92d50d5ae56cc70af666513751bfafbee6cae60fc1d0fb4",
   "reconstruction_target": {
