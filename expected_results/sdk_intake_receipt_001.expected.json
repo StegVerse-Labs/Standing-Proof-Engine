@@ -9,6 +9,7 @@
       "parse_sdk_intake": "PASS",
       "route_declaration": "PASS",
       "handoff_flags": "PASS",
+      "manifest_hash_binding": "PASS",
       "manifest_result_binding": "PASS",
       "sample_count_binding": "PASS"
     }
