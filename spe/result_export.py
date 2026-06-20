@@ -16,6 +16,8 @@ def artifact_type(artifact: dict[str, Any]) -> str:
     declared_type = artifact.get("artifact_type")
     if isinstance(declared_type, str):
         return declared_type
+    if artifact.get("receipt_type") == "sdk_intake_receipt":
+        return "sdk_intake_receipt"
     if "execution_trace" in artifact:
         return "pressure_trace"
     if "review_time" in artifact and "commit_time" in artifact:
@@ -36,7 +38,18 @@ def governance_summary(artifact: dict[str, Any]) -> dict[str, Any]:
     evaluation = artifact.get("standing_evaluation", {})
     summary: dict[str, Any] = {}
 
-    for key in ["artifact_id", "title"]:
+    for key in [
+        "artifact_id",
+        "title",
+        "receipt_id",
+        "receipt_type",
+        "origin_repo",
+        "destination_repo",
+        "route",
+        "artifact_package",
+        "spe_route_package_id",
+        "expected_package_status",
+    ]:
         if key in artifact:
             summary[key] = artifact[key]
 
