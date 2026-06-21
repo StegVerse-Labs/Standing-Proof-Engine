@@ -1,0 +1,17 @@
+{
+  "fixture_id": "SPE-EXPECTED-CONFIRMATION-001",
+  "artifact": "samples/master_records_confirmation_001.json",
+  "verifier": "spe/verify_confirmation.py",
+  "expected": {
+    "spe_result": "PASS",
+    "governance_result": "ACCEPTED_FOR_RECONSTRUCTION",
+    "required_checks": {
+      "parse_confirmation": "PASS",
+      "confirmation_route": "PASS",
+      "source_pointer_hash_binding": "PASS",
+      "source_pointer_verifies": "PASS",
+      "confirmation_result_binding": "PASS",
+      "confirmation_target_binding": "PASS"
+    }
+  }
+}
