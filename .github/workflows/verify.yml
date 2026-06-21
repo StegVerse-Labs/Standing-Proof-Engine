@@ -35,6 +35,9 @@ jobs:
       - name: Run pointer verifier
         run: python spe/verify_pointer.py samples/master_records_pointer_001.json
 
+      - name: Run confirmation verifier
+        run: python spe/verify_confirmation.py samples/master_records_confirmation_001.json
+
       - name: Run source-bound sample verifier
         run: python spe/verify_source_bound.py samples/source_hash_bound_stale_state_001.json
 
@@ -55,6 +58,9 @@ jobs:
 
       - name: Run pointer expected result fixture verifier
         run: python spe/verify_expected_result.py expected_results/pointer_001.expected.json
+
+      - name: Run confirmation expected result fixture verifier
+        run: python spe/verify_expected_result.py expected_results/confirmation_001.expected.json
 
       - name: Run expected corpus verifier
         run: python spe/verify_expected_corpus.py
