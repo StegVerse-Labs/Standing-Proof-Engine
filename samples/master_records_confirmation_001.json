@@ -1,0 +1,13 @@
+{
+  "confirmation_id": "MR-SPE-CONFIRM-001",
+  "confirmation_type": "master_records_pointer_confirmation",
+  "origin_repo": "master-records/core-lite",
+  "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "source_pointer": "samples/master_records_pointer_001.json",
+  "source_pointer_sha256": "d8c3a6435257b79a82d240702847475e2281b77b183454cfa8ff51e6fb7efc0e",
+  "confirmation_result": "ACCEPTED_FOR_RECONSTRUCTION",
+  "installed": true,
+  "reconstruction_available": true,
+  "expected_package_status": "PARTIAL",
+  "expected_sample_count": 3
+}
