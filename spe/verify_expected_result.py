@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 from spe.verify import FAIL, PASS, Check, render, verify_artifact
+from spe.verify_confirmation import verify_confirmation
 from spe.verify_external_refs import verify_external_ref_artifact
 from spe.verify_pointer import verify_pointer
 from spe.verify_sdk_intake import verify_sdk_intake
@@ -19,6 +20,8 @@ def run_declared_verifier(verifier, artifact, repo_root):
         return verify_sdk_intake(artifact, repo_root)
     if verifier == "spe/verify_pointer.py":
         return verify_pointer(artifact, repo_root)
+    if verifier == "spe/verify_confirmation.py":
+        return verify_confirmation(artifact, repo_root)
     if verifier == "spe/verify.py":
         return verify_artifact(artifact)
     return FAIL, [Check("select_verifier", FAIL, f"unsupported verifier {verifier}")]
@@ -30,6 +33,8 @@ def governance_result(artifact):
         return receipt["decision"]
     if isinstance(artifact.get("final_decision"), str):
         return artifact["final_decision"]
+    if isinstance(artifact.get("confirmation_result"), str):
+        return artifact["confirmation_result"]
     evaluation = artifact.get("standing_evaluation", {})
     if isinstance(evaluation, dict) and isinstance(evaluation.get("result"), str):
         return evaluation["result"]
