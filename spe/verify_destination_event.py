@@ -36,8 +36,8 @@ def verify_destination_event(event, repo_root):
     confirmation_status, _ = verify_confirmation(confirmation, repo_root)
     checks.append(Check("source_confirmation_verifies", PASS if confirmation_status == PASS else FAIL, "source confirmation verifier checked"))
 
-    installed = event.get("event_result") == "INSTALLED" and event.get("event_hash_declared") is True
-    checks.append(Check("destination_event_result_binding", PASS if installed else FAIL, "destination event result checked"))
+    result_ok = event.get("event_result") in {"INSTALLED", "NOT_INSTALLED"} and event.get("event_hash_declared") is True
+    checks.append(Check("destination_event_result_binding", PASS if result_ok else FAIL, "destination event result checked"))
 
     target_ok = event.get("expected_package_status") == confirmation.get("expected_package_status")
     checks.append(Check("destination_event_target_binding", PASS if target_ok else FAIL, "destination event target checked"))
