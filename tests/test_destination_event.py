@@ -25,6 +25,17 @@ class DestinationEventVerifierTest(unittest.TestCase):
         self.assertEqual(check_map["destination_event_result_binding"], "PASS")
         self.assertEqual(check_map["destination_event_target_binding"], "PASS")
 
+    def test_deferred_destination_event_binds_confirmation(self):
+        event_path = ROOT / "samples" / "destination_event_deferred_001.json"
+        event = json.loads(event_path.read_text(encoding="utf-8"))
+
+        status, checks = verify_destination_event(event, ROOT)
+        check_map = {check.name: check.status for check in checks}
+
+        self.assertEqual(status, "PASS")
+        self.assertEqual(event["event_result"], "NOT_INSTALLED")
+        self.assertEqual(check_map["destination_event_result_binding"], "PASS")
+
     def test_destination_event_detects_confirmation_hash_drift(self):
         event_path = ROOT / "samples" / "destination_event_001.json"
         event = json.loads(event_path.read_text(encoding="utf-8"))
