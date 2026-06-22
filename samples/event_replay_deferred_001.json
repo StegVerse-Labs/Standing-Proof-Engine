@@ -1,0 +1,12 @@
+{
+  "replay_id": "SPE-EVENT-REPLAY-DEFERRED-001",
+  "replay_type": "event_replay",
+  "source_event": "samples/destination_event_deferred_001.json",
+  "source_event_sha256": "5bbc433d973f5f073a3c05c7ad017613c1f4a6575f11eae05553a13104744fbc",
+  "observed_result": "NOT_INSTALLED",
+  "expected_result": "NOT_INSTALLED",
+  "replay_result": "MATCH",
+  "event_bound": true,
+  "result_replayed": true,
+  "final_state_known": true
+}
