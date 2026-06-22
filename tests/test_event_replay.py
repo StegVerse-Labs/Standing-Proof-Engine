@@ -24,6 +24,17 @@ class EventReplayVerifierTest(unittest.TestCase):
         self.assertEqual(check_map["replay_result_binding"], "PASS")
         self.assertEqual(check_map["replay_handoff_flags"], "PASS")
 
+    def test_deferred_event_replay_binds_source_event(self):
+        replay_path = ROOT / "samples" / "event_replay_deferred_001.json"
+        replay = json.loads(replay_path.read_text(encoding="utf-8"))
+
+        status, checks = verify_event_replay(replay, ROOT)
+        check_map = {check.name: check.status for check in checks}
+
+        self.assertEqual(status, "PASS")
+        self.assertEqual(replay["observed_result"], "NOT_INSTALLED")
+        self.assertEqual(check_map["replay_result_binding"], "PASS")
+
     def test_event_replay_detects_source_event_hash_drift(self):
         replay_path = ROOT / "samples" / "event_replay_001.json"
         replay = json.loads(replay_path.read_text(encoding="utf-8"))
