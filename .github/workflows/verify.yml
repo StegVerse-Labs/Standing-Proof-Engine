@@ -38,6 +38,9 @@ jobs:
       - name: Run confirmation verifier
         run: python spe/verify_confirmation.py samples/master_records_confirmation_001.json
 
+      - name: Run destination event verifier
+        run: python spe/verify_destination_event.py samples/destination_event_001.json
+
       - name: Run source-bound sample verifier
         run: python spe/verify_source_bound.py samples/source_hash_bound_stale_state_001.json
 
