@@ -18,6 +18,10 @@ def artifact_type(artifact: dict[str, Any]) -> str:
         return declared_type
     if artifact.get("receipt_type") == "sdk_intake_receipt":
         return "sdk_intake_receipt"
+    if artifact.get("confirmation_type") == "master_records_pointer_confirmation":
+        return "master_records_pointer_confirmation"
+    if artifact.get("pointer_type") == "master_records_reconstruction_pointer":
+        return "master_records_reconstruction_pointer"
     if "execution_trace" in artifact:
         return "pressure_trace"
     if "review_time" in artifact and "commit_time" in artifact:
@@ -43,12 +47,22 @@ def governance_summary(artifact: dict[str, Any]) -> dict[str, Any]:
         "title",
         "receipt_id",
         "receipt_type",
+        "pointer_id",
+        "pointer_type",
+        "confirmation_id",
+        "confirmation_type",
+        "confirmation_result",
+        "installed",
+        "reconstruction_available",
         "origin_repo",
         "destination_repo",
         "route",
         "artifact_package",
+        "source_receipt",
+        "source_pointer",
         "spe_route_package_id",
         "expected_package_status",
+        "expected_sample_count"
     ]:
         if key in artifact:
             summary[key] = artifact[key]
