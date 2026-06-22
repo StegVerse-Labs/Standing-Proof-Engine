@@ -14,6 +14,10 @@ def verifier_alias(verifier_path):
         return "source_bound"
     if verifier_path == "spe/verify_sdk_intake.py":
         return "sdk_intake"
+    if verifier_path == "spe/verify_pointer.py":
+        return "pointer"
+    if verifier_path == "spe/verify_confirmation.py":
+        return "confirmation"
     return "default"
 
 
