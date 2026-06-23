@@ -1,0 +1,17 @@
+{
+  "fixture_id": "SPE-EXPECTED-DESTINATION-EVENT-001",
+  "artifact": "samples/destination_event_001.json",
+  "verifier": "spe/verify_destination_event.py",
+  "expected": {
+    "spe_result": "PASS",
+    "governance_result": "INSTALLED",
+    "required_checks": {
+      "parse_destination_event": "PASS",
+      "destination_event_route": "PASS",
+      "source_confirmation_hash_binding": "PASS",
+      "source_confirmation_verifies": "PASS",
+      "destination_event_result_binding": "PASS",
+      "destination_event_target_binding": "PASS"
+    }
+  }
+}
