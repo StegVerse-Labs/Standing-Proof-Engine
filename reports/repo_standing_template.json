@@ -1,0 +1,14 @@
+{
+  "generated_by": "tools/run_repo_standing.py",
+  "purpose": "machine-readable standing export",
+  "status": "AUTO_GENERATED_TARGET",
+  "fields": [
+    "spe_result",
+    "repo_standing",
+    "mathematical_claim_standing",
+    "follow_up_actions",
+    "check_count",
+    "passed_count",
+    "results"
+  ]
+}
