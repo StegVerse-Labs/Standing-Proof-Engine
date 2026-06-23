@@ -1,0 +1,33 @@
+{
+  "problem_id": "jacobian",
+  "track": "calibration",
+  "standing_status": "PARTIAL",
+  "state_definition": "polynomial map F: k^n -> k^n with declared field, dimension, degree, and Jacobian determinant",
+  "transitions": [
+    {
+      "transition_id": "T_compose",
+      "rule": "F -> G o F",
+      "cell_refs": ["TPT-COMPOSITION-REDUCTION", "TPT-LOCAL-GLOBAL-INVERTIBILITY"]
+    },
+    {
+      "transition_id": "T_reduce_degree",
+      "rule": "F -> reduced normal form candidate",
+      "cell_refs": ["TPT-DEGREE-OBSTRUCTION", "TPT-NORMAL-FORM-LIFT"]
+    },
+    {
+      "transition_id": "T_inverse_candidate",
+      "rule": "F -> candidate G where G o F = identity",
+      "cell_refs": ["TPT-LOCAL-GLOBAL-INVERTIBILITY", "TPT-DEGREE-OBSTRUCTION"]
+    }
+  ],
+  "invariant_candidates": [
+    "degree-vector standing receipts",
+    "composition-chain canonicalization",
+    "nilpotent perturbation class tracking",
+    "inverse-candidate obstruction receipts"
+  ],
+  "non_claims": [
+    "This encoding does not claim to solve the Jacobian conjecture.",
+    "This encoding does not claim local-to-global framing is a proof."
+  ]
+}
