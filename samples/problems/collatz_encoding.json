@@ -1,0 +1,33 @@
+{
+  "problem_id": "collatz",
+  "track": "calibration",
+  "standing_status": "PARTIAL",
+  "state_definition": "positive integer n with parity signature n mod 2",
+  "transitions": [
+    {
+      "transition_id": "T_even",
+      "rule": "n -> n / 2 when n is even",
+      "cell_refs": ["TPT-PARITY-BRANCH", "TPT-ORBIT-COLLAPSE"]
+    },
+    {
+      "transition_id": "T_odd",
+      "rule": "n -> 3n + 1 when n is odd",
+      "cell_refs": ["TPT-PARITY-BRANCH", "TPT-MONOTONE-FAILURE"]
+    },
+    {
+      "transition_id": "T_odd_compressed",
+      "rule": "n -> (3n + 1) / 2^v2(3n + 1)",
+      "cell_refs": ["TPT-COMPRESSED-RETURN"]
+    }
+  ],
+  "invariant_candidates": [
+    "parity-word admissibility constraints",
+    "logarithmic drift over compressed odd transitions",
+    "residue-class obstruction search",
+    "orbit-height certificate schema"
+  ],
+  "non_claims": [
+    "This encoding does not claim to solve the Collatz conjecture.",
+    "This encoding does not claim orbit sampling establishes universal convergence."
+  ]
+}
