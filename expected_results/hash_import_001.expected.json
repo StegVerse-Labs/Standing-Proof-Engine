@@ -1,0 +1,18 @@
+{
+  "fixture_id": "SPE-EXPECTED-HASH-IMPORT-001",
+  "artifact": "samples/destination_generated_event_hash_001.json",
+  "verifier": "spe/verify_hash_import.py",
+  "expected": {
+    "spe_result": "PASS",
+    "governance_result": "INSTALLED",
+    "required_checks": {
+      "parse_hash_import": "PASS",
+      "hash_import_route": "PASS",
+      "source_event_hash_binding": "PASS",
+      "destination_event_hash_binding": "PASS",
+      "source_event_verifies": "PASS",
+      "hash_result_binding": "PASS",
+      "hash_import_flags": "PASS"
+    }
+  }
+}
