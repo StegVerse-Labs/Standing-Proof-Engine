@@ -1,0 +1,33 @@
+{
+  "problem_id": "caccetta_haggkvist",
+  "track": "calibration",
+  "standing_status": "PARTIAL",
+  "state_definition": "directed graph G=(V,E) with |V|=n and minimum outdegree at least r",
+  "transitions": [
+    {
+      "transition_id": "T_expand_path",
+      "rule": "extend a directed path by one admissible outgoing edge",
+      "cell_refs": ["TPT-DIRECTED-EXPANSION", "TPT-LOCAL-DEGREE-GLOBAL-CYCLE"]
+    },
+    {
+      "transition_id": "T_close_cycle",
+      "rule": "close a path when an edge returns to a prior vertex",
+      "cell_refs": ["TPT-CYCLE-CLOSURE"]
+    },
+    {
+      "transition_id": "T_obstruction_candidate",
+      "rule": "classify graph structure that avoids short directed cycles",
+      "cell_refs": ["TPT-EXTREMAL-OBSTRUCTION"]
+    }
+  ],
+  "invariant_candidates": [
+    "layer-growth receipt sequences",
+    "directed expansion pressure",
+    "cycle-closure deficit measures",
+    "extremal obstruction fingerprints"
+  ],
+  "non_claims": [
+    "This encoding does not claim to solve the Caccetta-Haggkvist conjecture.",
+    "This encoding does not claim local outdegree standing alone proves a short-cycle consequence."
+  ]
+}
