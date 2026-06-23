@@ -1,0 +1,15 @@
+{
+  "problem_id": "jacobian",
+  "expected_structural_standing": "PASS",
+  "expected_mathematical_standing": "PARTIAL",
+  "expected_encoding_status": "PARTIAL",
+  "required_transition_count_min": 3,
+  "required_non_claim_count_min": 2,
+  "required_cell_refs": [
+    "TPT-COMPOSITION-REDUCTION",
+    "TPT-LOCAL-GLOBAL-INVERTIBILITY",
+    "TPT-DEGREE-OBSTRUCTION",
+    "TPT-NORMAL-FORM-LIFT"
+  ],
+  "non_claim": "This expected result validates encoding structure only; it does not prove the Jacobian conjecture."
+}
