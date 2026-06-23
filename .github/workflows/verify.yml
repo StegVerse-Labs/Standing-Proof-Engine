@@ -98,17 +98,11 @@ jobs:
       - name: Run external source reference JSON export
         run: python spe/verify_external_refs.py --json samples/external_source_ref_stale_state_001.json
 
-      - name: Run research standing validator
-        run: python tools/validate_research_standing.py
+      - name: Run automated repo standing route
+        run: python tools/run_repo_standing.py
 
-      - name: Run problem encoding verifier
-        run: python spe/verify_problem_encodings.py
-
-      - name: Run problem encoding JSON export
-        run: python spe/verify_problem_encodings.py --json
-
-      - name: Run problem encoding tests
-        run: python -m unittest tests.test_problem_encodings
+      - name: Run automated repo standing JSON export
+        run: python tools/run_repo_standing.py --json
 
       - name: Generate reviewer reports
         run: |
