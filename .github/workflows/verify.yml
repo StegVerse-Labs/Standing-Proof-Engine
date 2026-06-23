@@ -104,6 +104,9 @@ jobs:
       - name: Run automated repo standing JSON export
         run: python tools/run_repo_standing.py --json
 
+      - name: Run formalism and handoff tests
+        run: python -m unittest discover -s tests -p 'test_*.py'
+
       - name: Generate reviewer reports
         run: |
           python spe/report.py samples/pressure_demo_001.json reports/pressure_demo_001.md default
@@ -120,6 +123,3 @@ jobs:
           path: |
             reports/**/*.md
             reports/**/*.json
-
-      - name: Run formalism tests
-        run: python -m unittest discover -s tests -p 'test_*.py'
