@@ -1,0 +1,15 @@
+{
+  "problem_id": "collatz",
+  "expected_structural_standing": "PASS",
+  "expected_mathematical_standing": "PARTIAL",
+  "expected_encoding_status": "PARTIAL",
+  "required_transition_count_min": 3,
+  "required_non_claim_count_min": 2,
+  "required_cell_refs": [
+    "TPT-PARITY-BRANCH",
+    "TPT-ORBIT-COLLAPSE",
+    "TPT-MONOTONE-FAILURE",
+    "TPT-COMPRESSED-RETURN"
+  ],
+  "non_claim": "This expected result validates encoding structure only; it does not prove the Collatz conjecture."
+}
