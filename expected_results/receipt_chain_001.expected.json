@@ -1,0 +1,20 @@
+{
+  "fixture_id": "SPE-EXPECTED-RECEIPT-CHAIN-001",
+  "artifact": "samples/destination_receipt_chain_001.json",
+  "verifier": "spe/verify_receipt_chain.py",
+  "expected": {
+    "spe_result": "PASS",
+    "governance_result": "CHAIN_BOUND",
+    "required_checks": {
+      "parse_receipt_chain": "PASS",
+      "receipt_chain_route": "PASS",
+      "source_hash_import_binding": "PASS",
+      "source_hash_import_verifies": "PASS",
+      "receipt_chain_order": "PASS",
+      "receipt_chain_artifacts_exist": "PASS",
+      "receipt_chain_final_binding": "PASS",
+      "receipt_chain_flags": "PASS",
+      "receipt_chain_result": "PASS"
+    }
+  }
+}
