@@ -17,10 +17,29 @@ VALID_STATUSES = {"PASS", "PARTIAL", "FAIL"}
 REQUIRED_FILES = [
     "research/stegverse_formalisms_unsolved_mathematics.md",
     "research/formalism_propagation_process.md",
+    "research/formalism_catalog.md",
     "research/research_manifest.json",
+    "research/problems/collatz.md",
+    "research/problems/jacobian.md",
+    "research/problems/caccetta_haggkvist.md",
+    "samples/problems/collatz_encoding.json",
+    "samples/problems/jacobian_encoding.json",
+    "samples/problems/caccetta_haggkvist_encoding.json",
     "docs/repo_validation.md",
     "docs/testing_protocols.md",
     "tools/validate_research_standing.py",
+]
+
+PROBLEM_DOCS = [
+    "research/problems/collatz.md",
+    "research/problems/jacobian.md",
+    "research/problems/caccetta_haggkvist.md",
+]
+
+PROBLEM_ENCODINGS = [
+    "samples/problems/collatz_encoding.json",
+    "samples/problems/jacobian_encoding.json",
+    "samples/problems/caccetta_haggkvist_encoding.json",
 ]
 
 REQUIRED_PROCESS_REFERENCES = [
@@ -39,6 +58,25 @@ REQUIRED_REPORT_PHRASES = [
     "This report does not claim that an encoding, analogy, or transition table cell is a proof.",
 ]
 
+REQUIRED_PROBLEM_SECTIONS = [
+    "## 1. Problem statement",
+    "## 3. StegVerse mapping",
+    "## 5. Transition rule",
+    "## 6. Candidate transition-table cells",
+    "## 10. Non-claims",
+    "## 11. Standing status",
+]
+
+REQUIRED_ENCODING_FIELDS = [
+    "problem_id",
+    "track",
+    "standing_status",
+    "state_definition",
+    "transitions",
+    "invariant_candidates",
+    "non_claims",
+]
+
 
 def fail(message: str) -> None:
     print(f"SPE RESEARCH STANDING: FAIL - {message}")
@@ -52,6 +90,15 @@ def load_text(path: Path) -> str:
         fail(f"missing required file: {path.as_posix()}")
 
 
+def load_json(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        fail(f"missing required JSON file: {path.as_posix()}")
+    except json.JSONDecodeError as exc:
+        fail(f"invalid JSON in {path.as_posix()}: {exc}")
+
+
 def require_files(repo_root: Path, paths: Iterable[str]) -> None:
     for relative_path in paths:
         path = repo_root / relative_path
@@ -62,11 +109,7 @@ def require_files(repo_root: Path, paths: Iterable[str]) -> None:
 
 
 def load_manifest(repo_root: Path) -> dict:
-    manifest_path = repo_root / "research/research_manifest.json"
-    try:
-        return json.loads(manifest_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        fail(f"manifest is not valid JSON: {exc}")
+    return load_json(repo_root / "research/research_manifest.json")
 
 
 def validate_status(value: str, context: str) -> None:
@@ -88,6 +131,9 @@ def validate_manifest(repo_root: Path, manifest: dict) -> None:
             fail(f"artifact {artifact_id} is missing path")
         if not (repo_root / path_value).exists():
             fail(f"artifact {artifact_id} points to missing path: {path_value}")
+        sample_path = artifact.get("sample_path")
+        if sample_path and not (repo_root / sample_path).exists():
+            fail(f"artifact {artifact_id} points to missing sample_path: {sample_path}")
         validate_status(str(artifact.get("standing_status", "")), f"artifact {artifact_id}")
 
     tracks = manifest.get("formalism_tracks")
@@ -101,6 +147,9 @@ def validate_manifest(repo_root: Path, manifest: dict) -> None:
             fail(f"track {track_id} must list problems")
         if not track.get("next_required_artifacts"):
             fail(f"track {track_id} must list next_required_artifacts")
+        for required_path in track.get("required_artifacts", []):
+            if not (repo_root / required_path).exists():
+                fail(f"track {track_id} required artifact is missing: {required_path}")
 
     non_claims = manifest.get("non_claims")
     if not isinstance(non_claims, list) or len(non_claims) < 3:
@@ -124,6 +173,43 @@ def validate_process(repo_root: Path) -> None:
             fail(f"formalism propagation process missing required reference: {reference}")
 
 
+def validate_problem_docs(repo_root: Path) -> None:
+    for relative_path in PROBLEM_DOCS:
+        text = load_text(repo_root / relative_path)
+        for section in REQUIRED_PROBLEM_SECTIONS:
+            if section not in text:
+                fail(f"problem doc {relative_path} missing section: {section}")
+        if "This file does not claim" not in text:
+            fail(f"problem doc {relative_path} must include explicit non-claims")
+        if "PARTIAL" not in text:
+            fail(f"problem doc {relative_path} must declare PARTIAL standing")
+
+
+def validate_problem_encodings(repo_root: Path) -> None:
+    for relative_path in PROBLEM_ENCODINGS:
+        data = load_json(repo_root / relative_path)
+        for field in REQUIRED_ENCODING_FIELDS:
+            if field not in data:
+                fail(f"problem encoding {relative_path} missing field: {field}")
+        validate_status(str(data.get("standing_status", "")), f"problem encoding {relative_path}")
+        if data.get("standing_status") != "PARTIAL":
+            fail(f"problem encoding {relative_path} must remain PARTIAL until proof artifacts exist")
+        transitions = data.get("transitions")
+        if not isinstance(transitions, list) or not transitions:
+            fail(f"problem encoding {relative_path} must include non-empty transitions")
+        for transition in transitions:
+            if not transition.get("transition_id"):
+                fail(f"problem encoding {relative_path} has transition without transition_id")
+            if not transition.get("rule"):
+                fail(f"problem encoding {relative_path} has transition without rule")
+            cell_refs = transition.get("cell_refs")
+            if not isinstance(cell_refs, list) or not cell_refs:
+                fail(f"problem encoding {relative_path} transition {transition.get('transition_id')} must include cell_refs")
+        non_claims = data.get("non_claims")
+        if not isinstance(non_claims, list) or not non_claims:
+            fail(f"problem encoding {relative_path} must include non_claims")
+
+
 def validate_docs(repo_root: Path) -> None:
     validation_text = load_text(repo_root / "docs/repo_validation.md")
     testing_text = load_text(repo_root / "docs/testing_protocols.md")
@@ -143,6 +229,8 @@ def main() -> int:
     validate_manifest(repo_root, manifest)
     validate_report(repo_root)
     validate_process(repo_root)
+    validate_problem_docs(repo_root)
+    validate_problem_encodings(repo_root)
     validate_docs(repo_root)
     print("SPE RESEARCH STANDING: PASS")
     return 0
