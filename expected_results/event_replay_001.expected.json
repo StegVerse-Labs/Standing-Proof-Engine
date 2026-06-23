@@ -1,0 +1,16 @@
+{
+  "fixture_id": "SPE-EXPECTED-EVENT-REPLAY-001",
+  "artifact": "samples/event_replay_001.json",
+  "verifier": "spe/verify_event_replay.py",
+  "expected": {
+    "spe_result": "PASS",
+    "governance_result": "INSTALLED",
+    "required_checks": {
+      "parse_event_replay": "PASS",
+      "source_event_hash_binding": "PASS",
+      "source_event_verifies": "PASS",
+      "replay_result_binding": "PASS",
+      "replay_handoff_flags": "PASS"
+    }
+  }
+}
