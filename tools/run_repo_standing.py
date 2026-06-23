@@ -37,120 +37,79 @@ class StandingResult:
 
 
 CHECKS: tuple[StandingCheck, ...] = (
-    StandingCheck(
-        check_id="research-standing",
-        description="Validate research package standing and required artifacts.",
-        command=(sys.executable, "tools/validate_research_standing.py"),
-        expected_substring="SPE RESEARCH STANDING: PASS",
-    ),
-    StandingCheck(
-        check_id="problem-encodings",
-        description="Verify calibration problem encodings against expected-result fixtures.",
-        command=(sys.executable, "spe/verify_problem_encodings.py"),
-        expected_substring="SPE PROBLEM ENCODINGS: PASS",
-    ),
-    StandingCheck(
-        check_id="problem-encodings-json",
-        description="Verify machine-readable problem encoding standing export.",
-        command=(sys.executable, "spe/verify_problem_encodings.py", "--json"),
-        expected_substring='"spe_result": "PASS"',
-    ),
-    StandingCheck(
-        check_id="automation-addendum",
-        description="Check automation addendum metadata and referenced files.",
-        command=(sys.executable, "tools/check_automation_addendum.py"),
-        expected_substring="SPE AUTOMATION ADDENDUM: PASS",
-    ),
-    StandingCheck(
-        check_id="automation-addendum-json",
-        description="Check machine-readable automation addendum metadata output.",
-        command=(sys.executable, "tools/check_automation_addendum.py", "--json"),
-        expected_substring='"automation_addendum": "PASS"',
-    ),
-    StandingCheck(
-        check_id="destination-event-installed",
-        description="Verify installed destination event binding.",
-        command=(sys.executable, "spe/verify_destination_event.py", "samples/destination_event_001.json"),
-        expected_substring="SPE RESULT: PASS",
-    ),
-    StandingCheck(
-        check_id="destination-event-deferred",
-        description="Verify deferred destination event binding.",
-        command=(sys.executable, "spe/verify_destination_event.py", "samples/destination_event_deferred_001.json"),
-        expected_substring="SPE RESULT: PASS",
-    ),
-    StandingCheck(
-        check_id="event-replay-installed",
-        description="Verify installed event replay binding.",
-        command=(sys.executable, "spe/verify_event_replay.py", "samples/event_replay_001.json"),
-        expected_substring="SPE RESULT: PASS",
-    ),
-    StandingCheck(
-        check_id="event-replay-deferred",
-        description="Verify deferred event replay binding.",
-        command=(sys.executable, "spe/verify_event_replay.py", "samples/event_replay_deferred_001.json"),
-        expected_substring="SPE RESULT: PASS",
-    ),
-    StandingCheck(
-        check_id="destination-hash-import",
-        description="Verify destination-generated hash import binding.",
-        command=(sys.executable, "spe/verify_hash_import.py", "samples/destination_generated_event_hash_001.json"),
-        expected_substring="SPE RESULT: PASS",
-    ),
-    StandingCheck(
-        check_id="problem-encoding-tests",
-        description="Run unittest coverage for problem encoding verification.",
-        command=(sys.executable, "-m", "unittest", "tests.test_problem_encodings"),
-        expected_substring="OK",
-    ),
-    StandingCheck(
-        check_id="event-expected-result-tests",
-        description="Run expected-result coverage for destination event and replay fixtures.",
-        command=(sys.executable, "-m", "unittest", "tests.test_event_expected_results"),
-        expected_substring="OK",
-    ),
-    StandingCheck(
-        check_id="hash-import-tests",
-        description="Run destination hash import formalism tests.",
-        command=(sys.executable, "-m", "unittest", "tests.test_hash_import"),
-        expected_substring="OK",
-    ),
-    StandingCheck(
-        check_id="formalism-tests",
-        description="Run all unittest-discoverable formalism tests.",
-        command=(sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"),
-        expected_substring="OK",
-    ),
+    StandingCheck("research-standing", "Validate research package standing and required artifacts.", (sys.executable, "tools/validate_research_standing.py"), "SPE RESEARCH STANDING: PASS"),
+    StandingCheck("problem-encodings", "Verify calibration problem encodings against expected-result fixtures.", (sys.executable, "spe/verify_problem_encodings.py"), "SPE PROBLEM ENCODINGS: PASS"),
+    StandingCheck("problem-encodings-json", "Verify machine-readable problem encoding standing export.", (sys.executable, "spe/verify_problem_encodings.py", "--json"), '"spe_result": "PASS"'),
+    StandingCheck("automation-addendum", "Check automation addendum metadata and referenced files.", (sys.executable, "tools/check_automation_addendum.py"), "SPE AUTOMATION ADDENDUM: PASS"),
+    StandingCheck("automation-addendum-json", "Check machine-readable automation addendum metadata output.", (sys.executable, "tools/check_automation_addendum.py", "--json"), '"automation_addendum": "PASS"'),
+    StandingCheck("destination-event-installed", "Verify installed destination event binding.", (sys.executable, "spe/verify_destination_event.py", "samples/destination_event_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("destination-event-deferred", "Verify deferred destination event binding.", (sys.executable, "spe/verify_destination_event.py", "samples/destination_event_deferred_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("event-replay-installed", "Verify installed event replay binding.", (sys.executable, "spe/verify_event_replay.py", "samples/event_replay_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("event-replay-deferred", "Verify deferred event replay binding.", (sys.executable, "spe/verify_event_replay.py", "samples/event_replay_deferred_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("destination-hash-import", "Verify destination-generated hash import binding.", (sys.executable, "spe/verify_hash_import.py", "samples/destination_generated_event_hash_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("problem-encoding-tests", "Run unittest coverage for problem encoding verification.", (sys.executable, "-m", "unittest", "tests.test_problem_encodings"), "OK"),
+    StandingCheck("event-expected-result-tests", "Run expected-result coverage for destination event and replay fixtures.", (sys.executable, "-m", "unittest", "tests.test_event_expected_results"), "OK"),
+    StandingCheck("hash-import-tests", "Run destination hash import formalism tests.", (sys.executable, "-m", "unittest", "tests.test_hash_import"), "OK"),
+    StandingCheck("formalism-tests", "Run all unittest-discoverable formalism tests.", (sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"), "OK"),
 )
 
 
 def run_check(repo_root: Path, check: StandingCheck) -> StandingResult:
-    completed = subprocess.run(
-        check.command,
-        cwd=repo_root,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-
+    completed = subprocess.run(check.command, cwd=repo_root, text=True, capture_output=True, check=False)
     combined_output = completed.stdout + completed.stderr
-    has_expected_output = True
-    if check.expected_substring is not None:
-        has_expected_output = check.expected_substring in combined_output
-
-    return StandingResult(
-        check_id=check.check_id,
-        description=check.description,
-        command=list(check.command),
-        returncode=completed.returncode,
-        passed=completed.returncode == 0 and has_expected_output,
-        stdout=completed.stdout,
-        stderr=completed.stderr,
-    )
+    has_expected_output = check.expected_substring is None or check.expected_substring in combined_output
+    return StandingResult(check.check_id, check.description, list(check.command), completed.returncode, completed.returncode == 0 and has_expected_output, completed.stdout, completed.stderr)
 
 
 def run_all(repo_root: Path, checks: Sequence[StandingCheck]) -> list[StandingResult]:
     return [run_check(repo_root, check) for check in checks]
+
+
+def result_payload(results: Sequence[StandingResult]) -> dict[str, object]:
+    passed = all(result.passed for result in results)
+    return {
+        "spe_result": "PASS" if passed else "FAIL",
+        "repo_standing": "PASS" if passed else "FAIL",
+        "mathematical_claim_standing": "PARTIAL",
+        "follow_up_actions": [],
+        "check_count": len(results),
+        "passed_count": sum(1 for result in results if result.passed),
+        "results": [asdict(result) for result in results],
+        "non_claim": "Repo standing checks validate automation structure only; they do not prove any open mathematical problem.",
+    }
+
+
+def render_markdown(payload: dict[str, object]) -> str:
+    rows = []
+    for result in payload["results"]:
+        status = "PASS" if result["passed"] else "FAIL"
+        rows.append(f"| `{result['check_id']}` | **{status}** | {result['description']} |")
+    return "\n".join([
+        "# Repo Standing Report",
+        "",
+        f"- SPE Result: **{payload['spe_result']}**",
+        f"- Repo Standing: **{payload['repo_standing']}**",
+        f"- Mathematical Claim Standing: **{payload['mathematical_claim_standing']}**",
+        f"- Passed Checks: **{payload['passed_count']} / {payload['check_count']}**",
+        "",
+        "## Checks",
+        "",
+        "| Check | Status | Description |",
+        "|---|---:|---|",
+        *rows,
+        "",
+        "## Non-Claim",
+        "",
+        str(payload["non_claim"]),
+        "",
+    ])
+
+
+def write_reports(repo_root: Path, payload: dict[str, object]) -> None:
+    reports_dir = repo_root / "reports"
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    (reports_dir / "repo_standing.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (reports_dir / "repo_standing.md").write_text(render_markdown(payload), encoding="utf-8")
 
 
 def emit_text(results: Sequence[StandingResult]) -> None:
@@ -165,45 +124,27 @@ def emit_text(results: Sequence[StandingResult]) -> None:
             if result.stderr:
                 print("  stderr:")
                 print(result.stderr.rstrip())
-
+    print("SPE REPO STANDING:", "PASS" if all(result.passed for result in results) else "FAIL")
     if all(result.passed for result in results):
-        print("SPE REPO STANDING: PASS")
         print("SPE MATHEMATICAL CLAIM STANDING: PARTIAL")
         print("SPE FOLLOW-UP ACTIONS: []")
-    else:
-        print("SPE REPO STANDING: FAIL")
-
-
-def emit_json(results: Sequence[StandingResult]) -> None:
-    passed = all(result.passed for result in results)
-    print(
-        json.dumps(
-            {
-                "spe_result": "PASS" if passed else "FAIL",
-                "repo_standing": "PASS" if passed else "FAIL",
-                "mathematical_claim_standing": "PARTIAL",
-                "follow_up_actions": [],
-                "check_count": len(results),
-                "passed_count": sum(1 for result in results if result.passed),
-                "results": [asdict(result) for result in results],
-                "non_claim": "Repo standing checks validate automation structure only; they do not prove any open mathematical problem.",
-            },
-            indent=2,
-            sort_keys=True,
-        )
-    )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run automated SPE repo-standing checks.")
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
+    parser.add_argument("--write-reports", action="store_true", help="write reports/repo_standing.json and reports/repo_standing.md")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[1]
     results = run_all(repo_root, CHECKS)
+    payload = result_payload(results)
+
+    if args.write_reports:
+        write_reports(repo_root, payload)
 
     if args.json:
-        emit_json(results)
+        print(json.dumps(payload, indent=2, sort_keys=True))
     else:
         emit_text(results)
 
