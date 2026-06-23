@@ -47,9 +47,11 @@ CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("event-replay-installed", "Verify installed event replay binding.", (sys.executable, "spe/verify_event_replay.py", "samples/event_replay_001.json"), "SPE RESULT: PASS"),
     StandingCheck("event-replay-deferred", "Verify deferred event replay binding.", (sys.executable, "spe/verify_event_replay.py", "samples/event_replay_deferred_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-hash-import", "Verify destination-generated hash import binding.", (sys.executable, "spe/verify_hash_import.py", "samples/destination_generated_event_hash_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("destination-receipt-chain", "Verify destination-generated receipt chain binding.", (sys.executable, "spe/verify_receipt_chain.py", "samples/destination_receipt_chain_001.json"), "SPE RESULT: PASS"),
     StandingCheck("problem-encoding-tests", "Run unittest coverage for problem encoding verification.", (sys.executable, "-m", "unittest", "tests.test_problem_encodings"), "OK"),
     StandingCheck("event-expected-result-tests", "Run expected-result coverage for destination event and replay fixtures.", (sys.executable, "-m", "unittest", "tests.test_event_expected_results"), "OK"),
     StandingCheck("hash-import-tests", "Run destination hash import formalism tests.", (sys.executable, "-m", "unittest", "tests.test_hash_import"), "OK"),
+    StandingCheck("receipt-chain-tests", "Run destination receipt chain formalism tests.", (sys.executable, "-m", "unittest", "tests.test_receipt_chain"), "OK"),
     StandingCheck("formalism-tests", "Run all unittest-discoverable formalism tests.", (sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"), "OK"),
 )
 
