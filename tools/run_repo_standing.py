@@ -48,6 +48,7 @@ CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("event-replay-deferred", "Verify deferred event replay binding.", (sys.executable, "spe/verify_event_replay.py", "samples/event_replay_deferred_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-hash-import", "Verify destination-generated hash import binding.", (sys.executable, "spe/verify_hash_import.py", "samples/destination_generated_event_hash_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-receipt-chain", "Verify destination-generated receipt chain binding.", (sys.executable, "spe/verify_receipt_chain.py", "samples/destination_receipt_chain_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("release-readiness", "Generate and verify local SPE release readiness artifacts.", (sys.executable, "tools/write_release_readiness.py"), "SPE RELEASE READINESS: READY"),
     StandingCheck("problem-encoding-tests", "Run unittest coverage for problem encoding verification.", (sys.executable, "-m", "unittest", "tests.test_problem_encodings"), "OK"),
     StandingCheck("automation-addendum-metadata-tests", "Run unittest coverage for automation addendum metadata.", (sys.executable, "-m", "unittest", "tests.test_automation_addendum_metadata"), "OK"),
     StandingCheck("repo-standing-handoff-metadata-tests", "Run unittest coverage for machine-readable repo standing handoff metadata.", (sys.executable, "-m", "unittest", "tests.test_repo_standing_handoff_metadata"), "OK"),
