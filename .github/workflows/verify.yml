@@ -18,85 +18,85 @@ jobs:
           python-version: '3.11'
 
       - name: Run pressure receipt sample verifier
-        run: python spe/verify.py samples/pressure_demo_001.json
+        run: python -m spe.verify samples/pressure_demo_001.json
 
       - name: Run stale state sample verifier
-        run: python spe/verify.py samples/stale_state_review_commit_001.json
+        run: python -m spe.verify samples/stale_state_review_commit_001.json
 
       - name: Run Aegis incident standing verifier
-        run: python spe/verify.py samples/aegis_incident_standing_001.json
+        run: python -m spe.verify samples/aegis_incident_standing_001.json
 
       - name: Run sample manifest verifier
-        run: python spe/verify_manifest.py samples/manifest.json
+        run: python -m spe.verify_manifest samples/manifest.json
 
       - name: Run SDK intake receipt verifier
-        run: python spe/verify_sdk_intake.py samples/sdk_intake_receipt_001.json
+        run: python -m spe.verify_sdk_intake samples/sdk_intake_receipt_001.json
 
       - name: Run pointer verifier
-        run: python spe/verify_pointer.py samples/master_records_pointer_001.json
+        run: python -m spe.verify_pointer samples/master_records_pointer_001.json
 
       - name: Run confirmation verifier
-        run: python spe/verify_confirmation.py samples/master_records_confirmation_001.json
+        run: python -m spe.verify_confirmation samples/master_records_confirmation_001.json
 
       - name: Run destination event verifier
-        run: python spe/verify_destination_event.py samples/destination_event_001.json
+        run: python -m spe.verify_destination_event samples/destination_event_001.json
 
       - name: Run deferred destination event verifier
-        run: python spe/verify_destination_event.py samples/destination_event_deferred_001.json
+        run: python -m spe.verify_destination_event samples/destination_event_deferred_001.json
 
       - name: Run event replay verifier
-        run: python spe/verify_event_replay.py samples/event_replay_001.json
+        run: python -m spe.verify_event_replay samples/event_replay_001.json
 
       - name: Run deferred event replay verifier
-        run: python spe/verify_event_replay.py samples/event_replay_deferred_001.json
+        run: python -m spe.verify_event_replay samples/event_replay_deferred_001.json
 
       - name: Run source-bound sample verifier
-        run: python spe/verify_source_bound.py samples/source_hash_bound_stale_state_001.json
+        run: python -m spe.verify_source_bound samples/source_hash_bound_stale_state_001.json
 
       - name: Run external source reference verifier
-        run: python spe/verify_external_refs.py samples/external_source_ref_stale_state_001.json
+        run: python -m spe.verify_external_refs samples/external_source_ref_stale_state_001.json
 
       - name: Run frozen hash manifest verifier
-        run: python spe/verify_hash_manifest.py samples/hash_manifests/external_source_ref_stale_state_001.hashes.json
+        run: python -m spe.verify_hash_manifest samples/hash_manifests/external_source_ref_stale_state_001.hashes.json
 
       - name: Run expected result fixture verifier
-        run: python spe/verify_expected_result.py expected_results/external_source_ref_stale_state_001.expected.json
+        run: python -m spe.verify_expected_result expected_results/external_source_ref_stale_state_001.expected.json
 
       - name: Run Aegis expected result fixture verifier
-        run: python spe/verify_expected_result.py expected_results/aegis_incident_standing_001.expected.json
+        run: python -m spe.verify_expected_result expected_results/aegis_incident_standing_001.expected.json
 
       - name: Run SDK intake expected result fixture verifier
-        run: python spe/verify_expected_result.py expected_results/sdk_intake_receipt_001.expected.json
+        run: python -m spe.verify_expected_result expected_results/sdk_intake_receipt_001.expected.json
 
       - name: Run pointer expected result fixture verifier
-        run: python spe/verify_expected_result.py expected_results/pointer_001.expected.json
+        run: python -m spe.verify_expected_result expected_results/pointer_001.expected.json
 
       - name: Run confirmation expected result fixture verifier
-        run: python spe/verify_expected_result.py expected_results/confirmation_001.expected.json
+        run: python -m spe.verify_expected_result expected_results/confirmation_001.expected.json
 
       - name: Run expected corpus verifier
-        run: python spe/verify_expected_corpus.py
+        run: python -m spe.verify_expected_corpus
 
       - name: Run pressure receipt JSON export
-        run: python spe/verify_json.py samples/pressure_demo_001.json
+        run: python -m spe.verify_json samples/pressure_demo_001.json
 
       - name: Run stale state JSON export
-        run: python spe/verify_json.py samples/stale_state_review_commit_001.json
+        run: python -m spe.verify_json samples/stale_state_review_commit_001.json
 
       - name: Run Aegis incident JSON export
-        run: python spe/verify_json.py samples/aegis_incident_standing_001.json
+        run: python -m spe.verify_json samples/aegis_incident_standing_001.json
 
       - name: Run SDK intake JSON export
-        run: python spe/verify_sdk_intake_json.py samples/sdk_intake_receipt_001.json
+        run: python -m spe.verify_sdk_intake_json samples/sdk_intake_receipt_001.json
 
       - name: Run confirmation JSON export
-        run: python spe/verify_confirmation_json.py samples/master_records_confirmation_001.json
+        run: python -m spe.verify_confirmation_json samples/master_records_confirmation_001.json
 
       - name: Run source-bound JSON export
-        run: python spe/verify_source_bound.py --json samples/source_hash_bound_stale_state_001.json
+        run: python -m spe.verify_source_bound --json samples/source_hash_bound_stale_state_001.json
 
       - name: Run external source reference JSON export
-        run: python spe/verify_external_refs.py --json samples/external_source_ref_stale_state_001.json
+        run: python -m spe.verify_external_refs --json samples/external_source_ref_stale_state_001.json
 
       - name: Run automated repo standing route
         run: python tools/run_repo_standing.py
@@ -115,12 +115,12 @@ jobs:
 
       - name: Generate reviewer reports
         run: |
-          python spe/report.py samples/pressure_demo_001.json reports/pressure_demo_001.md default
-          python spe/report.py samples/stale_state_review_commit_001.json reports/stale_state_review_commit_001.md default
-          python spe/report.py samples/aegis_incident_standing_001.json reports/aegis_incident_standing_001.md default
-          python spe/report.py samples/source_hash_bound_stale_state_001.json reports/source_hash_bound_stale_state_001.md source_bound
-          python spe/report.py samples/external_source_ref_stale_state_001.json reports/external_source_ref_stale_state_001.md external_refs
-          python spe/report_expected_corpus.py expected_results reports/expected_corpus
+          python -m spe.report samples/pressure_demo_001.json reports/pressure_demo_001.md default
+          python -m spe.report samples/stale_state_review_commit_001.json reports/stale_state_review_commit_001.md default
+          python -m spe.report samples/aegis_incident_standing_001.json reports/aegis_incident_standing_001.md default
+          python -m spe.report samples/source_hash_bound_stale_state_001.json reports/source_hash_bound_stale_state_001.md source_bound
+          python -m spe.report samples/external_source_ref_stale_state_001.json reports/external_source_ref_stale_state_001.md external_refs
+          python -m spe.report_expected_corpus expected_results reports/expected_corpus
 
       - name: Upload reviewer reports and machine handoffs
         uses: actions/upload-artifact@v4
