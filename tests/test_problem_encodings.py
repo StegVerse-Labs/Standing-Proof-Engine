@@ -39,6 +39,36 @@ def test_research_standing_validator_passes():
     assert "SPE RESEARCH STANDING: PASS" in result.stdout
 
 
+def test_problem_encoding_verifier_passes():
+    result = subprocess.run(
+        [sys.executable, "spe/verify_problem_encodings.py"],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "SPE PROBLEM ENCODINGS: PASS" in result.stdout
+
+
+def test_problem_encoding_json_export_passes():
+    result = subprocess.run(
+        [sys.executable, "spe/verify_problem_encodings.py", "--json"],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    data = json.loads(result.stdout)
+    assert data["spe_result"] == "PASS"
+    assert data["mathematical_standing"] == "PARTIAL"
+    assert data["verified_problem_count"] == 3
+    assert "does not prove" in data["non_claim"]
+
+
 def test_problem_encodings_match_expected_results():
     for encoding_path, expected_path in PROBLEM_CASES:
         encoding = load_json(encoding_path)
