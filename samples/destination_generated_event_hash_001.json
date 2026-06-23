@@ -1,0 +1,14 @@
+{
+  "import_id": "MR-SPE-DEST-HASH-001",
+  "import_type": "destination_generated_event_hash_import",
+  "origin_repo": "master-records/core-lite",
+  "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "source_event": "samples/destination_event_001.json",
+  "source_event_sha256": "f98798fa1e187cee287100cd23e30f1890682ab484e5f4a2f140d653f91ebb9d",
+  "destination_event_id": "MR-SPE-EVENT-001",
+  "destination_event_hash": "f98798fa1e187cee287100cd23e30f1890682ab484e5f4a2f140d653f91ebb9d",
+  "hash_source": "destination_repo_receipt",
+  "hash_imported": true,
+  "hash_matches_local_event": true,
+  "expected_event_result": "INSTALLED"
+}
