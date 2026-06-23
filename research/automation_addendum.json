@@ -32,7 +32,10 @@
     "python tools/validate_research_standing.py",
     "python spe/verify_problem_encodings.py",
     "python spe/verify_problem_encodings.py --json",
+    "python tools/check_automation_addendum.py",
+    "python tools/check_automation_addendum.py --json",
     "python -m unittest tests.test_problem_encodings",
+    "python -m unittest tests.test_automation_addendum_metadata",
     "python -m unittest discover -s tests -p 'test_*.py'"
   ],
   "non_claims": [
