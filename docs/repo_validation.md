@@ -1,11 +1,11 @@
 # Repository Validation
 
 Status: validation protocol
-Scope: Standing-Proof-Engine repository standing, including research additions.
+Scope: Standing-Proof-Engine repository standing, including research additions and automated standing checks.
 
 ## 1. Validation assumption
 
-Repository standing is not established by documentation alone. The repo has standing only when its declared artifacts, manifests, tests, and expected outcomes can be independently reconstructed.
+Repository standing is not established by documentation alone. The repo has standing only when its declared artifacts, manifests, tests, and expected outcomes can be independently reconstructed by an automated route.
 
 ## 2. Done definition
 
@@ -18,7 +18,9 @@ The repository is validation-ready when:
 5. non-claims are present for research artifacts;
 6. executable tests pass;
 7. expected outputs are documented;
-8. reviewer reconstruction paths are explicit.
+8. reviewer reconstruction paths are explicit;
+9. a single repo-standing command runs the required research and problem-encoding checks;
+10. CI runs that repo-standing command on push and pull request.
 
 ## 3. Standing levels
 
@@ -42,29 +44,56 @@ Repo standing is `FAIL` when a required artifact is missing, a manifest cannot b
 | Research gate | Research report and process exist | PASS |
 | Manifest gate | `research/research_manifest.json` parses as JSON | PASS |
 | Status gate | Manifest statuses are `PASS`, `PARTIAL`, or `FAIL` | PASS |
-| Non-claim gate | Research report includes explicit non-claims | PASS |
+| Non-claim gate | Research report and problem encodings include explicit non-claims | PASS |
 | Process gate | Propagation process defines all required destinations | PASS |
-| Test gate | Research-standing validator runs | PASS |
+| Problem-encoding gate | Problem encodings match expected-result fixtures | PASS |
+| Test gate | `python tools/run_repo_standing.py` runs | PASS |
 
-## 5. Required commands
+## 5. Required automated command
 
-Run the research standing validator:
+Run the repo-standing route:
+
+```bash
+python tools/run_repo_standing.py
+```
+
+Expected output includes:
+
+```text
+SPE REPO STANDING: PASS
+SPE MATHEMATICAL CLAIM STANDING: PARTIAL
+SPE FOLLOW-UP ACTIONS: []
+```
+
+Machine-readable route:
+
+```bash
+python tools/run_repo_standing.py --json
+```
+
+Expected JSON includes:
+
+```text
+"repo_standing": "PASS"
+"mathematical_claim_standing": "PARTIAL"
+"follow_up_actions": []
+```
+
+This means the research package, calibration problem encodings, expected-result fixtures, and unittest route are structurally valid. It does not mean any mathematical problem mapping has been proven.
+
+## 6. Component validation commands
+
+The automated command above runs these component checks:
 
 ```bash
 python tools/validate_research_standing.py
+python spe/verify_problem_encodings.py
+python spe/verify_problem_encodings.py --json
+python -m unittest tests.test_problem_encodings
+python -m unittest discover -s tests -p 'test_*.py'
 ```
 
-Expected output:
-
-```text
-SPE RESEARCH STANDING: PASS
-```
-
-This means the research package itself is structurally valid. It does not mean every mathematical problem mapping has been proven.
-
-## 6. Existing SPE validation commands
-
-The repository already documents executable proof-path validation commands. These remain part of broader repo standing.
+The repository also documents executable proof-path validation commands. These remain part of broader repo standing:
 
 ```bash
 python spe/verify.py samples/pressure_demo_001.json
@@ -77,7 +106,7 @@ python spe/verify_expected_corpus.py
 
 Expected standing meanings:
 
-- `PASS`: the artifact proves its governance result.
+- `PASS`: the artifact proves its declared governance result.
 - `PARTIAL`: the artifact reconstructs an outcome but contains an explicit proof gap.
 - `FAIL`: the artifact does not support the claimed result.
 
@@ -103,20 +132,20 @@ A reviewer should verify:
 3. What does it explicitly not claim?
 4. Which source report or external references support it?
 5. Which files are authoritative?
-6. Which commands validate it?
+6. Which automated command validates it?
 7. What expected result should occur?
-8. Which remaining gaps prevent stronger standing?
+8. Which remaining gaps prevent stronger mathematical standing?
 
-## 9. Required next validation expansion
+## 9. Completed validation expansion
 
-When problem-specific encodings are added, the repo should add:
+The calibration research expansion now includes:
 
 - `research/problems/*.md` files;
-- optional machine-readable problem declarations;
+- machine-readable problem declarations under `samples/problems/`;
+- expected-result fixtures under `expected_results/problems/`;
 - tests for transition-cell references;
-- expected-result fixtures;
-- CI coverage for `python tools/validate_research_standing.py`.
+- CI coverage for `python tools/run_repo_standing.py`.
 
 ## 10. Leading-dot path note
 
-The path `github/workflows/verify.yml` is displayed without its leading dot in this document. The actual GitHub Actions path must include the leading dot.
+The path `github/workflows/verify.yml` is displayed without its leading dot in this document. The actual GitHub Actions path includes the leading dot.
