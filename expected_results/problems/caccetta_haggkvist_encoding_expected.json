@@ -1,0 +1,15 @@
+{
+  "problem_id": "caccetta_haggkvist",
+  "expected_structural_standing": "PASS",
+  "expected_mathematical_standing": "PARTIAL",
+  "expected_encoding_status": "PARTIAL",
+  "required_transition_count_min": 3,
+  "required_non_claim_count_min": 2,
+  "required_cell_refs": [
+    "TPT-DIRECTED-EXPANSION",
+    "TPT-LOCAL-DEGREE-GLOBAL-CYCLE",
+    "TPT-CYCLE-CLOSURE",
+    "TPT-EXTREMAL-OBSTRUCTION"
+  ],
+  "non_claim": "This expected result validates encoding structure only; it does not prove the Caccetta-Haggkvist conjecture."
+}
