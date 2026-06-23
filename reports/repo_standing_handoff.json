@@ -1,0 +1,26 @@
+{
+  "handoff_id": "spe_repo_standing_handoff_001",
+  "repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "repo_standing_command": "python tools/run_repo_standing.py",
+  "repo_standing_json_command": "python tools/run_repo_standing.py --json",
+  "automation_addendum": "research/automation_addendum.json",
+  "automation_addendum_check": "python tools/check_automation_addendum.py",
+  "automation_addendum_json_check": "python tools/check_automation_addendum.py --json",
+  "test_discovery_command": "python -m unittest discover -s tests -p 'test_*.py'",
+  "expected_repo_standing": "PASS",
+  "expected_mathematical_claim_standing": "PARTIAL",
+  "pending_actions": [],
+  "artifact_paths": [
+    "tools/run_repo_standing.py",
+    "tools/check_automation_addendum.py",
+    "research/automation_addendum.json",
+    "tests/test_problem_encodings.py",
+    "tests/test_automation_addendum_metadata.py",
+    "docs/testing_protocols.md",
+    "github/workflows/verify.yml"
+  ],
+  "path_notes": [
+    "github/workflows/verify.yml is the display path; the actual workflow path includes the leading dot."
+  ],
+  "non_claim": "This handoff records repo-standing automation and does not elevate mathematical claim standing."
+}
