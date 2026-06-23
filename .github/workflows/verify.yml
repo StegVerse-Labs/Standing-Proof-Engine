@@ -104,6 +104,9 @@ jobs:
       - name: Run automated repo standing JSON export
         run: python tools/run_repo_standing.py --json
 
+      - name: Generate repo standing reports
+        run: python tools/run_repo_standing.py --write-reports
+
       - name: Run formalism and handoff tests
         run: python -m unittest discover -s tests -p 'test_*.py'
 
