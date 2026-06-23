@@ -68,9 +68,51 @@ CHECKS: tuple[StandingCheck, ...] = (
         expected_substring='"automation_addendum": "PASS"',
     ),
     StandingCheck(
+        check_id="destination-event-installed",
+        description="Verify installed destination event binding.",
+        command=(sys.executable, "spe/verify_destination_event.py", "samples/destination_event_001.json"),
+        expected_substring="SPE RESULT: PASS",
+    ),
+    StandingCheck(
+        check_id="destination-event-deferred",
+        description="Verify deferred destination event binding.",
+        command=(sys.executable, "spe/verify_destination_event.py", "samples/destination_event_deferred_001.json"),
+        expected_substring="SPE RESULT: PASS",
+    ),
+    StandingCheck(
+        check_id="event-replay-installed",
+        description="Verify installed event replay binding.",
+        command=(sys.executable, "spe/verify_event_replay.py", "samples/event_replay_001.json"),
+        expected_substring="SPE RESULT: PASS",
+    ),
+    StandingCheck(
+        check_id="event-replay-deferred",
+        description="Verify deferred event replay binding.",
+        command=(sys.executable, "spe/verify_event_replay.py", "samples/event_replay_deferred_001.json"),
+        expected_substring="SPE RESULT: PASS",
+    ),
+    StandingCheck(
+        check_id="destination-hash-import",
+        description="Verify destination-generated hash import binding.",
+        command=(sys.executable, "spe/verify_hash_import.py", "samples/destination_generated_event_hash_001.json"),
+        expected_substring="SPE RESULT: PASS",
+    ),
+    StandingCheck(
         check_id="problem-encoding-tests",
         description="Run unittest coverage for problem encoding verification.",
         command=(sys.executable, "-m", "unittest", "tests.test_problem_encodings"),
+        expected_substring="OK",
+    ),
+    StandingCheck(
+        check_id="event-expected-result-tests",
+        description="Run expected-result coverage for destination event and replay fixtures.",
+        command=(sys.executable, "-m", "unittest", "tests.test_event_expected_results"),
+        expected_substring="OK",
+    ),
+    StandingCheck(
+        check_id="hash-import-tests",
+        description="Run destination hash import formalism tests.",
+        command=(sys.executable, "-m", "unittest", "tests.test_hash_import"),
         expected_substring="OK",
     ),
     StandingCheck(
