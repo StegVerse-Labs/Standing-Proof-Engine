@@ -1,7 +1,7 @@
 # Testing Protocols
 
 Status: testing protocol
-Scope: Standing-Proof-Engine verification, automated repo-standing validation, problem-encoding verification, automation-addendum validation, and formalism propagation checks.
+Scope: Standing-Proof-Engine verification, automated repo-standing validation, problem-encoding verification, automation-addendum validation, machine-handoff validation, and formalism propagation checks.
 
 ## 1. Testing assumption
 
@@ -18,8 +18,10 @@ Testing is done when:
 5. all new completed formalisms are registered in `research/research_manifest.json` or a linked addendum artifact;
 6. problem encodings are checked against expected-result fixtures;
 7. automation addendum metadata is checked by the repo-standing route;
-8. CI runs the automated repo-standing route;
-9. the repo-standing JSON export declares no follow-up actions.
+8. machine handoff metadata is checked by the repo-standing route;
+9. CI runs the automated repo-standing route;
+10. the repo-standing JSON export declares no follow-up actions;
+11. repo-standing report artifacts can be generated without manual copying.
 
 ## 3. Automated repo-standing route
 
@@ -51,7 +53,20 @@ Expected JSON includes:
 "follow_up_actions": []
 ```
 
-This is the preferred route for CI, downstream agents, and reviewers because it runs the component checks in the required order.
+Report-writing command:
+
+```bash
+python tools/run_repo_standing.py --write-reports
+```
+
+Expected generated artifacts:
+
+```text
+reports/repo_standing.json
+reports/repo_standing.md
+```
+
+This is the preferred route for CI, downstream agents, and reviewers because it runs the component checks in the required order and can emit reusable artifacts.
 
 ## 4. Automation addendum metadata check
 
@@ -88,7 +103,23 @@ python -m unittest tests.test_automation_addendum_metadata
 
 This validates that the addendum points to the repo-standing runner, the CI workflow display path, required workflow commands, and component checks.
 
-## 5. Research-standing test
+## 5. Machine handoff metadata check
+
+Command:
+
+```bash
+python -m unittest tests.test_repo_standing_handoff_metadata
+```
+
+Expected result:
+
+```text
+OK
+```
+
+This validates that `reports/repo_standing_handoff.json` records the expected repo-standing commands, expected standing values, empty pending actions, and existing referenced artifacts.
+
+## 6. Research-standing test
 
 Command:
 
@@ -113,7 +144,7 @@ This validates:
 - machine-readable encodings include transition IDs, rules, cell references, invariant candidates, and non-claims;
 - testing and validation documents exist.
 
-## 6. Problem-encoding verification
+## 7. Problem-encoding verification
 
 Command:
 
@@ -143,7 +174,7 @@ Expected JSON includes:
 
 This verifies that calibration encodings match expected-result fixtures. It does not prove Collatz, Jacobian, Caccetta-Haggkvist, or any other open problem.
 
-## 7. Existing SPE proof-path tests
+## 8. Existing SPE proof-path tests
 
 Run the pressure-receipt trace:
 
@@ -217,7 +248,7 @@ Expected result:
 SPE RESULT: PASS
 ```
 
-## 8. Research formalism test expansion
+## 9. Research formalism test expansion
 
 When a completed mathematical formalism is added, it must include one or more of the following test types:
 
@@ -229,7 +260,7 @@ When a completed mathematical formalism is added, it must include one or more of
 | Expected-result test | executable verifier exists | actual output equals expected output |
 | Reconstruction test | candidate theorem, invariant, reduction, or obstruction exists | reviewer can reproduce the artifact result |
 
-## 9. Failure handling
+## 10. Failure handling
 
 If a test fails:
 
@@ -238,7 +269,7 @@ If a test fails:
 3. update the artifact or downgrade standing;
 4. rerun `python tools/run_repo_standing.py`.
 
-## 10. Candidate solution test rule
+## 11. Candidate solution test rule
 
 Any candidate solution to an open problem must pass at least the following before it can be elevated beyond `PARTIAL`:
 
@@ -250,13 +281,14 @@ Any candidate solution to an open problem must pass at least the following befor
 6. independent reviewer instructions included;
 7. negative/failure modes logged.
 
-## 11. CI route
+## 12. CI route
 
 The CI route now includes:
 
 ```bash
 python tools/run_repo_standing.py
 python tools/run_repo_standing.py --json
+python tools/run_repo_standing.py --write-reports
 python -m unittest discover -s tests -p 'test_*.py'
 ```
 
@@ -266,11 +298,12 @@ The repo-standing command itself includes:
 python tools/check_automation_addendum.py
 python tools/check_automation_addendum.py --json
 python -m unittest tests.test_automation_addendum_metadata
+python -m unittest tests.test_repo_standing_handoff_metadata
 ```
 
 Leading-dot path note: `github/workflows/verify.yml` is displayed without the leading dot. The actual workflow path includes the leading dot.
 
-## 12. Test interpretation
+## 13. Test interpretation
 
 `PASS` means the artifact proves or satisfies the declared tested condition.
 
