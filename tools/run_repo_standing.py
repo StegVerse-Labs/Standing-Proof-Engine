@@ -56,6 +56,18 @@ CHECKS: tuple[StandingCheck, ...] = (
         expected_substring='"spe_result": "PASS"',
     ),
     StandingCheck(
+        check_id="automation-addendum",
+        description="Check automation addendum metadata and referenced files.",
+        command=(sys.executable, "tools/check_automation_addendum.py"),
+        expected_substring="SPE AUTOMATION ADDENDUM: PASS",
+    ),
+    StandingCheck(
+        check_id="automation-addendum-json",
+        description="Check machine-readable automation addendum metadata output.",
+        command=(sys.executable, "tools/check_automation_addendum.py", "--json"),
+        expected_substring='"automation_addendum": "PASS"',
+    ),
+    StandingCheck(
         check_id="problem-encoding-tests",
         description="Run unittest coverage for problem encoding verification.",
         command=(sys.executable, "-m", "unittest", "tests.test_problem_encodings"),
