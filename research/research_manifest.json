@@ -13,6 +13,37 @@
       "reason": "The report maps StegVerse Formalisms to documented open problems but does not yet include independent executable encodings for each problem."
     },
     {
+      "artifact_id": "research.formalism_catalog",
+      "path": "research/formalism_catalog.md",
+      "type": "formalism_catalog",
+      "standing_status": "PARTIAL",
+      "reason": "The catalog defines the shared research vocabulary, but transition-cell tests are not executable yet."
+    },
+    {
+      "artifact_id": "problem.collatz",
+      "path": "research/problems/collatz.md",
+      "type": "calibration_problem_encoding",
+      "sample_path": "samples/problems/collatz_encoding.json",
+      "standing_status": "PARTIAL",
+      "reason": "The Collatz local transition mapping is encoded, but no proof, obstruction theorem, or executable certificate validator exists yet."
+    },
+    {
+      "artifact_id": "problem.jacobian",
+      "path": "research/problems/jacobian.md",
+      "type": "calibration_problem_encoding",
+      "sample_path": "samples/problems/jacobian_encoding.json",
+      "standing_status": "PARTIAL",
+      "reason": "The Jacobian local-to-global mapping is encoded, but no proof, obstruction theorem, or executable verifier exists yet."
+    },
+    {
+      "artifact_id": "problem.caccetta_haggkvist",
+      "path": "research/problems/caccetta_haggkvist.md",
+      "type": "calibration_problem_encoding",
+      "sample_path": "samples/problems/caccetta_haggkvist_encoding.json",
+      "standing_status": "PARTIAL",
+      "reason": "The directed-graph cycle-standing mapping is encoded, but no proof, obstruction theorem, or executable graph verifier exists yet."
+    },
+    {
       "artifact_id": "process.formalism_propagation",
       "path": "research/formalism_propagation_process.md",
       "type": "process",
@@ -46,7 +77,20 @@
       "track_id": "calibration",
       "problems": ["Collatz conjecture", "Jacobian conjecture", "Caccetta-Haggkvist conjecture"],
       "standing_status": "PARTIAL",
-      "next_required_artifacts": ["research/problems/collatz.md", "research/problems/jacobian.md", "research/problems/caccetta_haggkvist.md"]
+      "required_artifacts": [
+        "research/problems/collatz.md",
+        "research/problems/jacobian.md",
+        "research/problems/caccetta_haggkvist.md",
+        "samples/problems/collatz_encoding.json",
+        "samples/problems/jacobian_encoding.json",
+        "samples/problems/caccetta_haggkvist_encoding.json"
+      ],
+      "next_required_artifacts": [
+        "expected_results/problems/collatz_encoding_expected.json",
+        "expected_results/problems/jacobian_encoding_expected.json",
+        "expected_results/problems/caccetta_haggkvist_encoding_expected.json",
+        "tests/test_problem_encodings.py"
+      ]
     },
     {
       "track_id": "flagship",
