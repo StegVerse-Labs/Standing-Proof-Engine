@@ -1,7 +1,7 @@
 # Testing Protocols
 
 Status: testing protocol
-Scope: Standing-Proof-Engine verification, research-standing validation, and formalism propagation checks.
+Scope: Standing-Proof-Engine verification, research-standing validation, problem-encoding verification, and formalism propagation checks.
 
 ## 1. Testing assumption
 
@@ -15,7 +15,9 @@ Testing is done when:
 2. every command has an expected result;
 3. failures are treated as standing failures;
 4. research artifacts are validated structurally before any mathematical claim is elevated;
-5. all new completed formalisms are registered in `research/research_manifest.json`.
+5. all new completed formalisms are registered in `research/research_manifest.json`;
+6. problem encodings are checked against expected-result fixtures;
+7. CI runs the research-standing validator and problem-encoding verifier.
 
 ## 3. Research-standing test
 
@@ -38,9 +40,41 @@ This validates:
 - manifest statuses are valid;
 - research report includes non-claims;
 - propagation process references required destinations;
+- problem docs include required sections;
+- machine-readable encodings include transition IDs, rules, cell references, invariant candidates, and non-claims;
 - testing and validation documents exist.
 
-## 4. Existing SPE proof-path tests
+## 4. Problem-encoding verification
+
+Command:
+
+```bash
+python spe/verify_problem_encodings.py
+```
+
+Expected result:
+
+```text
+SPE PROBLEM ENCODINGS: PASS
+```
+
+Machine-readable command:
+
+```bash
+python spe/verify_problem_encodings.py --json
+```
+
+Expected JSON includes:
+
+```text
+"spe_result": "PASS"
+"mathematical_standing": "PARTIAL"
+"verified_problem_count": 3
+```
+
+This verifies that calibration encodings match expected-result fixtures. It does not prove Collatz, Jacobian, Caccetta-Haggkvist, or any other open problem.
+
+## 5. Existing SPE proof-path tests
 
 Run the pressure-receipt trace:
 
@@ -114,7 +148,7 @@ Expected result:
 SPE RESULT: PASS
 ```
 
-## 5. Research formalism test expansion
+## 6. Research formalism test expansion
 
 When a completed mathematical formalism is added, it must include one or more of the following test types:
 
@@ -126,16 +160,16 @@ When a completed mathematical formalism is added, it must include one or more of
 | Expected-result test | executable verifier exists | actual output equals expected output |
 | Reconstruction test | candidate theorem, invariant, reduction, or obstruction exists | reviewer can reproduce the artifact result |
 
-## 6. Failure handling
+## 7. Failure handling
 
 If a test fails:
 
 1. do not mark the artifact `PASS`;
-2. identify whether the failure is missing file, malformed manifest, status drift, expected-result drift, or overclaim;
+2. identify whether the failure is missing file, malformed manifest, status drift, expected-result drift, missing transition-cell reference, or overclaim;
 3. update the artifact or downgrade standing;
-4. rerun the validator.
+4. rerun the validator and problem-encoding verifier.
 
-## 7. Candidate solution test rule
+## 8. Candidate solution test rule
 
 Any candidate solution to an open problem must pass at least the following before it can be elevated beyond `PARTIAL`:
 
@@ -147,17 +181,20 @@ Any candidate solution to an open problem must pass at least the following befor
 6. independent reviewer instructions included;
 7. negative/failure modes logged.
 
-## 8. CI recommendation
+## 9. CI route
 
-Add the research validator to CI when the workflow is next updated:
+The CI route now includes:
 
 ```bash
 python tools/validate_research_standing.py
+python spe/verify_problem_encodings.py
+python spe/verify_problem_encodings.py --json
+python -m unittest tests.test_problem_encodings
 ```
 
-Leading-dot path note: `github/workflows/verify.yml` is displayed without the leading dot. The actual workflow path must include the leading dot.
+Leading-dot path note: `github/workflows/verify.yml` is displayed without the leading dot. The actual workflow path includes the leading dot.
 
-## 9. Test interpretation
+## 10. Test interpretation
 
 `PASS` means the artifact proves or satisfies the declared tested condition.
 
