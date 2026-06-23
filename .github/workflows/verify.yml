@@ -107,6 +107,9 @@ jobs:
       - name: Generate repo standing reports
         run: python tools/run_repo_standing.py --write-reports
 
+      - name: Generate release readiness reports
+        run: python tools/write_release_readiness.py
+
       - name: Run formalism and handoff tests
         run: python -m unittest discover -s tests -p 'test_*.py'
 
