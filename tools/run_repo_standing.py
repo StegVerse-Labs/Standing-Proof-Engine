@@ -52,6 +52,7 @@ CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("problem-encoding-tests", "Run unittest coverage for problem encoding verification.", (sys.executable, "-m", "unittest", "tests.test_problem_encodings"), "OK"),
     StandingCheck("automation-addendum-metadata-tests", "Run unittest coverage for automation addendum metadata.", (sys.executable, "-m", "unittest", "tests.test_automation_addendum_metadata"), "OK"),
     StandingCheck("repo-standing-handoff-metadata-tests", "Run unittest coverage for machine-readable repo standing handoff metadata.", (sys.executable, "-m", "unittest", "tests.test_repo_standing_handoff_metadata"), "OK"),
+    StandingCheck("release-readiness-runner-doc-tests", "Run unittest coverage for release-readiness runner documentation.", (sys.executable, "-m", "unittest", "tests.test_release_readiness_runner_doc"), "OK"),
     StandingCheck("event-expected-result-tests", "Run expected-result coverage for destination event and replay fixtures.", (sys.executable, "-m", "unittest", "tests.test_event_expected_results"), "OK"),
     StandingCheck("hash-import-tests", "Run destination hash import formalism tests.", (sys.executable, "-m", "unittest", "tests.test_hash_import"), "OK"),
     StandingCheck("receipt-chain-tests", "Run destination receipt chain formalism tests.", (sys.executable, "-m", "unittest", "tests.test_receipt_chain"), "OK"),
