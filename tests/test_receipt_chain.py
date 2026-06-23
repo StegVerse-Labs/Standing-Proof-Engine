@@ -28,6 +28,18 @@ class ReceiptChainVerifierTest(unittest.TestCase):
         self.assertEqual(check_map["receipt_chain_flags"], "PASS")
         self.assertEqual(check_map["receipt_chain_result"], "PASS")
 
+    def test_receipt_chain_expected_fixture_matches(self):
+        fixture = json.loads((ROOT / "expected_results" / "receipt_chain_001.expected.json").read_text(encoding="utf-8"))
+        chain = json.loads((ROOT / fixture["artifact"]).read_text(encoding="utf-8"))
+        status, checks = verify_receipt_chain(chain, ROOT)
+        check_map = {check.name: check.status for check in checks}
+        expected = fixture["expected"]
+
+        self.assertEqual(status, expected["spe_result"])
+        self.assertEqual(chain["chain_result"], expected["governance_result"])
+        for check_name, check_status in expected["required_checks"].items():
+            self.assertEqual(check_map[check_name], check_status)
+
     def test_receipt_chain_detects_hash_import_drift(self):
         chain_path = ROOT / "samples" / "destination_receipt_chain_001.json"
         chain = json.loads(chain_path.read_text(encoding="utf-8"))
