@@ -1,6 +1,7 @@
 import json
 import subprocess
 import sys
+import unittest
 from pathlib import Path
 
 
@@ -26,65 +27,65 @@ def load_json(relative_path: str) -> dict:
     return json.loads((REPO_ROOT / relative_path).read_text(encoding="utf-8"))
 
 
-def test_research_standing_validator_passes():
-    result = subprocess.run(
-        [sys.executable, "tools/validate_research_standing.py"],
-        cwd=REPO_ROOT,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+class ProblemEncodingTests(unittest.TestCase):
+    def run_command(self, *args: str) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            [sys.executable, *args],
+            cwd=REPO_ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
 
-    assert result.returncode == 0, result.stdout + result.stderr
-    assert "SPE RESEARCH STANDING: PASS" in result.stdout
+    def test_research_standing_validator_passes(self) -> None:
+        result = self.run_command("tools/validate_research_standing.py")
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("SPE RESEARCH STANDING: PASS", result.stdout)
+
+    def test_problem_encoding_verifier_passes(self) -> None:
+        result = self.run_command("spe/verify_problem_encodings.py")
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("SPE PROBLEM ENCODINGS: PASS", result.stdout)
+
+    def test_problem_encoding_json_export_passes(self) -> None:
+        result = self.run_command("spe/verify_problem_encodings.py", "--json")
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        data = json.loads(result.stdout)
+        self.assertEqual(data["spe_result"], "PASS")
+        self.assertEqual(data["mathematical_standing"], "PARTIAL")
+        self.assertEqual(data["verified_problem_count"], 3)
+        self.assertIn("does not prove", data["non_claim"])
+
+    def test_problem_encodings_match_expected_results(self) -> None:
+        for encoding_path, expected_path in PROBLEM_CASES:
+            with self.subTest(encoding_path=encoding_path):
+                encoding = load_json(encoding_path)
+                expected = load_json(expected_path)
+
+                self.assertEqual(encoding["problem_id"], expected["problem_id"])
+                self.assertEqual(encoding["standing_status"], expected["expected_encoding_status"])
+                self.assertGreaterEqual(
+                    len(encoding["transitions"]),
+                    expected["required_transition_count_min"],
+                )
+                self.assertGreaterEqual(
+                    len(encoding["non_claims"]),
+                    expected["required_non_claim_count_min"],
+                )
+
+                actual_cell_refs = {
+                    cell_ref
+                    for transition in encoding["transitions"]
+                    for cell_ref in transition.get("cell_refs", [])
+                }
+
+                self.assertTrue(set(expected["required_cell_refs"]).issubset(actual_cell_refs))
+                self.assertEqual(expected["expected_mathematical_standing"], "PARTIAL")
+                self.assertIn("does not prove", expected["non_claim"])
 
 
-def test_problem_encoding_verifier_passes():
-    result = subprocess.run(
-        [sys.executable, "spe/verify_problem_encodings.py"],
-        cwd=REPO_ROOT,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-
-    assert result.returncode == 0, result.stdout + result.stderr
-    assert "SPE PROBLEM ENCODINGS: PASS" in result.stdout
-
-
-def test_problem_encoding_json_export_passes():
-    result = subprocess.run(
-        [sys.executable, "spe/verify_problem_encodings.py", "--json"],
-        cwd=REPO_ROOT,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-
-    assert result.returncode == 0, result.stdout + result.stderr
-    data = json.loads(result.stdout)
-    assert data["spe_result"] == "PASS"
-    assert data["mathematical_standing"] == "PARTIAL"
-    assert data["verified_problem_count"] == 3
-    assert "does not prove" in data["non_claim"]
-
-
-def test_problem_encodings_match_expected_results():
-    for encoding_path, expected_path in PROBLEM_CASES:
-        encoding = load_json(encoding_path)
-        expected = load_json(expected_path)
-
-        assert encoding["problem_id"] == expected["problem_id"]
-        assert encoding["standing_status"] == expected["expected_encoding_status"]
-        assert len(encoding["transitions"]) >= expected["required_transition_count_min"]
-        assert len(encoding["non_claims"]) >= expected["required_non_claim_count_min"]
-
-        actual_cell_refs = {
-            cell_ref
-            for transition in encoding["transitions"]
-            for cell_ref in transition.get("cell_refs", [])
-        }
-
-        assert set(expected["required_cell_refs"]).issubset(actual_cell_refs)
-        assert expected["expected_mathematical_standing"] == "PARTIAL"
-        assert "does not prove" in expected["non_claim"]
+if __name__ == "__main__":
+    unittest.main()
