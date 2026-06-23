@@ -1,0 +1,43 @@
+{
+  "addendum_id": "spe_research_automation_addendum_001",
+  "repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "status": "PASS",
+  "purpose": "Register the automated repo-standing route without rewriting the primary research manifest.",
+  "automation_runner": {
+    "path": "tools/run_repo_standing.py",
+    "type": "repo_standing_runner",
+    "standing_status": "PASS",
+    "text_command": "python tools/run_repo_standing.py",
+    "json_command": "python tools/run_repo_standing.py --json",
+    "expected_text": [
+      "SPE REPO STANDING: PASS",
+      "SPE MATHEMATICAL CLAIM STANDING: PARTIAL",
+      "SPE FOLLOW-UP ACTIONS: []"
+    ],
+    "expected_json": {
+      "repo_standing": "PASS",
+      "mathematical_claim_standing": "PARTIAL",
+      "follow_up_actions": []
+    }
+  },
+  "ci_route": {
+    "display_path": "github/workflows/verify.yml",
+    "actual_path_note": "The actual GitHub Actions path includes the leading dot.",
+    "required_steps": [
+      "python tools/run_repo_standing.py",
+      "python tools/run_repo_standing.py --json"
+    ]
+  },
+  "component_checks": [
+    "python tools/validate_research_standing.py",
+    "python spe/verify_problem_encodings.py",
+    "python spe/verify_problem_encodings.py --json",
+    "python -m unittest tests.test_problem_encodings",
+    "python -m unittest discover -s tests -p 'test_*.py'"
+  ],
+  "non_claims": [
+    "The automation addendum does not claim to solve any open mathematical problem.",
+    "The repo-standing route validates structural automation and expected outputs only.",
+    "Mathematical claim standing remains PARTIAL until proof artifacts and independent reconstruction exist."
+  ]
+}
