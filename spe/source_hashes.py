@@ -17,6 +17,20 @@ BINDING_TO_SOURCE_OBJECT = {
 }
 
 
+INLINE_PROJECTION = {
+    "review_time": {
+        "authority_state_hash": ("authority_state_hash", "authority_state_review_hash"),
+        "policy_hash": ("policy_hash", "policy_state_review_hash"),
+        "evidence_packet_hash": ("evidence_packet_hash",),
+    },
+    "commit_time": {
+        "authority_state_hash": ("authority_state_hash", "authority_state_commit_hash"),
+        "policy_hash": ("policy_hash", "policy_state_commit_hash"),
+        "evidence_packet_hash": ("evidence_packet_hash",),
+    },
+}
+
+
 def load_source_objects_from_refs(artifact: dict[str, Any], repo_root: Path) -> tuple[dict[str, Any], list[str]]:
     refs = artifact.get("source_object_refs", {})
     if not isinstance(refs, dict):
@@ -50,41 +64,6 @@ def load_source_objects_from_refs(artifact: dict[str, Any], repo_root: Path) -> 
     return loaded, errors
 
 
-def _project_resolved_hashes_inline(artifact: dict[str, Any]) -> None:
-    """Materialize resolved source-object hashes onto review_time/commit_time.
-
-    The core stale-state checks read inline hash keys (authority_state_hash,
-    policy_hash, evidence_packet_hash). External-ref artifacts only carry
-    *_hash_ref pointers, so without this projection those keys resolve to None
-    and commit_state fails spuriously.
-    """
-    bindings = resolved_hash_bindings(artifact)
-    ref_to_binding = {
-        "authority_state_hash_ref": "authority_state_hash",
-        "policy_hash_ref": "policy_hash",
-        "evidence_packet_hash_ref": "evidence_packet_hash",
-    }
-    for block_name in ("review_time", "commit_time"):
-        block = artifact.get(block_name)
-        if not isinstance(block, dict):
-            continue
-        for ref_key, inline_key in ref_to_binding.items():
-            binding_name = block.get(ref_key)
-            if isinstance(binding_name, str) and binding_name in bindings:
-                block[inline_key] = bindings[binding_name]
-
-
-def with_resolved_source_refs(artifact: dict[str, Any], repo_root: Path) -> tuple[dict[str, Any], list[Check]]:
-    loaded, errors = load_source_objects_from_refs(artifact, repo_root)
-    if errors:
-        return artifact, [Check("source_object_refs", FAIL, "; ".join(errors))]
-
-    resolved = json.loads(json.dumps(artifact))
-    resolved["source_objects"] = loaded
-    _project_resolved_hashes_inline(resolved)
-    return resolved, [Check("source_object_refs", PASS, f"{len(loaded)} local source object refs resolved")]
-
-
 def resolved_hash_bindings(artifact: dict[str, Any]) -> dict[str, str]:
     source_objects = artifact.get("source_objects", {})
     declared = artifact.get("declared_hash_bindings", {})
@@ -103,6 +82,46 @@ def resolved_hash_bindings(artifact: dict[str, Any]) -> dict[str, str]:
             resolved[binding_name] = declared_value
 
     return resolved
+
+
+def project_source_object_hashes_inline(artifact: dict[str, Any]) -> dict[str, Any]:
+    """Project source-object hashes onto the inline keys read by verify_artifact.
+
+    The core stale-state formalism reads review_time/commit_time inline fields
+    such as authority_state_hash, policy_hash, and evidence_packet_hash. Source
+    bound artifacts may instead provide source_objects plus declared bindings, so
+    this projection materializes the inline view before commit_state is judged.
+    """
+    resolved = artifact
+    bindings = resolved_hash_bindings(resolved)
+
+    for block_name, projections in INLINE_PROJECTION.items():
+        block = resolved.get(block_name)
+        if not isinstance(block, dict):
+            continue
+        for inline_key, binding_names in projections.items():
+            ref_key = f"{inline_key}_ref"
+            binding_name = block.get(ref_key)
+            if isinstance(binding_name, str) and binding_name in bindings:
+                block[inline_key] = bindings[binding_name]
+                continue
+            for candidate_name in binding_names:
+                if candidate_name in bindings:
+                    block[inline_key] = bindings[candidate_name]
+                    break
+
+    return resolved
+
+
+def with_resolved_source_refs(artifact: dict[str, Any], repo_root: Path) -> tuple[dict[str, Any], list[Check]]:
+    loaded, errors = load_source_objects_from_refs(artifact, repo_root)
+    if errors:
+        return artifact, [Check("source_object_refs", FAIL, "; ".join(errors))]
+
+    resolved = json.loads(json.dumps(artifact))
+    resolved["source_objects"] = loaded
+    project_source_object_hashes_inline(resolved)
+    return resolved, [Check("source_object_refs", PASS, f"{len(loaded)} local source object refs resolved")]
 
 
 def verify_source_hash_bindings(artifact: dict[str, Any]) -> list[Check]:
