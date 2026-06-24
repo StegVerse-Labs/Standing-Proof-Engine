@@ -4,6 +4,10 @@
 This runner executes the current structural standing checks in one sequence so
 CI, downstream agents, and reviewers do not have to remember multiple commands.
 It does not prove any open mathematical problem.
+
+Expected-corpus validation is intentionally kept as a downstream consumer in
+CI. Repo-standing validates the dynamic repo-node prerequisites that must be
+true before corpus consumption occurs.
 """
 
 from __future__ import annotations
@@ -58,7 +62,6 @@ CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("heartbeat-path-selection", "Verify factor-bound heartbeat path-selection sample receipt.", spe_module("verify_heartbeat_path_selection", "samples/heartbeat_path_selection_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-hash-import", "Verify destination-generated hash import binding.", spe_module("verify_hash_import", "samples/destination_generated_event_hash_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-receipt-chain", "Verify destination-generated receipt chain binding.", spe_module("verify_receipt_chain", "samples/destination_receipt_chain_001.json"), "SPE RESULT: PASS"),
-    StandingCheck("expected-corpus", "Verify every expected-result fixture in the expected corpus.", spe_module("verify_expected_corpus"), "SPE RESULT: PASS"),
     StandingCheck("release-readiness", "Generate and verify local SPE release readiness artifacts.", (sys.executable, "tools/write_release_readiness.py"), "SPE RELEASE READINESS: READY"),
     StandingCheck("problem-encoding-tests", "Run unittest coverage for problem encoding verification.", (sys.executable, "-m", "unittest", "tests.test_problem_encodings"), "OK"),
     StandingCheck("automation-addendum-metadata-tests", "Run unittest coverage for automation addendum metadata.", (sys.executable, "-m", "unittest", "tests.test_automation_addendum_metadata"), "OK"),
