@@ -4,7 +4,7 @@
   "origin_repo": "master-records/core-lite",
   "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
   "source_confirmation": "samples/master_records_confirmation_001.json",
-  "source_confirmation_sha256": "f23bb9947da18de40d50c906dd0882cf0f7add75d9c11d60a57461ddaf30c40c",
+  "source_confirmation_sha256": "2b8de81d185cfe6c08edc638628783ee186e8af73c31517f374031247aa37a7c",
   "event_result": "NOT_INSTALLED",
   "event_hash_declared": true,
   "receipt_chain_pointer": "MR-SPE-CONFIRM-001 -> MR-SPE-EVENT-DEFERRED-001",
