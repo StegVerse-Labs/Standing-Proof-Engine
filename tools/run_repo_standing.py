@@ -55,6 +55,7 @@ CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("release-readiness-runner-doc-tests", "Run unittest coverage for release-readiness runner documentation.", (sys.executable, "-m", "unittest", "tests.test_release_readiness_runner_doc"), "OK"),
     StandingCheck("confirmation-hash-binding-tests", "Run unittest coverage for master-records confirmation hash binding.", (sys.executable, "-m", "unittest", "tests.test_confirmation_hash_binding"), "OK"),
     StandingCheck("destination-event-hash-binding-tests", "Run unittest coverage for destination event confirmation hash binding.", (sys.executable, "-m", "unittest", "tests.test_destination_event_hash_binding"), "OK"),
+    StandingCheck("event-replay-hash-binding-tests", "Run unittest coverage for event replay source event hash binding.", (sys.executable, "-m", "unittest", "tests.test_event_replay_hash_binding"), "OK"),
     StandingCheck("event-expected-result-tests", "Run expected-result coverage for destination event and replay fixtures.", (sys.executable, "-m", "unittest", "tests.test_event_expected_results"), "OK"),
     StandingCheck("hash-import-tests", "Run destination hash import formalism tests.", (sys.executable, "-m", "unittest", "tests.test_hash_import"), "OK"),
     StandingCheck("receipt-chain-tests", "Run destination receipt chain formalism tests.", (sys.executable, "-m", "unittest", "tests.test_receipt_chain"), "OK"),
