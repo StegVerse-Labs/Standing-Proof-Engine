@@ -2,7 +2,7 @@
   "replay_id": "SPE-EVENT-REPLAY-DEFERRED-001",
   "replay_type": "event_replay",
   "source_event": "samples/destination_event_deferred_001.json",
-  "source_event_sha256": "5bbc433d973f5f073a3c05c7ad017613c1f4a6575f11eae05553a13104744fbc",
+  "source_event_sha256": "4a7df323cb5b58fe7da3677f798b405e760893b61d02fe3ba49e1db447d88a70",
   "observed_result": "NOT_INSTALLED",
   "expected_result": "NOT_INSTALLED",
   "replay_result": "MATCH",
