@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """Run automated Standing-Proof-Engine repo-standing checks.
 
-This runner executes the current structural standing checks in one sequence so
-CI, downstream agents, and reviewers do not have to remember multiple commands.
-It does not prove any open mathematical problem.
+Repo standing is the pre-consumption standing route. It verifies the dynamic
+repo-node prerequisites that must hold before downstream consumers such as the
+expected corpus, exports, reports, release readiness, or full test discovery
+run.
 
-Expected-corpus validation is intentionally kept as a downstream consumer in
-CI. Repo-standing validates the dynamic repo-node prerequisites that must be
-true before corpus consumption occurs.
+This runner does not prove any open mathematical problem.
 """
 
 from __future__ import annotations
@@ -47,36 +46,17 @@ def spe_module(module: str, *args: str) -> tuple[str, ...]:
 CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("research-standing", "Validate research package standing and required artifacts.", (sys.executable, "tools/validate_research_standing.py"), "SPE RESEARCH STANDING: PASS"),
     StandingCheck("problem-encodings", "Verify calibration problem encodings against expected-result fixtures.", spe_module("verify_problem_encodings"), "SPE PROBLEM ENCODINGS: PASS"),
-    StandingCheck("problem-encodings-json", "Verify machine-readable problem encoding standing export.", spe_module("verify_problem_encodings", "--json"), '"spe_result": "PASS"'),
     StandingCheck("automation-addendum", "Check automation addendum metadata and referenced files.", (sys.executable, "tools/check_automation_addendum.py"), "SPE AUTOMATION ADDENDUM: PASS"),
-    StandingCheck("automation-addendum-json", "Check machine-readable automation addendum metadata output.", (sys.executable, "tools/check_automation_addendum.py", "--json"), '"automation_addendum": "PASS"'),
     StandingCheck("destination-event-installed", "Verify installed destination event binding.", spe_module("verify_destination_event", "samples/destination_event_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-event-deferred", "Verify deferred destination event binding.", spe_module("verify_destination_event", "samples/destination_event_deferred_001.json"), "SPE RESULT: PASS"),
     StandingCheck("event-replay-installed", "Verify installed event replay binding.", spe_module("verify_event_replay", "samples/event_replay_001.json"), "SPE RESULT: PASS"),
     StandingCheck("event-replay-deferred", "Verify deferred event replay binding.", spe_module("verify_event_replay", "samples/event_replay_deferred_001.json"), "SPE RESULT: PASS"),
     StandingCheck("source-bound-sample", "Verify source-hash-bound stale-state sample.", spe_module("verify_source_bound", "samples/source_hash_bound_stale_state_001.json"), "SPE RESULT: PASS"),
-    StandingCheck("source-bound-json", "Verify source-hash-bound JSON export.", spe_module("verify_source_bound", "--json", "samples/source_hash_bound_stale_state_001.json"), '"spe_result": "PASS"'),
     StandingCheck("external-source-refs-sample", "Verify external source reference stale-state sample.", spe_module("verify_external_refs", "samples/external_source_ref_stale_state_001.json"), "SPE RESULT: PASS"),
-    StandingCheck("external-source-refs-json", "Verify external source reference JSON export.", spe_module("verify_external_refs", "--json", "samples/external_source_ref_stale_state_001.json"), '"spe_result": "PASS"'),
-    StandingCheck("frozen-hash-bindings", "Check derived frozen hash bindings before downstream verifier checks.", (sys.executable, "-m", "tools.refresh_frozen_hashes", "--check"), "frozen hashes: OK"),
+    StandingCheck("frozen-hash-bindings", "Check derived frozen hash bindings before downstream consumers.", (sys.executable, "-m", "tools.refresh_frozen_hashes", "--check"), "frozen hashes: OK"),
     StandingCheck("heartbeat-path-selection", "Verify factor-bound heartbeat path-selection sample receipt.", spe_module("verify_heartbeat_path_selection", "samples/heartbeat_path_selection_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-hash-import", "Verify destination-generated hash import binding.", spe_module("verify_hash_import", "samples/destination_generated_event_hash_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-receipt-chain", "Verify destination-generated receipt chain binding.", spe_module("verify_receipt_chain", "samples/destination_receipt_chain_001.json"), "SPE RESULT: PASS"),
-    StandingCheck("release-readiness", "Generate and verify local SPE release readiness artifacts.", (sys.executable, "tools/write_release_readiness.py"), "SPE RELEASE READINESS: READY"),
-    StandingCheck("problem-encoding-tests", "Run unittest coverage for problem encoding verification.", (sys.executable, "-m", "unittest", "tests.test_problem_encodings"), "OK"),
-    StandingCheck("automation-addendum-metadata-tests", "Run unittest coverage for automation addendum metadata.", (sys.executable, "-m", "unittest", "tests.test_automation_addendum_metadata"), "OK"),
-    StandingCheck("repo-standing-handoff-metadata-tests", "Run unittest coverage for machine-readable repo standing handoff metadata.", (sys.executable, "-m", "unittest", "tests.test_repo_standing_handoff_metadata"), "OK"),
-    StandingCheck("release-readiness-runner-doc-tests", "Run unittest coverage for release-readiness runner documentation.", (sys.executable, "-m", "unittest", "tests.test_release_readiness_runner_doc"), "OK"),
-    StandingCheck("confirmation-hash-binding-tests", "Run unittest coverage for master-records confirmation hash binding.", (sys.executable, "-m", "unittest", "tests.test_confirmation_hash_binding"), "OK"),
-    StandingCheck("destination-event-hash-binding-tests", "Run unittest coverage for destination event confirmation hash binding.", (sys.executable, "-m", "unittest", "tests.test_destination_event_hash_binding"), "OK"),
-    StandingCheck("event-replay-hash-binding-tests", "Run unittest coverage for event replay source event hash binding.", (sys.executable, "-m", "unittest", "tests.test_event_replay_hash_binding"), "OK"),
-    StandingCheck("event-expected-result-tests", "Run expected-result coverage for destination event and replay fixtures.", (sys.executable, "-m", "unittest", "tests.test_event_expected_results"), "OK"),
-    StandingCheck("hash-import-tests", "Run destination hash import formalism tests.", (sys.executable, "-m", "unittest", "tests.test_hash_import"), "OK"),
-    StandingCheck("receipt-chain-tests", "Run destination receipt chain formalism tests.", (sys.executable, "-m", "unittest", "tests.test_receipt_chain"), "OK"),
-    StandingCheck("heartbeat-validity-window-tests", "Run heartbeat validity-window rotation tests.", (sys.executable, "-m", "unittest", "tests.test_validity_window"), "OK"),
-    StandingCheck("heartbeat-path-selection-tests", "Run heartbeat-guided path selection tests.", (sys.executable, "-m", "unittest", "tests.test_heartbeat_path_selection"), "OK"),
-    StandingCheck("heartbeat-path-selection-sample-tests", "Run heartbeat path-selection sample verifier tests.", (sys.executable, "-m", "unittest", "tests.test_heartbeat_path_selection_sample"), "OK"),
-    StandingCheck("formalism-tests", "Run all unittest-discoverable formalism tests.", (sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"), "OK"),
 )
 
 
@@ -101,7 +81,7 @@ def result_payload(results: Sequence[StandingResult]) -> dict[str, object]:
         "check_count": len(results),
         "passed_count": sum(1 for result in results if result.passed),
         "results": [asdict(result) for result in results],
-        "non_claim": "Repo standing checks validate automation structure only; they do not prove any open mathematical problem.",
+        "non_claim": "Repo standing checks validate dynamic repository prerequisites before downstream consumption; they do not prove any open mathematical problem.",
     }
 
 
