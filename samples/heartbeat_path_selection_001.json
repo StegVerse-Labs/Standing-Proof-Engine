@@ -1,0 +1,37 @@
+{
+  "receipt_id": "SPE-HEARTBEAT-PATH-001",
+  "receipt_type": "factor_bound_path_selection",
+  "claim_type": "ongoing_research_sample",
+  "transition_context": {
+    "prior_state": "DERIVED_STATE_OBSERVED",
+    "proposed_transition": "EXPECTED_CORPUS_CONSUMPTION",
+    "selected_path": "REFRESH_DERIVED_STATE"
+  },
+  "state_vector": {
+    "nominal_heartbeat_interval": 1.0,
+    "observed_heartbeat_interval": 1.02,
+    "hash_drift": true,
+    "token_refresh_pressure": "LOW",
+    "successor_ready": true,
+    "receipt_latency": "NORMAL",
+    "queue_depth": "NORMAL",
+    "evidence_currency": "CURRENT",
+    "rollback_available": true
+  },
+  "expected_degradation_state": "STRESS_OBSERVED",
+  "expected_selected_path": "REFRESH_DERIVED_STATE",
+  "expected_rejected_paths": {
+    "CONTINUE": "derived state drift requires refresh before consumption"
+  },
+  "recorded_factors": [
+    "nominal_heartbeat_interval",
+    "observed_heartbeat_interval",
+    "hash_drift",
+    "token_refresh_pressure",
+    "successor_ready",
+    "receipt_latency",
+    "queue_depth",
+    "evidence_currency",
+    "rollback_available"
+  ]
+}
