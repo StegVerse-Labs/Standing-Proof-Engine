@@ -10,13 +10,8 @@ from spe.verify_expected_result import verify_expected_result
 def verify_derived_state_current(repo_root):
     """Guard expected-corpus consumption with a derived-state recheck.
 
-    This is the repo-node/micro-node transition boundary for frozen derived
-    hashes. Expected-corpus validation is a consumer of derived state, so it
-    must not begin if known derived bindings have drifted.
-
-    The guard does not rewrite files during CI/admissibility validation. It
-    reports REFRESH_REQUIRED so a repair branch or repo-node cycle can run the
-    refresh writer before retrying consumption.
+    Expected-corpus validation is a downstream consumer of derived state, so it
+    must not begin if known frozen derived bindings have drifted.
     """
     from tools.refresh_frozen_hashes import compute_expected, _load
 
@@ -69,11 +64,12 @@ def verify_expected_corpus(corpus_dir, repo_root):
     for fixture_path in fixture_paths:
         fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
         status, fixture_checks = verify_expected_result(fixture, repo_root)
+        failed = [check.name for check in fixture_checks if check.status == FAIL]
         if status == PASS:
             checks.append(Check(f"fixture:{fixture_path.name}", PASS, "expected fixture matched"))
         else:
-            failed = [check.name for check in fixture_checks if check.status == FAIL]
-            checks.append(Check(f"fixture:{fixture_path.name}", FAIL, ", ".join(failed)))
+            detail = ", ".join(failed) if failed else "unknown fixture failure"
+            checks.append(Check(f"fixture:{fixture_path.name}", FAIL, detail))
 
     if any(check.status == FAIL for check in checks):
         return FAIL, checks
@@ -81,18 +77,42 @@ def verify_expected_corpus(corpus_dir, repo_root):
     return PASS, checks
 
 
+def corpus_payload(status, checks):
+    return {
+        "spe_result": status,
+        "failed_fixtures": [
+            {"name": check.name, "detail": check.detail}
+            for check in checks
+            if check.status == FAIL and check.name.startswith("fixture:")
+        ],
+        "checks": [
+            {"name": check.name, "status": check.status, "detail": check.detail}
+            for check in checks
+        ],
+    }
+
+
 def main(argv):
-    if len(argv) not in (1, 2):
-        print("usage: python spe/verify_expected_corpus.py [expected_results_dir]", file=sys.stderr)
+    if len(argv) not in (1, 2, 3):
+        print("usage: python spe/verify_expected_corpus.py [--json] [expected_results_dir]", file=sys.stderr)
         return 2
+
+    json_mode = False
+    args = list(argv[1:])
+    if args and args[0] == "--json":
+        json_mode = True
+        args = args[1:]
 
     repo_root = Path(__file__).resolve().parents[1]
     corpus_dir = repo_root / "expected_results"
-    if len(argv) == 2:
-        corpus_dir = (repo_root / argv[1]).resolve()
+    if args:
+        corpus_dir = (repo_root / args[0]).resolve()
 
     status, checks = verify_expected_corpus(corpus_dir, repo_root)
-    print(render(status, checks))
+    if json_mode:
+        print(json.dumps(corpus_payload(status, checks), indent=2, sort_keys=True))
+    else:
+        print(render(status, checks))
     return 0 if status == PASS else 1
 
 
