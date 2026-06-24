@@ -105,7 +105,7 @@ jobs:
         run: python tools/run_repo_standing.py --json
 
       - name: Run expected corpus verifier
-        run: python -m spe.verify_expected_corpus
+        run: python -m spe.verify_expected_corpus --json
 
       - name: Run pressure receipt JSON export
         run: python -m spe.verify_json samples/pressure_demo_001.json
