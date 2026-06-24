@@ -59,6 +59,12 @@ jobs:
       - name: Run frozen hash manifest verifier
         run: python -m spe.verify_hash_manifest samples/hash_manifests/external_source_ref_stale_state_001.hashes.json
 
+      - name: Check derived frozen hash bindings before consumers
+        run: python -m tools.refresh_frozen_hashes --check
+
+      - name: Run heartbeat path-selection receipt verifier
+        run: python -m spe.verify_heartbeat_path_selection samples/heartbeat_path_selection_001.json
+
       - name: Run expected result fixture verifier
         run: python -m spe.verify_expected_result expected_results/external_source_ref_stale_state_001.expected.json
 
@@ -73,6 +79,12 @@ jobs:
 
       - name: Run confirmation expected result fixture verifier
         run: python -m spe.verify_expected_result expected_results/confirmation_001.expected.json
+
+      - name: Run automated repo standing route
+        run: python tools/run_repo_standing.py
+
+      - name: Run automated repo standing JSON export
+        run: python tools/run_repo_standing.py --json
 
       - name: Run expected corpus verifier
         run: python -m spe.verify_expected_corpus
@@ -97,12 +109,6 @@ jobs:
 
       - name: Run external source reference JSON export
         run: python -m spe.verify_external_refs --json samples/external_source_ref_stale_state_001.json
-
-      - name: Run automated repo standing route
-        run: python tools/run_repo_standing.py
-
-      - name: Run automated repo standing JSON export
-        run: python tools/run_repo_standing.py --json
 
       - name: Generate repo standing reports
         run: python tools/run_repo_standing.py --write-reports
