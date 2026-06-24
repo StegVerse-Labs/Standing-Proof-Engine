@@ -54,6 +54,7 @@ CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("source-bound-json", "Verify source-hash-bound JSON export.", spe_module("verify_source_bound", "--json", "samples/source_hash_bound_stale_state_001.json"), '"spe_result": "PASS"'),
     StandingCheck("external-source-refs-sample", "Verify external source reference stale-state sample.", spe_module("verify_external_refs", "samples/external_source_ref_stale_state_001.json"), "SPE RESULT: PASS"),
     StandingCheck("external-source-refs-json", "Verify external source reference JSON export.", spe_module("verify_external_refs", "--json", "samples/external_source_ref_stale_state_001.json"), '"spe_result": "PASS"'),
+    StandingCheck("frozen-hash-bindings", "Check derived frozen hash bindings before downstream verifier checks.", (sys.executable, "-m", "tools.refresh_frozen_hashes", "--check"), "frozen hashes: OK"),
     StandingCheck("destination-hash-import", "Verify destination-generated hash import binding.", spe_module("verify_hash_import", "samples/destination_generated_event_hash_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-receipt-chain", "Verify destination-generated receipt chain binding.", spe_module("verify_receipt_chain", "samples/destination_receipt_chain_001.json"), "SPE RESULT: PASS"),
     StandingCheck("expected-corpus", "Verify every expected-result fixture in the expected corpus.", spe_module("verify_expected_corpus"), "SPE RESULT: PASS"),
