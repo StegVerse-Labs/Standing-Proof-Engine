@@ -5,6 +5,8 @@ from pathlib import Path
 
 from spe.verify import FAIL, PASS, Check, render, verify_artifact
 from spe.verify_confirmation import verify_confirmation
+from spe.verify_destination_event import verify_destination_event
+from spe.verify_event_replay import verify_event_replay
 from spe.verify_external_refs import verify_external_ref_artifact
 from spe.verify_hash_import import verify_hash_import
 from spe.verify_pointer import verify_pointer
@@ -14,6 +16,10 @@ from spe.verify_source_bound import verify_source_bound_artifact
 
 
 def run_declared_verifier(verifier, artifact, repo_root):
+    if verifier == "spe/verify_destination_event.py":
+        return verify_destination_event(artifact, repo_root)
+    if verifier == "spe/verify_event_replay.py":
+        return verify_event_replay(artifact, repo_root)
     if verifier == "spe/verify_external_refs.py":
         return verify_external_ref_artifact(artifact, repo_root)
     if verifier == "spe/verify_source_bound.py":
@@ -30,7 +36,7 @@ def run_declared_verifier(verifier, artifact, repo_root):
         return verify_receipt_chain(artifact, repo_root)
     if verifier == "spe/verify.py":
         return verify_artifact(artifact)
-    return FAIL, [Check("select_verifier", FAIL, f"unsupported verifier {verifier}")]
+    return FAIL, [Check("select_verifier", FAIL, f"unknown verifier {verifier}")]
 
 
 def governance_result(artifact):
@@ -41,6 +47,10 @@ def governance_result(artifact):
         return artifact["final_decision"]
     if isinstance(artifact.get("confirmation_result"), str):
         return artifact["confirmation_result"]
+    if isinstance(artifact.get("event_result"), str):
+        return artifact["event_result"]
+    if isinstance(artifact.get("observed_result"), str):
+        return artifact["observed_result"]
     if isinstance(artifact.get("expected_event_result"), str):
         return artifact["expected_event_result"]
     if isinstance(artifact.get("chain_result"), str):
