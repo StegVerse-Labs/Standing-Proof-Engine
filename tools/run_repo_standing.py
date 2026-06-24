@@ -36,18 +36,26 @@ class StandingResult:
     stderr: str
 
 
+def spe_module(module: str, *args: str) -> tuple[str, ...]:
+    return (sys.executable, "-m", f"spe.{module}", *args)
+
+
 CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("research-standing", "Validate research package standing and required artifacts.", (sys.executable, "tools/validate_research_standing.py"), "SPE RESEARCH STANDING: PASS"),
-    StandingCheck("problem-encodings", "Verify calibration problem encodings against expected-result fixtures.", (sys.executable, "spe/verify_problem_encodings.py"), "SPE PROBLEM ENCODINGS: PASS"),
-    StandingCheck("problem-encodings-json", "Verify machine-readable problem encoding standing export.", (sys.executable, "spe/verify_problem_encodings.py", "--json"), '"spe_result": "PASS"'),
+    StandingCheck("problem-encodings", "Verify calibration problem encodings against expected-result fixtures.", spe_module("verify_problem_encodings"), "SPE PROBLEM ENCODINGS: PASS"),
+    StandingCheck("problem-encodings-json", "Verify machine-readable problem encoding standing export.", spe_module("verify_problem_encodings", "--json"), '"spe_result": "PASS"'),
     StandingCheck("automation-addendum", "Check automation addendum metadata and referenced files.", (sys.executable, "tools/check_automation_addendum.py"), "SPE AUTOMATION ADDENDUM: PASS"),
     StandingCheck("automation-addendum-json", "Check machine-readable automation addendum metadata output.", (sys.executable, "tools/check_automation_addendum.py", "--json"), '"automation_addendum": "PASS"'),
-    StandingCheck("destination-event-installed", "Verify installed destination event binding.", (sys.executable, "spe/verify_destination_event.py", "samples/destination_event_001.json"), "SPE RESULT: PASS"),
-    StandingCheck("destination-event-deferred", "Verify deferred destination event binding.", (sys.executable, "spe/verify_destination_event.py", "samples/destination_event_deferred_001.json"), "SPE RESULT: PASS"),
-    StandingCheck("event-replay-installed", "Verify installed event replay binding.", (sys.executable, "spe/verify_event_replay.py", "samples/event_replay_001.json"), "SPE RESULT: PASS"),
-    StandingCheck("event-replay-deferred", "Verify deferred event replay binding.", (sys.executable, "spe/verify_event_replay.py", "samples/event_replay_deferred_001.json"), "SPE RESULT: PASS"),
-    StandingCheck("destination-hash-import", "Verify destination-generated hash import binding.", (sys.executable, "spe/verify_hash_import.py", "samples/destination_generated_event_hash_001.json"), "SPE RESULT: PASS"),
-    StandingCheck("destination-receipt-chain", "Verify destination-generated receipt chain binding.", (sys.executable, "spe/verify_receipt_chain.py", "samples/destination_receipt_chain_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("destination-event-installed", "Verify installed destination event binding.", spe_module("verify_destination_event", "samples/destination_event_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("destination-event-deferred", "Verify deferred destination event binding.", spe_module("verify_destination_event", "samples/destination_event_deferred_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("event-replay-installed", "Verify installed event replay binding.", spe_module("verify_event_replay", "samples/event_replay_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("event-replay-deferred", "Verify deferred event replay binding.", spe_module("verify_event_replay", "samples/event_replay_deferred_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("source-bound-sample", "Verify source-hash-bound stale-state sample.", spe_module("verify_source_bound", "samples/source_hash_bound_stale_state_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("source-bound-json", "Verify source-hash-bound JSON export.", spe_module("verify_source_bound", "--json", "samples/source_hash_bound_stale_state_001.json"), '"spe_result": "PASS"'),
+    StandingCheck("external-source-refs-sample", "Verify external source reference stale-state sample.", spe_module("verify_external_refs", "samples/external_source_ref_stale_state_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("external-source-refs-json", "Verify external source reference JSON export.", spe_module("verify_external_refs", "--json", "samples/external_source_ref_stale_state_001.json"), '"spe_result": "PASS"'),
+    StandingCheck("destination-hash-import", "Verify destination-generated hash import binding.", spe_module("verify_hash_import", "samples/destination_generated_event_hash_001.json"), "SPE RESULT: PASS"),
+    StandingCheck("destination-receipt-chain", "Verify destination-generated receipt chain binding.", spe_module("verify_receipt_chain", "samples/destination_receipt_chain_001.json"), "SPE RESULT: PASS"),
     StandingCheck("release-readiness", "Generate and verify local SPE release readiness artifacts.", (sys.executable, "tools/write_release_readiness.py"), "SPE RELEASE READINESS: READY"),
     StandingCheck("problem-encoding-tests", "Run unittest coverage for problem encoding verification.", (sys.executable, "-m", "unittest", "tests.test_problem_encodings"), "OK"),
     StandingCheck("automation-addendum-metadata-tests", "Run unittest coverage for automation addendum metadata.", (sys.executable, "-m", "unittest", "tests.test_automation_addendum_metadata"), "OK"),
