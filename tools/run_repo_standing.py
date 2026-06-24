@@ -55,6 +55,7 @@ CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("external-source-refs-sample", "Verify external source reference stale-state sample.", spe_module("verify_external_refs", "samples/external_source_ref_stale_state_001.json"), "SPE RESULT: PASS"),
     StandingCheck("external-source-refs-json", "Verify external source reference JSON export.", spe_module("verify_external_refs", "--json", "samples/external_source_ref_stale_state_001.json"), '"spe_result": "PASS"'),
     StandingCheck("frozen-hash-bindings", "Check derived frozen hash bindings before downstream verifier checks.", (sys.executable, "-m", "tools.refresh_frozen_hashes", "--check"), "frozen hashes: OK"),
+    StandingCheck("heartbeat-path-selection", "Verify factor-bound heartbeat path-selection sample receipt.", spe_module("verify_heartbeat_path_selection", "samples/heartbeat_path_selection_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-hash-import", "Verify destination-generated hash import binding.", spe_module("verify_hash_import", "samples/destination_generated_event_hash_001.json"), "SPE RESULT: PASS"),
     StandingCheck("destination-receipt-chain", "Verify destination-generated receipt chain binding.", spe_module("verify_receipt_chain", "samples/destination_receipt_chain_001.json"), "SPE RESULT: PASS"),
     StandingCheck("expected-corpus", "Verify every expected-result fixture in the expected corpus.", spe_module("verify_expected_corpus"), "SPE RESULT: PASS"),
@@ -69,6 +70,9 @@ CHECKS: tuple[StandingCheck, ...] = (
     StandingCheck("event-expected-result-tests", "Run expected-result coverage for destination event and replay fixtures.", (sys.executable, "-m", "unittest", "tests.test_event_expected_results"), "OK"),
     StandingCheck("hash-import-tests", "Run destination hash import formalism tests.", (sys.executable, "-m", "unittest", "tests.test_hash_import"), "OK"),
     StandingCheck("receipt-chain-tests", "Run destination receipt chain formalism tests.", (sys.executable, "-m", "unittest", "tests.test_receipt_chain"), "OK"),
+    StandingCheck("heartbeat-validity-window-tests", "Run heartbeat validity-window rotation tests.", (sys.executable, "-m", "unittest", "tests.test_validity_window"), "OK"),
+    StandingCheck("heartbeat-path-selection-tests", "Run heartbeat-guided path selection tests.", (sys.executable, "-m", "unittest", "tests.test_heartbeat_path_selection"), "OK"),
+    StandingCheck("heartbeat-path-selection-sample-tests", "Run heartbeat path-selection sample verifier tests.", (sys.executable, "-m", "unittest", "tests.test_heartbeat_path_selection_sample"), "OK"),
     StandingCheck("formalism-tests", "Run all unittest-discoverable formalism tests.", (sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"), "OK"),
 )
 
