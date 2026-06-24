@@ -6,7 +6,9 @@ from pathlib import Path
 from spe.verify import FAIL, PASS, Check, render, verify_artifact
 from spe.verify_confirmation import verify_confirmation
 from spe.verify_external_refs import verify_external_ref_artifact
+from spe.verify_hash_import import verify_hash_import
 from spe.verify_pointer import verify_pointer
+from spe.verify_receipt_chain import verify_receipt_chain
 from spe.verify_sdk_intake import verify_sdk_intake
 from spe.verify_source_bound import verify_source_bound_artifact
 
@@ -22,6 +24,10 @@ def run_declared_verifier(verifier, artifact, repo_root):
         return verify_pointer(artifact, repo_root)
     if verifier == "spe/verify_confirmation.py":
         return verify_confirmation(artifact, repo_root)
+    if verifier == "spe/verify_hash_import.py":
+        return verify_hash_import(artifact, repo_root)
+    if verifier == "spe/verify_receipt_chain.py":
+        return verify_receipt_chain(artifact, repo_root)
     if verifier == "spe/verify.py":
         return verify_artifact(artifact)
     return FAIL, [Check("select_verifier", FAIL, f"unsupported verifier {verifier}")]
@@ -35,6 +41,10 @@ def governance_result(artifact):
         return artifact["final_decision"]
     if isinstance(artifact.get("confirmation_result"), str):
         return artifact["confirmation_result"]
+    if isinstance(artifact.get("expected_event_result"), str):
+        return artifact["expected_event_result"]
+    if isinstance(artifact.get("chain_result"), str):
+        return artifact["chain_result"]
     evaluation = artifact.get("standing_evaluation", {})
     if isinstance(evaluation, dict) and isinstance(evaluation.get("result"), str):
         return evaluation["result"]
