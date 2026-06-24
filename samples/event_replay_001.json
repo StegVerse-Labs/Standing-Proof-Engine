@@ -2,7 +2,7 @@
   "replay_id": "SPE-EVENT-REPLAY-001",
   "replay_type": "event_replay",
   "source_event": "samples/destination_event_001.json",
-  "source_event_sha256": "f98798fa1e187cee287100cd23e30f1890682ab484e5f4a2f140d653f91ebb9d",
+  "source_event_sha256": "752e32ae57a18e0cd92529a915063aa14c131e7d56062b8613854dbcf25c95f0",
   "observed_result": "INSTALLED",
   "expected_result": "INSTALLED",
   "replay_result": "MATCH",
