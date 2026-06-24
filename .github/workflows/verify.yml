@@ -80,6 +80,24 @@ jobs:
       - name: Run confirmation expected result fixture verifier
         run: python -m spe.verify_expected_result expected_results/confirmation_001.expected.json
 
+      - name: Run destination event expected result fixture verifier
+        run: python -m spe.verify_expected_result expected_results/destination_event_001.expected.json
+
+      - name: Run deferred destination event expected result fixture verifier
+        run: python -m spe.verify_expected_result expected_results/destination_event_deferred_001.expected.json
+
+      - name: Run event replay expected result fixture verifier
+        run: python -m spe.verify_expected_result expected_results/event_replay_001.expected.json
+
+      - name: Run deferred event replay expected result fixture verifier
+        run: python -m spe.verify_expected_result expected_results/event_replay_deferred_001.expected.json
+
+      - name: Run hash import expected result fixture verifier
+        run: python -m spe.verify_expected_result expected_results/hash_import_001.expected.json
+
+      - name: Run receipt chain expected result fixture verifier
+        run: python -m spe.verify_expected_result expected_results/receipt_chain_001.expected.json
+
       - name: Run automated repo standing route
         run: python tools/run_repo_standing.py
 
