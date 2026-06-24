@@ -7,3 +7,5 @@ Purpose:
 - force a fresh PR validation run on the current recovery head;
 - confirm `python -m spe.verify_expected_corpus --json` exposes hidden corpus fixture failures;
 - preserve the change as a visible recovery-branch event rather than mutating runtime logic.
+
+Aligned PR branch trigger: 2026-06-24 recovery branch fast-forward confirmed.
