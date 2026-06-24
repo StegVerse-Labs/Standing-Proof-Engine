@@ -107,6 +107,9 @@ jobs:
       - name: List expected result fixture paths
         run: python -c "from pathlib import Path; [print(p.as_posix()) for p in sorted(Path('expected_results').glob('*.expected.json'))]"
 
+      - name: Run expected corpus inventory
+        run: python tools/expected_corpus_inventory.py
+
       - name: Run expected corpus verifier
         run: python -m spe.verify_expected_corpus --json
 
