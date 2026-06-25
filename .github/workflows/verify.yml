@@ -108,7 +108,18 @@ jobs:
         run: python -c "from pathlib import Path; [print(p.as_posix()) for p in sorted(Path('expected_results').glob('*.expected.json'))]"
 
       - name: Run expected corpus inventory
-        run: python tools/expected_corpus_inventory.py
+        if: always()
+        run: |
+          mkdir -p reports
+          python tools/expected_corpus_inventory.py > reports/expected_corpus_inventory.json || true
+          cat reports/expected_corpus_inventory.json
+
+      - name: Upload expected corpus inventory diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: expected-corpus-inventory
+          path: reports/expected_corpus_inventory.json
 
       - name: Run expected corpus verifier
         run: python -m spe.verify_expected_corpus --json
