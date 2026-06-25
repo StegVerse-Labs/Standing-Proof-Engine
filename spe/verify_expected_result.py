@@ -9,13 +9,16 @@ from spe.verify_destination_event import verify_destination_event
 from spe.verify_event_replay import verify_event_replay
 from spe.verify_external_refs import verify_external_ref_artifact
 from spe.verify_hash_import import verify_hash_import
+from spe.verify_manifest import verify_manifest
 from spe.verify_pointer import verify_pointer
 from spe.verify_receipt_chain import verify_receipt_chain
 from spe.verify_sdk_intake import verify_sdk_intake
 from spe.verify_source_bound import verify_source_bound_artifact
 
 
-def run_declared_verifier(verifier, artifact, repo_root):
+def run_declared_verifier(verifier, artifact, repo_root, artifact_path=None):
+    if verifier == "spe/verify_manifest.py":
+        return verify_manifest(artifact_path)
     if verifier == "spe/verify_destination_event.py":
         return verify_destination_event(artifact, repo_root)
     if verifier == "spe/verify_event_replay.py":
@@ -63,7 +66,25 @@ def governance_result(artifact):
     target = artifact.get("reconstruction_target", {})
     if isinstance(target, dict) and isinstance(target.get("expected_package_status"), str):
         return target["expected_package_status"]
+    if isinstance(artifact.get("spe_result"), str):
+        return artifact["spe_result"]
     return None
+
+
+def _manifest_check_map(report):
+    check_map = {}
+    if not isinstance(report, dict):
+        return check_map
+    samples = report.get("samples", [])
+    if not isinstance(samples, list):
+        return check_map
+    for sample in samples:
+        if not isinstance(sample, dict):
+            continue
+        label = sample.get("test_id") or sample.get("label") or sample.get("path")
+        if label:
+            check_map[f"sample:{label}"] = PASS if sample.get("matches_expectation") is True else FAIL
+    return check_map
 
 
 def verify_expected_result(fixture, repo_root):
@@ -80,8 +101,14 @@ def verify_expected_result(fixture, repo_root):
         return FAIL, [Check("parse_expected_fixture", FAIL, "artifact path escapes repo root")]
 
     artifact = json.loads(artifact_path.read_text(encoding="utf-8"))
-    status, checks = run_declared_verifier(verifier, artifact, repo_root)
-    check_map = {check.name: check.status for check in checks}
+    status, checks_or_report = run_declared_verifier(verifier, artifact, repo_root, artifact_path)
+    if verifier == "spe/verify_manifest.py":
+        artifact = checks_or_report
+        checks = [Check("manifest_report", PASS, "manifest verifier returned report")]
+        check_map = _manifest_check_map(checks_or_report)
+    else:
+        checks = checks_or_report
+        check_map = {check.name: check.status for check in checks}
 
     result_checks = [Check("parse_expected_fixture", PASS, "expected result fixture parsed")]
     expected_status = expected.get("spe_result")
@@ -97,6 +124,14 @@ def verify_expected_result(fixture, repo_root):
             result_checks.append(Check("expected_governance_result", PASS, f"governance result {actual_governance_result} matched"))
         else:
             result_checks.append(Check("expected_governance_result", FAIL, f"expected {expected_governance_result}, got {actual_governance_result}"))
+
+    if "sample_count" in expected:
+        actual_sample_count = artifact.get("sample_count") if isinstance(artifact, dict) else None
+        expected_sample_count = expected.get("sample_count")
+        if actual_sample_count == expected_sample_count:
+            result_checks.append(Check("expected_sample_count", PASS, f"sample count {actual_sample_count} matched"))
+        else:
+            result_checks.append(Check("expected_sample_count", FAIL, f"expected {expected_sample_count}, got {actual_sample_count}"))
 
     required = expected.get("required_checks", {})
     if not isinstance(required, dict):
