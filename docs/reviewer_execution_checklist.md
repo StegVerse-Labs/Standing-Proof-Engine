@@ -42,7 +42,28 @@ Expected:
 all samples -> "matches_expectation": true
 ```
 
-## 3. Expected Result Corpus
+## 3. Commitment Candidate Manifest
+
+Run:
+
+```bash
+python spe/verify_manifest.py samples/alane_commitment_candidate_manifest.json
+```
+
+Expected:
+
+```text
+"spe_result": "PASS"
+"sample_count": 6
+all samples -> "source": "transition_case"
+all samples -> "artifact_type": "commitment_candidate_test"
+all samples -> "governance_result": "FAIL_CLOSED"
+all samples -> "matches_expectation": true
+```
+
+This manifest demonstrates that a user can assemble edge-case tests from Transition Table elements without changing the testing path. The Commitment Candidate remains non-authorizing, and SPE re-binds standing at commit time.
+
+## 4. Expected Result Corpus
 
 Run:
 
@@ -56,7 +77,9 @@ Expected:
 SPE RESULT: PASS
 ```
 
-## 4. Machine-Readable Export
+The expected-result corpus includes the Commitment Candidate manifest fixture, so drift in any of the six manifest-authored edge cases fails the corpus.
+
+## 5. Machine-Readable Export
 
 Run:
 
@@ -83,7 +106,7 @@ aggregate_standing -> false
 prior_review_replayable -> true
 ```
 
-## 5. Formalism Tests
+## 6. Formalism Tests
 
 Run:
 
@@ -97,7 +120,7 @@ Expected:
 OK
 ```
 
-## 6. Reviewer Reports
+## 7. Reviewer Reports
 
 Run:
 
@@ -125,9 +148,10 @@ The reviewer should be able to confirm:
 1. The pressure route produces a reconstructable denial with an intentionally partial proof gap.
 2. The stale-state route proves prior review does not carry stale execution standing.
 3. The Aegis route proves incident detection does not authorize defensive consequence by itself.
-4. All declared governance outcomes resolve DENY.
-5. Expected-result fixtures detect drift in either SPE result or governance result.
-6. The current activation package is ready for reviewer handoff but not full repo completion.
+4. The Commitment Candidate route proves candidate presentation does not carry execution authority.
+5. The manifest-authored edge cases produce FAIL_CLOSED when current actor, target, scope, policy, delegation, evidence, validity window, or recoverability no longer matches.
+6. Expected-result fixtures detect drift in either SPE result or governance result.
+7. The current activation package is ready for reviewer handoff but not full repo completion.
 ```
 
 ## Failure Handling
