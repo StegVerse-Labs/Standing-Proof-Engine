@@ -36,7 +36,7 @@ SPE is not a replacement for `StegVerse-org/stegverse-demo-suite` or `StegGhost/
 
 ## What This Repo Demonstrates First
 
-SPE now includes three minimal proof paths and one SDK-to-SPE intake binding path.
+SPE now includes three minimal proof paths, one SDK-to-SPE intake binding path, and one manifest-authored Commitment Candidate edge-case path.
 
 ### 1. Pressure-Receipt Trace
 
@@ -112,6 +112,46 @@ Expected result:
 SPE RESULT: PASS
 ```
 
+### 5. Commitment Candidate Manifest
+
+The Commitment Candidate manifest demonstrates user-authored testing from Transition Table elements without adding a new test path for each case.
+
+Current manifest:
+
+```text
+samples/alane_commitment_candidate_manifest.json
+```
+
+Current verifier:
+
+```bash
+python spe/verify_manifest.py samples/alane_commitment_candidate_manifest.json
+```
+
+Expected result:
+
+```text
+"spe_result": "PASS"
+"sample_count": 6
+all samples -> "source": "transition_case"
+all samples -> "artifact_type": "commitment_candidate_test"
+all samples -> "governance_result": "FAIL_CLOSED"
+all samples -> "matches_expectation": true
+```
+
+The manifest covers:
+
+```text
+expired delegation
+changed target scope
+stale evidence
+changed policy version
+degraded recoverability
+actor substitution
+```
+
+Each case proves that the Commitment Candidate presents a proposed crossing but does not carry execution authority. SPE re-binds standing at commit time and resolves `FAIL_CLOSED` when current actor, target, scope, policy, delegation, evidence, validity window, or recoverability no longer matches.
+
 ## Activation Snapshot
 
 The current activation handoff is recorded in:
@@ -130,6 +170,8 @@ Current status:
 Activation package: READY FOR REVIEWER HANDOFF
 Full repo completion: NOT COMPLETE
 Primary theorem: IMPLEMENTED IN TESTED SAMPLE ROUTES
+Commitment Candidate route: PRESENT
+Manifest-authored edge cases: PRESENT
 CI route coverage: PRESENT
 Expected governance-result drift detection: PRESENT
 Reviewer report generation: PRESENT
@@ -159,13 +201,31 @@ PARTIAL
 
 The package is `PARTIAL` because the pressure-receipt trace intentionally preserves a partial proof condition. The stale-state and Aegis proof paths are expected to return `PASS`, while all declared governance results are expected to resolve `DENY`.
 
+The Commitment Candidate edge-case package is declared in:
+
+```text
+samples/alane_commitment_candidate_manifest.json
+```
+
+Run the manifest verifier:
+
+```bash
+python spe/verify_manifest.py samples/alane_commitment_candidate_manifest.json
+```
+
+Expected package result:
+
+```text
+PASS
+```
+
 Expected-result fixtures are stored in:
 
 ```text
 expected_results/
 ```
 
-They bind verifier choice, expected SPE result, expected governance result, and required check statuses. This means drift in either the proof status or the governance decision can be detected by automation.
+They bind verifier choice, expected SPE result, expected governance result, required check statuses, and manifest sample expectations. This means drift in either the proof status, governance decision, or manifest-authored case result can be detected by automation.
 
 ## Done Criteria
 
@@ -183,6 +243,7 @@ This initial repo is done when it can:
 - export machine-readable JSON results;
 - report proof gaps as `PASS`, `PARTIAL`, or `FAIL`;
 - verify a declared route package manifest;
+- verify user-authored Transition Table manifest cases;
 - validate expected SPE and governance results;
 - generate reviewer reports with expected vs actual outcomes;
 - publish activation, release-snapshot, and reviewer-execution handoff documents;
@@ -238,6 +299,19 @@ Expected result:
 "spe_result": "PARTIAL"
 ```
 
+Run the Commitment Candidate manifest:
+
+```bash
+python spe/verify_manifest.py samples/alane_commitment_candidate_manifest.json
+```
+
+Expected result:
+
+```text
+"spe_result": "PASS"
+"sample_count": 6
+```
+
 Run the SDK intake binding verifier:
 
 ```bash
@@ -272,6 +346,10 @@ Why does the stale-state or Aegis proof return `PASS` when the transition is den
 
 Because `PASS` means the artifact proves its governance result. In these cases, the proven result is `DENY`.
 
+Why does the Commitment Candidate manifest return `PASS` when each case is `FAIL_CLOSED`?
+
+Because `PASS` means the manifest proves the expected governance result. In these cases, the proven result is that the non-authorizing candidate cannot bind consequence and must fail closed.
+
 ## Machine-Readable Results
 
 Run:
@@ -284,7 +362,7 @@ The JSON output includes:
 
 ```text
 spe_result           PASS, PARTIAL, or FAIL
-artifact_type        pressure_trace, stale_state_proof, or unsupported
+artifact_type        pressure_trace, stale_state_proof, commitment_candidate_test, or unsupported
 governance_summary   artifact ID, receipt ID, decision, commit allowance, standing state
 hashes               canonical SHA-256 hashes for the artifact and object sections
 checks               ordered verification checks with status and detail
@@ -308,48 +386,52 @@ A transition may remain fully reconstructable while no longer possessing authori
 
 ## Initial Public Use Cases
 
-SPE is intended to support four related evaluation paths:
+SPE is intended to support five related evaluation paths:
 
 1. Pressure-receipt evaluation: can a verifier reconstruct why a commit was denied after drift?
 2. Stale-state proof-path presentation: can a verifier show that a prior review remained useful but no longer carried execution standing at commit time?
 3. Incident-standing evaluation: can a verifier show that a detected incident does not authorize a defensive consequence unless commit-time standing is current?
 4. SDK intake binding: can a verifier show that upstream intake declared and bound the SPE route package expectation?
+5. Commitment Candidate testing: can a verifier show that user-authored Transition Table cases remain non-authorizing until SPE re-binds standing at commit time?
 
 ## Repository Layout
 
 ```text
-samples/pressure_demo_001.json              sample pressure-receipt trace
-samples/stale_state_review_commit_001.json  sample review-to-commit stale-state proof
-samples/aegis_incident_standing_001.json    sample Aegis incident standing proof
-samples/manifest.json                       route package manifest
-samples/sdk_intake_receipt_001.json         SDK intake route-binding fixture
-expected_results/                           expected SPE and governance result fixtures
-docs/alane_minimal_proof_path.md            public explanation of the stale-state proof path
-docs/aegis_intelligence_mapping.md          public explanation of the Aegis standing boundary
-docs/machine_readable_results.md            JSON export and canonical hash notes
-docs/sample_manifest_verification.md        route package manifest verification notes
-docs/sdk_intake_binding.md                  SDK-to-SPE route binding notes
-docs/activation_status.md                   activation handoff status
-docs/release_snapshot_v0_1_0.md             v0.1.0 release snapshot
-docs/reviewer_execution_checklist.md        reviewer execution checklist
-spe/result_export.py                        canonical hashes and JSON result export
-spe/verify.py                               standalone verifier
-spe/verify_json.py                          machine-readable verifier entry point
-spe/verify_manifest.py                      route package verifier
-spe/verify_sdk_intake.py                    SDK intake binding verifier
-spe/verify_expected_result.py               expected-result fixture verifier
-spe/verify_expected_corpus.py               expected-result corpus verifier
-spe/report_expected_corpus.py               expected-result reviewer report generator
-tests/test_pressure_demo.py                 pressure trace formalism test
-tests/test_pressure_demo_unittest.py        unittest-compatible pressure trace test
-tests/test_result_export.py                 canonical hash and JSON result tests
-tests/test_stale_state_case.py              stale-state formalism test
-tests/test_aegis_incident_case.py           Aegis incident standing test
-tests/test_manifest_verifier.py             route package manifest tests
-tests/test_sdk_intake.py                    SDK intake binding tests
-tests/test_expected_result.py               expected-result fixture tests
-tests/test_expected_corpus_report.py        expected-corpus report tests
-github/workflows/verify.yml                 GitHub Actions verification; leading dot intentionally omitted in this prose display
+samples/pressure_demo_001.json                         sample pressure-receipt trace
+samples/stale_state_review_commit_001.json             sample review-to-commit stale-state proof
+samples/aegis_incident_standing_001.json               sample Aegis incident standing proof
+samples/manifest.json                                  route package manifest
+samples/sdk_intake_receipt_001.json                    SDK intake route-binding fixture
+samples/alane_commitment_candidate_manifest.json       manifest-authored Commitment Candidate edge cases
+expected_results/                                      expected SPE and governance result fixtures
+expected_results/commitment_candidate_manifest.expected.json  expected fixture for Commitment Candidate manifest
+docs/alane_minimal_proof_path.md                       public explanation of the stale-state proof path
+docs/aegis_intelligence_mapping.md                     public explanation of the Aegis standing boundary
+docs/machine_readable_results.md                       JSON export and canonical hash notes
+docs/sample_manifest_verification.md                   route package manifest verification notes
+docs/sdk_intake_binding.md                             SDK-to-SPE route binding notes
+docs/activation_status.md                              activation handoff status
+docs/release_snapshot_v0_1_0.md                        v0.1.0 release snapshot
+docs/reviewer_execution_checklist.md                   reviewer execution checklist
+spe/result_export.py                                   canonical hashes and JSON result export
+spe/verify.py                                          standalone verifier
+spe/verify_json.py                                     machine-readable verifier entry point
+spe/verify_manifest.py                                 route package and transition-case manifest verifier
+spe/verify_sdk_intake.py                               SDK intake binding verifier
+spe/verify_expected_result.py                          expected-result fixture verifier
+spe/verify_expected_corpus.py                          expected-result corpus verifier
+spe/report_expected_corpus.py                          expected-result reviewer report generator
+tests/test_pressure_demo.py                            pressure trace formalism test
+tests/test_pressure_demo_unittest.py                   unittest-compatible pressure trace test
+tests/test_result_export.py                            canonical hash and JSON result tests
+tests/test_stale_state_case.py                         stale-state formalism test
+tests/test_aegis_incident_case.py                      Aegis incident standing test
+tests/test_manifest_verifier.py                        route package manifest tests
+tests/test_commitment_candidate_manifest.py            Commitment Candidate manifest test
+tests/test_sdk_intake.py                               SDK intake binding tests
+tests/test_expected_result.py                          expected-result fixture tests
+tests/test_expected_corpus_report.py                   expected-corpus report tests
+github/workflows/verify.yml                            GitHub Actions verification; leading dot intentionally omitted in this prose display
 ```
 
 Note: `github/workflows/verify.yml` is displayed without the leading dot in this README. The actual repository path must include the leading dot for GitHub Actions to run.
@@ -359,5 +441,5 @@ Note: `github/workflows/verify.yml` is displayed without the leading dot in this
 SPE should become a small interoperability verifier for governance artifacts from independent systems. It should evaluate whether the artifact proves consequence-binding standing without requiring trust in the originating implementation or narrative explanation.
 
 StegVerse-Labs - 5% complete
-Standing-Proof-Engine - 91% complete
-91% complete vs Repo Activation
+Standing-Proof-Engine - 97% complete
+97% complete vs Repo Activation
