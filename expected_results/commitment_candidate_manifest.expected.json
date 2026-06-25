@@ -1,0 +1,18 @@
+{
+  "fixture_id": "SPE-EXPECTED-COMMITMENT-CANDIDATE-MANIFEST-001",
+  "artifact": "samples/alane_commitment_candidate_manifest.json",
+  "verifier": "spe/verify_manifest.py",
+  "expected": {
+    "spe_result": "PASS",
+    "governance_result": "PASS",
+    "sample_count": 6,
+    "required_checks": {
+      "sample:alane-edge-001-expired-delegation": "PASS",
+      "sample:alane-edge-002-changed-target-scope": "PASS",
+      "sample:alane-edge-003-stale-evidence": "PASS",
+      "sample:alane-edge-004-changed-policy-version": "PASS",
+      "sample:alane-edge-005-degraded-recoverability": "PASS",
+      "sample:alane-edge-006-actor-substitution": "PASS"
+    }
+  }
+}
