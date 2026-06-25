@@ -17,6 +17,8 @@ from typing import Any
 PASS = "PASS"
 PARTIAL = "PARTIAL"
 FAIL = "FAIL"
+FAIL_CLOSED = "FAIL_CLOSED"
+DENY = "DENY"
 
 
 @dataclass(frozen=True)
@@ -40,6 +42,10 @@ def _step(trace: dict[str, Any], index: int) -> dict[str, Any] | None:
         if item.get("step_index") == index:
             return item
     return None
+
+
+def _result_denies_consequence(result: Any) -> bool:
+    return result in {DENY, FAIL_CLOSED}
 
 
 def verify_pressure_trace(trace: dict[str, Any]) -> tuple[str, list[Check]]:
@@ -270,7 +276,7 @@ def verify_stale_state_proof(proof: dict[str, Any]) -> tuple[str, list[Check]]:
         evaluation.get("evidence_packet_useful") is True,
         evaluation.get("context_current_or_reauthorized") is True,
     ]
-    evaluation_denies = evaluation.get("aggregate_standing") is False and evaluation.get("result") == "DENY"
+    evaluation_denies = evaluation.get("aggregate_standing") is False and _result_denies_consequence(evaluation.get("result"))
     evaluation_valid = all(expected_false_conditions) and all(expected_true_conditions) and evaluation_denies
     checks.append(
         Check(
@@ -278,21 +284,23 @@ def verify_stale_state_proof(proof: dict[str, Any]) -> tuple[str, list[Check]]:
             PASS if evaluation_valid else FAIL,
             "review remains useful while aggregate commit-time standing is false"
             if evaluation_valid
-            else "standing evaluation does not support DENY",
+            else "standing evaluation does not support DENY or FAIL_CLOSED",
         )
     )
 
+    receipt_decision = receipt.get("decision")
     receipt_valid = (
         receipt.get("receipt_type") == "commit_time_standing_receipt"
         and receipt.get("prior_review_replayable") is True
         and receipt.get("commit_allowed") is False
-        and receipt.get("decision") == "DENY"
+        and _result_denies_consequence(receipt_decision)
+        and receipt_decision == evaluation.get("result")
     )
     checks.append(
         Check(
             "receipt",
             PASS if receipt_valid else FAIL,
-            "receipt records replayable prior review and commit-time DENY"
+            "receipt records replayable prior review and commit-time denial"
             if receipt_valid
             else "standing receipt is incomplete or inconsistent",
         )
@@ -315,7 +323,134 @@ def verify_stale_state_proof(proof: dict[str, Any]) -> tuple[str, list[Check]]:
     return _status(checks), checks
 
 
+def verify_commitment_candidate_test(test: dict[str, Any]) -> tuple[str, list[Check]]:
+    checks: list[Check] = []
+    required_sections = [
+        "historical_review",
+        "commitment_candidate",
+        "current_state",
+        "standing_rule",
+        "standing_evaluation",
+        "receipt",
+    ]
+    missing = [section for section in required_sections if not isinstance(test.get(section), dict)]
+    if missing:
+        return FAIL, [Check("parse_commitment_candidate_test", FAIL, f"missing sections: {', '.join(missing)}")]
+
+    checks.append(Check("parse_commitment_candidate_test", PASS, "commitment-candidate test sections parsed"))
+
+    review = test["historical_review"]
+    candidate = test["commitment_candidate"]
+    current = test["current_state"]
+    rule = test["standing_rule"]
+    evaluation = test["standing_evaluation"]
+    receipt = test["receipt"]
+
+    same_cell = (
+        review.get("transition_cell_id")
+        == candidate.get("transition_cell_id")
+        == receipt.get("transition_cell_id")
+    )
+    review_replayable = review.get("replayable") is True and evaluation.get("historical_review_replayable") is True
+    checks.append(
+        Check(
+            "historical_review",
+            PASS if same_cell and review_replayable else FAIL,
+            "historical review is replayable and tied to the proposed transition cell"
+            if same_cell and review_replayable
+            else "historical review is missing replayability or transition-cell binding",
+        )
+    )
+
+    non_authorizing = (
+        candidate.get("candidate_type") == "commitment_candidate"
+        and candidate.get("carries_execution_authority") is False
+        and candidate.get("inherits_review_authority") is False
+        and candidate.get("commit_requested") is True
+    )
+    checks.append(
+        Check(
+            "candidate_non_authorizing",
+            PASS if non_authorizing else FAIL,
+            "candidate presents the proposed crossing without carrying authority"
+            if non_authorizing
+            else "candidate appears to authorize execution or lacks commit request binding",
+        )
+    )
+
+    required_dimensions = rule.get("requires", [])
+    if not isinstance(required_dimensions, list):
+        required_dimensions = []
+    dimension_states = evaluation.get("dimension_current_or_rebound", {})
+    if not isinstance(dimension_states, dict):
+        dimension_states = {}
+    required_complete = bool(required_dimensions) and all(dimension in dimension_states for dimension in required_dimensions)
+    checks.append(
+        Check(
+            "standing_rule",
+            PASS if required_complete else FAIL,
+            "standing rule declares and evaluates every required dimension"
+            if required_complete
+            else "standing rule is incomplete or missing dimension evaluations",
+        )
+    )
+
+    mismatches = []
+    bindings = current.get("bindings", {})
+    if isinstance(bindings, dict):
+        for dimension in required_dimensions:
+            binding = bindings.get(dimension, {})
+            if isinstance(binding, dict) and binding.get("matches_candidate") is False:
+                mismatches.append(dimension)
+
+    failed_dimensions = [dimension for dimension, state in dimension_states.items() if state is False]
+    failed_dimensions = [dimension for dimension in required_dimensions if dimension in failed_dimensions]
+    mismatches_complete = set(mismatches).issubset(set(failed_dimensions)) and set(failed_dimensions).issubset(set(required_dimensions))
+    checks.append(
+        Check(
+            "commit_time_rebinding",
+            PASS if failed_dimensions and mismatches_complete else FAIL,
+            f"commit-time standing failed for: {', '.join(failed_dimensions)}"
+            if failed_dimensions and mismatches_complete
+            else "commit-time rebinding did not identify a deterministic standing failure",
+        )
+    )
+
+    aggregate_false = evaluation.get("aggregate_standing") is False
+    fail_closed = evaluation.get("result") == FAIL_CLOSED
+    checks.append(
+        Check(
+            "standing_evaluation",
+            PASS if aggregate_false and fail_closed else FAIL,
+            "aggregate standing is false and result is FAIL_CLOSED"
+            if aggregate_false and fail_closed
+            else "standing evaluation does not resolve FAIL_CLOSED",
+        )
+    )
+
+    receipt_valid = (
+        receipt.get("receipt_type") == "commit_time_standing_receipt"
+        and receipt.get("candidate_carries_authority") is False
+        and receipt.get("commit_allowed") is False
+        and receipt.get("decision") == FAIL_CLOSED
+        and receipt.get("failed_dimensions") == failed_dimensions
+    )
+    checks.append(
+        Check(
+            "receipt",
+            PASS if receipt_valid else FAIL,
+            "receipt records non-authorizing candidate, failed dimensions, and FAIL_CLOSED"
+            if receipt_valid
+            else "receipt does not bind candidate non-authority, failed dimensions, and FAIL_CLOSED",
+        )
+    )
+
+    return _status(checks), checks
+
+
 def verify_artifact(artifact: dict[str, Any]) -> tuple[str, list[Check]]:
+    if artifact.get("artifact_type") == "commitment_candidate_test":
+        return verify_commitment_candidate_test(artifact)
     if "execution_trace" in artifact:
         return verify_pressure_trace(artifact)
     if "review_time" in artifact and "commit_time" in artifact:
