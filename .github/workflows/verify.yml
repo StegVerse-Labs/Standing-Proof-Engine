@@ -29,6 +29,9 @@ jobs:
       - name: Run sample manifest verifier
         run: python -m spe.verify_manifest samples/manifest.json
 
+      - name: Run Alane commitment candidate manifest verifier
+        run: python -m spe.verify_manifest samples/alane_commitment_candidate_manifest.json
+
       - name: Run SDK intake receipt verifier
         run: python -m spe.verify_sdk_intake samples/sdk_intake_receipt_001.json
 
