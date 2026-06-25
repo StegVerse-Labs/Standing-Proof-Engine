@@ -1,0 +1,140 @@
+{
+  "manifest_id": "SPE-ALANE-COMMITMENT-CANDIDATE-001",
+  "title": "Alane commitment-candidate edge-case manifest",
+  "description": "User-assembled transition-case manifest proving that Commitment Candidates carry no authority and SPE re-binds standing at commit time.",
+  "samples": [
+    {
+      "route": "commitment_candidate_transition_case",
+      "transition_case": {
+        "test_id": "alane-edge-001-expired-delegation",
+        "scenario": "Delegation was valid at review but expired before commit.",
+        "transition_cell": "reviewed_candidate_to_commit_attempt",
+        "actor": "agent_alice",
+        "target": "repo_release_boundary",
+        "scope": "merge_to_main",
+        "requested_action": "commit",
+        "historical_review_ref": "review_001",
+        "policy_ref": "policy_v1",
+        "delegation_ref": "delegation_expired_001",
+        "evidence_refs": ["evidence_packet_001"],
+        "execution_context": "commit_time",
+        "validity_window": "review_valid_commit_expired",
+        "recoverability_profile": "normal",
+        "failed_dimensions": ["delegation", "validity_window"],
+        "expected_spe_result": "PASS",
+        "expected_governance_result": "FAIL_CLOSED"
+      }
+    },
+    {
+      "route": "commitment_candidate_transition_case",
+      "transition_case": {
+        "test_id": "alane-edge-002-changed-target-scope",
+        "scenario": "Target scope changed between review and commit.",
+        "transition_cell": "reviewed_candidate_to_commit_attempt",
+        "actor": "agent_alice",
+        "target": "repo_release_boundary",
+        "scope": "merge_to_main",
+        "requested_action": "commit",
+        "historical_review_ref": "review_002",
+        "policy_ref": "policy_v1",
+        "delegation_ref": "delegation_002",
+        "evidence_refs": ["evidence_packet_002"],
+        "execution_context": "commit_time",
+        "validity_window": "current",
+        "recoverability_profile": "normal",
+        "failed_dimensions": ["target", "scope"],
+        "expected_spe_result": "PASS",
+        "expected_governance_result": "FAIL_CLOSED"
+      }
+    },
+    {
+      "route": "commitment_candidate_transition_case",
+      "transition_case": {
+        "test_id": "alane-edge-003-stale-evidence",
+        "scenario": "Evidence packet remains replayable but is stale at commit time.",
+        "transition_cell": "reviewed_candidate_to_commit_attempt",
+        "actor": "agent_alice",
+        "target": "repo_release_boundary",
+        "scope": "merge_to_main",
+        "requested_action": "commit",
+        "historical_review_ref": "review_003",
+        "policy_ref": "policy_v1",
+        "delegation_ref": "delegation_003",
+        "evidence_refs": ["evidence_packet_003"],
+        "execution_context": "commit_time",
+        "validity_window": "current",
+        "recoverability_profile": "normal",
+        "required_dimensions": ["actor", "target", "scope", "policy", "delegation", "evidence", "context", "validity_window", "recoverability"],
+        "failed_dimensions": ["evidence"],
+        "expected_spe_result": "PASS",
+        "expected_governance_result": "FAIL_CLOSED"
+      }
+    },
+    {
+      "route": "commitment_candidate_transition_case",
+      "transition_case": {
+        "test_id": "alane-edge-004-changed-policy-version",
+        "scenario": "Policy version changed after review and was not reauthorized before commit.",
+        "transition_cell": "reviewed_candidate_to_commit_attempt",
+        "actor": "agent_alice",
+        "target": "repo_release_boundary",
+        "scope": "merge_to_main",
+        "requested_action": "commit",
+        "historical_review_ref": "review_004",
+        "policy_ref": "policy_v1_to_v2_unreauthorized",
+        "delegation_ref": "delegation_004",
+        "evidence_refs": ["evidence_packet_004"],
+        "execution_context": "commit_time",
+        "validity_window": "current",
+        "recoverability_profile": "normal",
+        "failed_dimensions": ["policy"],
+        "expected_spe_result": "PASS",
+        "expected_governance_result": "FAIL_CLOSED"
+      }
+    },
+    {
+      "route": "commitment_candidate_transition_case",
+      "transition_case": {
+        "test_id": "alane-edge-005-degraded-recoverability",
+        "scenario": "Recoverability degraded below the threshold required for consequence binding.",
+        "transition_cell": "reviewed_candidate_to_commit_attempt",
+        "actor": "agent_alice",
+        "target": "repo_release_boundary",
+        "scope": "merge_to_main",
+        "requested_action": "commit",
+        "historical_review_ref": "review_005",
+        "policy_ref": "policy_v1",
+        "delegation_ref": "delegation_005",
+        "evidence_refs": ["evidence_packet_005"],
+        "execution_context": "commit_time",
+        "validity_window": "current",
+        "recoverability_profile": "degraded_below_threshold",
+        "failed_dimensions": ["recoverability"],
+        "expected_spe_result": "PASS",
+        "expected_governance_result": "FAIL_CLOSED"
+      }
+    },
+    {
+      "route": "commitment_candidate_transition_case",
+      "transition_case": {
+        "test_id": "alane-edge-006-actor-substitution",
+        "scenario": "Actor was substituted between review and commit.",
+        "transition_cell": "reviewed_candidate_to_commit_attempt",
+        "actor": "agent_alice",
+        "target": "repo_release_boundary",
+        "scope": "merge_to_main",
+        "requested_action": "commit",
+        "historical_review_ref": "review_006",
+        "policy_ref": "policy_v1",
+        "delegation_ref": "delegation_006",
+        "evidence_refs": ["evidence_packet_006"],
+        "execution_context": "commit_time",
+        "validity_window": "current",
+        "recoverability_profile": "normal",
+        "failed_dimensions": ["actor"],
+        "expected_spe_result": "PASS",
+        "expected_governance_result": "FAIL_CLOSED"
+      }
+    }
+  ]
+}
