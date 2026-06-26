@@ -35,6 +35,9 @@ jobs:
       - name: Run SDK intake receipt verifier
         run: python -m spe.verify_sdk_intake samples/sdk_intake_receipt_001.json
 
+      - name: Run SDK CC intake receipt verifier
+        run: python -m spe.verify_sdk_intake samples/sdk_intake_cc_001.json
+
       - name: Run pointer verifier
         run: python -m spe.verify_pointer samples/master_records_pointer_001.json
 
@@ -76,6 +79,9 @@ jobs:
 
       - name: Run SDK intake expected result fixture verifier
         run: python -m spe.verify_expected_result expected_results/sdk_intake_receipt_001.expected.json
+
+      - name: Run SDK CC intake expected result fixture verifier
+        run: python -m spe.verify_expected_result expected_results/sdk_intake_cc_001.expected.json
 
       - name: Run commitment candidate manifest expected result fixture verifier
         run: python -m spe.verify_expected_result expected_results/commitment_candidate_manifest.expected.json
@@ -124,6 +130,9 @@ jobs:
 
       - name: Run SDK intake JSON export
         run: python -m spe.verify_sdk_intake_json samples/sdk_intake_receipt_001.json
+
+      - name: Run SDK CC intake JSON export
+        run: python -m spe.verify_sdk_intake_json samples/sdk_intake_cc_001.json
 
       - name: Run confirmation JSON export
         run: python -m spe.verify_confirmation_json samples/master_records_confirmation_001.json
