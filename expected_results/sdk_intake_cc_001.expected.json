@@ -1,0 +1,17 @@
+{
+  "fixture_id": "SPE-EXPECTED-SDK-INTAKE-CC-001",
+  "artifact": "samples/sdk_intake_cc_001.json",
+  "verifier": "spe/verify_sdk_intake.py",
+  "expected": {
+    "spe_result": "PASS",
+    "governance_result": "PASS",
+    "required_checks": {
+      "parse_sdk_intake": "PASS",
+      "route_declaration": "PASS",
+      "handoff_flags": "PASS",
+      "manifest_hash_binding": "PASS",
+      "manifest_result_binding": "PASS",
+      "sample_count_binding": "PASS"
+    }
+  }
+}
