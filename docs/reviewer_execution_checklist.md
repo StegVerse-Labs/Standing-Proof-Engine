@@ -63,7 +63,25 @@ all samples -> "matches_expectation": true
 
 This manifest demonstrates that a user can assemble edge-case tests from Transition Table elements without changing the testing path. The Commitment Candidate remains non-authorizing, and SPE re-binds standing at commit time.
 
-## 4. Expected Result Corpus
+## 4. SDK-Bound Commitment Candidate Intake
+
+Run:
+
+```bash
+python spe/verify_sdk_intake.py samples/sdk_intake_cc_001.json
+python spe/verify_expected_result.py expected_results/sdk_intake_cc_001.expected.json
+```
+
+Expected:
+
+```text
+samples/sdk_intake_cc_001.json -> SPE RESULT: PASS
+expected_results/sdk_intake_cc_001.expected.json -> SPE RESULT: PASS
+```
+
+This proves the Commitment Candidate manifest is not only a standalone manifest demo. It is bound by SDK intake receipt, manifest hash, declared sample count, SPE route package ID, and expected package status.
+
+## 5. Expected Result Corpus
 
 Run:
 
@@ -77,9 +95,9 @@ Expected:
 SPE RESULT: PASS
 ```
 
-The expected-result corpus includes the Commitment Candidate manifest fixture, so drift in any of the six manifest-authored edge cases fails the corpus.
+The expected-result corpus includes both the Commitment Candidate manifest fixture and the SDK-bound Commitment Candidate intake fixture, so drift in the six manifest-authored edge cases or their SDK receipt binding fails the corpus.
 
-## 5. Machine-Readable Export
+## 6. Machine-Readable Export
 
 Run:
 
@@ -106,7 +124,7 @@ aggregate_standing -> false
 prior_review_replayable -> true
 ```
 
-## 6. Formalism Tests
+## 7. Formalism Tests
 
 Run:
 
@@ -120,7 +138,7 @@ Expected:
 OK
 ```
 
-## 7. Reviewer Reports
+## 8. Reviewer Reports
 
 Run:
 
@@ -150,8 +168,9 @@ The reviewer should be able to confirm:
 3. The Aegis route proves incident detection does not authorize defensive consequence by itself.
 4. The Commitment Candidate route proves candidate presentation does not carry execution authority.
 5. The manifest-authored edge cases produce FAIL_CLOSED when current actor, target, scope, policy, delegation, evidence, validity window, or recoverability no longer matches.
-6. Expected-result fixtures detect drift in either SPE result or governance result.
-7. The current activation package is ready for reviewer handoff but not full repo completion.
+6. The SDK-bound Commitment Candidate receipt proves the manifest package is bound by SDK intake, manifest hash, declared sample count, route package ID, and expected package status.
+7. Expected-result fixtures detect drift in either SPE result, governance result, or SDK route binding.
+8. The current activation package is ready for reviewer handoff but not full repo completion.
 ```
 
 ## Failure Handling
@@ -162,8 +181,9 @@ A failed command means one of these occurred:
 artifact drift
 expected-result drift
 verifier regression
+SDK intake binding drift
 report generation regression
 missing file
 ```
 
-Do not reinterpret a failing result as a successful governance result. Fix the artifact, verifier, expectation, or documentation so the route package is reconstructable again.
+Do not reinterpret a failing result as a successful governance result. Fix the artifact, verifier, expectation, SDK receipt, or documentation so the route package is reconstructable again.
