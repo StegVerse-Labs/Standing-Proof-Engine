@@ -126,6 +126,13 @@ jobs:
           python tools/expected_corpus_inventory.py > reports/expected_corpus_inventory.json || true
           cat reports/expected_corpus_inventory.json
 
+      - name: Write expected corpus failed summaries
+        if: always()
+        run: |
+          python tools/write_expected_corpus_failed_summary.py reports/expected_corpus_inventory.json reports/expected_corpus_failed_fixtures.json reports/expected_corpus_failed_fixtures.md
+          cat reports/expected_corpus_failed_fixtures.json
+          cat reports/expected_corpus_failed_fixtures.md
+
       - name: Verify expected corpus inventory SHA-256
         if: always()
         run: |
@@ -139,6 +146,8 @@ jobs:
           name: expected-corpus-inventory
           path: |
             reports/expected_corpus_inventory.json
+            reports/expected_corpus_failed_fixtures.json
+            reports/expected_corpus_failed_fixtures.md
             reports/expected_corpus_inventory_sha256.json
 
       - name: Run expected corpus verifier
