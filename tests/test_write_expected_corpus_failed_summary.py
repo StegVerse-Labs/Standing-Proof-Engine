@@ -84,6 +84,26 @@ class ExpectedCorpusFailedSummaryWriterTests(unittest.TestCase):
         self.assertEqual(result, 2)
         self.assertIn("usage: python tools/write_expected_corpus_failed_summary.py", stderr.getvalue())
 
+    def test_write_expected_corpus_failed_summary_malformed_inventory_fails_loudly(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            inventory = root / "inventory.json"
+            summary_json = root / "failed.json"
+            summary_md = root / "failed.md"
+
+            inventory.write_text("{not-json", encoding="utf-8")
+
+            with self.assertRaises(json.JSONDecodeError):
+                main([
+                    "write_expected_corpus_failed_summary.py",
+                    str(inventory),
+                    str(summary_json),
+                    str(summary_md),
+                ])
+
+            self.assertFalse(summary_json.exists())
+            self.assertFalse(summary_md.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
