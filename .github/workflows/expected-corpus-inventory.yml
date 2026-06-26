@@ -1,6 +1,8 @@
 name: Expected Corpus Inventory
 
 on:
+  push:
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -21,8 +23,59 @@ jobs:
           python tools/expected_corpus_inventory.py > reports/expected_corpus_inventory.json || true
           cat reports/expected_corpus_inventory.json
 
+      - name: Write failed fixture summary
+        run: |
+          python - <<'PY' > reports/expected_corpus_failed_fixtures.json
+          import json
+          from pathlib import Path
+          path = Path('reports/expected_corpus_inventory.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          failed = data.get('failed_fixtures') or []
+          print(json.dumps({
+              'failed_fixture_count': len(failed),
+              'failed_fixtures': failed,
+          }, indent=2, sort_keys=True))
+          PY
+          cat reports/expected_corpus_failed_fixtures.json
+
+      - name: Write failed fixture report
+        run: |
+          python - <<'PY' > reports/expected_corpus_failed_fixtures.md
+          import json
+          from pathlib import Path
+          path = Path('reports/expected_corpus_failed_fixtures.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          failed = data.get('failed_fixtures') or []
+          print('# Expected Corpus Failed Fixtures')
+          print()
+          print(f"Failed fixture count: {len(failed)}")
+          print()
+          if failed:
+              for item in failed:
+                  if isinstance(item, dict):
+                      name = item.get('fixture') or item.get('path') or '<unknown fixture>'
+                      print(f"- `{name}`")
+                      checks = item.get('failed_checks') or []
+                      for check in checks:
+                          print(f"  - {check}")
+                  else:
+                      print(f"- `{item}`")
+          else:
+              print('No failed fixtures reported.')
+          PY
+          cat reports/expected_corpus_failed_fixtures.md
+
+      - name: Verify expected corpus inventory SHA-256
+        run: |
+          python tools/verify_artifact_sha256.py reports/expected_corpus_inventory.json 7d3daf3832ff27521aab38f87368c8505cdf203098b580cea62358add0be5756 > reports/expected_corpus_inventory_sha256.json || true
+          cat reports/expected_corpus_inventory_sha256.json
+
       - name: Upload expected corpus inventory
         uses: actions/upload-artifact@v4
         with:
           name: expected-corpus-inventory
-          path: reports/expected_corpus_inventory.json
+          path: |
+            reports/expected_corpus_inventory.json
+            reports/expected_corpus_failed_fixtures.json
+            reports/expected_corpus_failed_fixtures.md
+            reports/expected_corpus_inventory_sha256.json
