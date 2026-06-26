@@ -6,18 +6,19 @@ This file is the current handoff and task source of truth for `StegVerse-Labs/St
 
 ## Done Criteria
 
-The current build pass is done when the active hash-import goal has:
+The current build pass is done when the active destination receipt-chain goal has:
 
 ```text
-destination hash import fixture
-hash import verifier
-hash import expected fixture
-hash import tests
-repo-standing automation
-release-readiness automation
+destination receipt chain fixture
+receipt chain verifier
+receipt chain expected fixture
+receipt chain tests
+repo-standing automation coverage
+CI expected-result coverage
 activation closure
 snapshot update
-remaining external targets listed
+next integration target listed
+archive readiness
 ```
 
 ## Active Repo
@@ -25,7 +26,7 @@ remaining external targets listed
 ```text
 Org: StegVerse-Labs
 Repo: Standing-Proof-Engine
-Active Goal: destination-generated event hash import
+Active Goal: destination-generated receipt chain
 ```
 
 ## Current Handoff State
@@ -69,36 +70,41 @@ repo-standing automation
 release-readiness automation
 destination hash import activation closure
 v0.4.0 snapshot
+Commitment Candidate manifest route
+SDK-bound Commitment Candidate route
+destination receipt chain fixture
+receipt chain verifier
+receipt chain expected fixture
+receipt chain tests
+receipt chain repo-standing coverage
+receipt chain CI expected-result coverage
+destination receipt chain activation closure
+v0.5.0 snapshot
 ```
 
 Still required after this goal:
 
 ```text
-destination-generated receipt chain
-shared expected-result CLI support for event fixtures
+master-records/core-lite live destination receipt chain emission
 Site/Publisher/wiki propagation verification
+shared expected-result CLI support for remaining event fixtures if needed
 ```
 
-## Known Files Added for Hash Import Goal
+## Known Files Added for Current Goal
 
 ```text
-samples/destination_generated_event_hash_001.json
-spe/verify_hash_import.py
-expected_results/hash_import_001.expected.json
-docs/destination_hash_import_binding.md
-docs/destination_hash_import_activation_closure.md
-docs/release_snapshot_v0_4_0.md
-tests/test_hash_import.py
-tools/run_repo_standing.py
-tools/write_release_readiness.py
-docs/no_manual_tasks_automation.md
-docs/automation_backlog_v0_4_0.md
+samples/destination_receipt_chain_001.json
+spe/verify_receipt_chain.py
+expected_results/receipt_chain_001.expected.json
+tests/test_receipt_chain.py
+docs/destination_receipt_chain_activation_closure.md
+docs/release_snapshot_v0_5_0.md
 ```
 
 ## Known Downstream Destinations
 
 ```text
-master-records/core-lite -> destination-generated receipt chain
+master-records/core-lite -> live destination-generated receipt chain emission
 StegVerse-Labs/Site -> public release/status update after tag candidate
 GCAT-BCAT-Engine/Publisher -> publication/update propagation check after tag candidate
 admissibility-wiki -> governance theorem/update propagation check after tag candidate
@@ -107,10 +113,10 @@ stegguardian-wiki -> guardian/standing boundary propagation check after tag cand
 
 ## Tag/Release Readiness
 
-Current candidate after hash import closure:
+Current candidate after receipt-chain closure:
 
 ```text
-v0.4.0
+v0.5.0
 ```
 
 Do not tag until:
@@ -123,7 +129,7 @@ remaining destination targets are listed
 
 ## Next Action
 
-Begin `v0.5.0` destination-generated receipt chain fixture, or hand off to mirror/publisher verification using `docs/propagation_verification_task_v0_3_0.md` and the v0.4.0 snapshot.
+Begin downstream propagation verification or hand off to `master-records/core-lite` so it can emit a live destination-generated receipt chain compatible with `samples/destination_receipt_chain_001.json`.
 
 ## Archive Note
 
