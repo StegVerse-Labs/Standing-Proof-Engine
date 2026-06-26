@@ -1,0 +1,20 @@
+{
+  "receipt_id": "SDK-INTAKE-SPE-CC-001",
+  "receipt_type": "sdk_intake_receipt",
+  "origin_repo": "StegVerse-org/StegVerse-SDK",
+  "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "route": "standing_proof_engine",
+  "artifact_package": "samples/alane_commitment_candidate_manifest.json",
+  "declared_samples": ["case_001", "case_002", "case_003", "case_004", "case_005", "case_006"],
+  "expected_result_fixture_dir": "expected_results",
+  "spe_route_package_id": "SPE-ALANE-COMMITMENT-CANDIDATE-001",
+  "manifest_sha256": "2634656c34115b646271a7eb8cbf66c4a971422eda4cf80bcddfad087f6c53ff",
+  "ingested": true,
+  "manifest_bound": true,
+  "receipt_bound": true,
+  "route_declared": true,
+  "spe_evaluation_required": true,
+  "request_type": "standing_proof",
+  "requested_result": "verify_manifest_package",
+  "expected_package_status": "PASS"
+}
