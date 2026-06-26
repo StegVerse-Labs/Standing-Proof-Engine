@@ -1,0 +1,32 @@
+{
+  "chain_flags": {
+    "downstream_chain_declared": true,
+    "final_receipt_matches_source": true,
+    "hash_import_bound": true,
+    "ordered_receipts_present": true
+  },
+  "chain_id": "chain_001",
+  "chain_result": "CHAIN_BOUND",
+  "chain_type": "destination_generated_receipt_chain",
+  "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "origin_repo": "master-records/core-lite",
+  "receipt_chain": [
+    {
+      "artifact": "samples/master_records_confirmation_001.json",
+      "receipt_id": "confirm_001",
+      "receipt_type": "confirmation"
+    },
+    {
+      "artifact": "samples/destination_event_001.json",
+      "receipt_id": "event_001",
+      "receipt_type": "destination_event"
+    },
+    {
+      "artifact": "samples/destination_generated_event_hash_001.json",
+      "receipt_id": "hash_001",
+      "receipt_type": "destination_hash_import"
+    }
+  ],
+  "source_hash_import": "samples/destination_generated_event_hash_001.json",
+  "source_hash_import_sha256": "3e1f013250c8dd7fd54aa6f913d7116f8f2d8eb2c6d7f6df7df2cb3912f35f76"
+}
