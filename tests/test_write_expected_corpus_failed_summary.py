@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import tempfile
 import unittest
@@ -73,6 +75,14 @@ class ExpectedCorpusFailedSummaryWriterTests(unittest.TestCase):
             summary = json.loads(summary_json.read_text(encoding="utf-8"))
             self.assertEqual(summary, {"failed_fixture_count": 0, "failed_fixtures": []})
             self.assertIn("No failed fixtures reported.", summary_md.read_text(encoding="utf-8"))
+
+    def test_write_expected_corpus_failed_summary_usage_error(self) -> None:
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            result = main(["write_expected_corpus_failed_summary.py"])
+
+        self.assertEqual(result, 2)
+        self.assertIn("usage: python tools/write_expected_corpus_failed_summary.py", stderr.getvalue())
 
 
 if __name__ == "__main__":
