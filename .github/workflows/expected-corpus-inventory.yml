@@ -1,0 +1,28 @@
+name: Expected Corpus Inventory
+
+on:
+  workflow_dispatch:
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate expected corpus inventory
+        run: |
+          mkdir -p reports
+          python tools/expected_corpus_inventory.py > reports/expected_corpus_inventory.json || true
+          cat reports/expected_corpus_inventory.json
+
+      - name: Upload expected corpus inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: expected-corpus-inventory
+          path: reports/expected_corpus_inventory.json
