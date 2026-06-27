@@ -6,6 +6,8 @@ import json
 import sys
 from pathlib import Path
 
+Scalar = str | int | float | bool | None
+
 
 def main(argv: list[str]) -> int:
     if len(argv) != 4:
@@ -33,6 +35,11 @@ def main(argv: list[str]) -> int:
         failed_checks = item.get("failed_checks") or []
         if not isinstance(failed_checks, list):
             raise TypeError(f"expected failed_fixtures[{index}].failed_checks to be a list")
+        for check_index, check in enumerate(failed_checks):
+            if not isinstance(check, (str, int, float, bool)) and check is not None:
+                raise TypeError(
+                    f"expected failed_fixtures[{index}].failed_checks[{check_index}] to be scalar"
+                )
 
     summary = {
         "failed_fixture_count": len(failed),
