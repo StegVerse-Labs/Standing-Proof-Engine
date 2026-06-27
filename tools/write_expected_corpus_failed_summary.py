@@ -30,6 +30,9 @@ def main(argv: list[str]) -> int:
     for index, item in enumerate(failed):
         if not isinstance(item, dict):
             raise TypeError(f"expected failed_fixtures[{index}] to be an object")
+        failed_checks = item.get("failed_checks") or []
+        if not isinstance(failed_checks, list):
+            raise TypeError(f"expected failed_fixtures[{index}].failed_checks to be a list")
 
     summary = {
         "failed_fixture_count": len(failed),
