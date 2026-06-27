@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import contextlib
+import io
+import json
 import subprocess
 import unittest
 from unittest.mock import patch
@@ -69,6 +72,22 @@ class ExpectedCorpusInventoryTests(unittest.TestCase):
         self.assertEqual(result["failed_checks"], ["verify_expected_result"])
         self.assertEqual(result["stdout"], "")
         self.assertEqual(result["stderr"], "bad")
+
+    def test_main_prints_parseable_inventory_json(self) -> None:
+        stdout = io.StringIO()
+        payload = {
+            "spe_result": "PASS",
+            "fixture_count": 0,
+            "failed_fixture_count": 0,
+            "failed_fixtures": [],
+            "fixtures": [],
+        }
+        with patch.object(expected_corpus_inventory, "build_inventory", return_value=payload):
+            with contextlib.redirect_stdout(stdout):
+                result = expected_corpus_inventory.main()
+
+        self.assertEqual(result, 0)
+        self.assertEqual(json.loads(stdout.getvalue()), payload)
 
 
 if __name__ == "__main__":
