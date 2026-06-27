@@ -6,8 +6,6 @@ import json
 import sys
 from pathlib import Path
 
-Scalar = str | int | float | bool | None
-
 
 def _is_scalar(value: object) -> bool:
     return value is None or isinstance(value, (str, int, float, bool))
