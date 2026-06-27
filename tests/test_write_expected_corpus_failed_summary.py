@@ -280,5 +280,26 @@ class ExpectedCorpusFailedSummaryWriterTests(unittest.TestCase):
             self.assertFalse(summary_md.exists())
 
 
+class ExpectedCorpusWorkflowArtifactTests(unittest.TestCase):
+    def assert_workflow_artifact_shape(self, workflow_name: str) -> None:
+        workflow_dir = Path("." + "github") / "workflows"
+        workflow = (workflow_dir / workflow_name).read_text(encoding="utf-8")
+        self.assertIn("push:", workflow)
+        self.assertIn("pull_request:", workflow)
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertIn("tools/write_expected_corpus_failed_summary.py", workflow)
+        self.assertIn("name: expected-corpus-inventory", workflow)
+        self.assertIn("reports/expected_corpus_inventory.json", workflow)
+        self.assertIn("reports/expected_corpus_failed_fixtures.json", workflow)
+        self.assertIn("reports/expected_corpus_failed_fixtures.md", workflow)
+        self.assertIn("reports/expected_corpus_inventory_sha256.json", workflow)
+
+    def test_expected_corpus_inventory_workflow_artifact_shape(self) -> None:
+        self.assert_workflow_artifact_shape("expected-corpus-inventory.yml")
+
+    def test_verify_workflow_artifact_shape(self) -> None:
+        self.assert_workflow_artifact_shape("verify.yml")
+
+
 if __name__ == "__main__":
     unittest.main()
