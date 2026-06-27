@@ -104,6 +104,26 @@ class ExpectedCorpusFailedSummaryWriterTests(unittest.TestCase):
             self.assertFalse(summary_json.exists())
             self.assertFalse(summary_md.exists())
 
+    def test_write_expected_corpus_failed_summary_rejects_non_object_inventory_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            inventory = root / "inventory.json"
+            summary_json = root / "failed.json"
+            summary_md = root / "failed.md"
+
+            inventory.write_text(json.dumps([{"failed_fixtures": []}]), encoding="utf-8")
+
+            with self.assertRaisesRegex(TypeError, "inventory root"):
+                main([
+                    "write_expected_corpus_failed_summary.py",
+                    str(inventory),
+                    str(summary_json),
+                    str(summary_md),
+                ])
+
+            self.assertFalse(summary_json.exists())
+            self.assertFalse(summary_md.exists())
+
     def test_write_expected_corpus_failed_summary_rejects_non_list_failed_fixtures(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
