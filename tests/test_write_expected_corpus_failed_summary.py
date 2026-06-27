@@ -76,6 +76,29 @@ class ExpectedCorpusFailedSummaryWriterTests(unittest.TestCase):
             self.assertEqual(summary, {"failed_fixture_count": 0, "failed_fixtures": []})
             self.assertIn("No failed fixtures reported.", summary_md.read_text(encoding="utf-8"))
 
+    def test_write_expected_corpus_failed_summary_unknown_fixture_fallback(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            inventory = root / "inventory.json"
+            summary_json = root / "failed.json"
+            summary_md = root / "failed.md"
+
+            inventory.write_text(json.dumps({"failed_fixtures": [{"failed_checks": ["decision"]}]}), encoding="utf-8")
+
+            self.assertEqual(
+                main([
+                    "write_expected_corpus_failed_summary.py",
+                    str(inventory),
+                    str(summary_json),
+                    str(summary_md),
+                ]),
+                0,
+            )
+
+            markdown = summary_md.read_text(encoding="utf-8")
+            self.assertIn("`<unknown fixture>`", markdown)
+            self.assertIn("decision", markdown)
+
     def test_write_expected_corpus_failed_summary_usage_error(self) -> None:
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
