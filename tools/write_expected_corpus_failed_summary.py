@@ -27,6 +27,9 @@ def main(argv: list[str]) -> int:
     failed = data.get("failed_fixtures") or []
     if not isinstance(failed, list):
         raise TypeError("expected 'failed_fixtures' to be a list")
+    for index, item in enumerate(failed):
+        if not isinstance(item, dict):
+            raise TypeError(f"expected failed_fixtures[{index}] to be an object")
 
     summary = {
         "failed_fixture_count": len(failed),
@@ -40,13 +43,10 @@ def main(argv: list[str]) -> int:
     lines = ["# Expected Corpus Failed Fixtures", "", f"Failed fixture count: {len(failed)}", ""]
     if failed:
         for item in failed:
-            if isinstance(item, dict):
-                name = item.get("fixture") or item.get("path") or "<unknown fixture>"
-                lines.append(f"- `{name}`")
-                for check in item.get("failed_checks") or []:
-                    lines.append(f"  - {check}")
-            else:
-                lines.append(f"- `{item}`")
+            name = item.get("fixture") or item.get("path") or "<unknown fixture>"
+            lines.append(f"- `{name}`")
+            for check in item.get("failed_checks") or []:
+                lines.append(f"  - {check}")
     else:
         lines.append("No failed fixtures reported.")
 
