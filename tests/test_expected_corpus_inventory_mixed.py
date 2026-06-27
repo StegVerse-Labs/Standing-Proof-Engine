@@ -16,9 +16,9 @@ class MixedExpectedCorpusInventoryTests(unittest.TestCase):
             expected_results.glob.return_value = [first, second, third]
             with patch.object(expected_corpus_inventory, "_run_fixture") as run_fixture:
                 run_fixture.side_effect = [
-                    {"fixture": "expected_results/a.expected.json", "passed": True, "returncode": 0, "failed_checks": [], "stdout": "", "stderr": ""},
-                    {"fixture": "expected_results/b.expected.json", "passed": False, "returncode": 1, "failed_checks": ["spe_result"], "stdout": "", "stderr": "bad-b"},
-                    {"fixture": "expected_results/c.expected.json", "passed": False, "returncode": 1, "failed_checks": ["decision"], "stdout": "", "stderr": "bad-c"},
+                    {"fixture": "expected_results/a.expected.json", "passed": True, "returncode": 0, "failed_checks": [], "stdout": "ok-a", "stderr": ""},
+                    {"fixture": "expected_results/b.expected.json", "passed": False, "returncode": 1, "failed_checks": ["spe_result"], "stdout": "out-b", "stderr": "bad-b"},
+                    {"fixture": "expected_results/c.expected.json", "passed": False, "returncode": 1, "failed_checks": ["decision"], "stdout": "out-c", "stderr": "bad-c"},
                 ]
                 inventory = expected_corpus_inventory.build_inventory()
 
@@ -36,6 +36,10 @@ class MixedExpectedCorpusInventoryTests(unittest.TestCase):
         self.assertEqual(
             [item["stderr"] for item in inventory["failed_fixtures"]],
             ["bad-b", "bad-c"],
+        )
+        self.assertEqual(
+            [item["stdout"] for item in inventory["fixtures"]],
+            ["ok-a", "out-b", "out-c"],
         )
         self.assertEqual(
             [item["fixture"] for item in inventory["fixtures"]],
