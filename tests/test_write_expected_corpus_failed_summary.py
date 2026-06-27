@@ -233,6 +233,29 @@ class ExpectedCorpusFailedSummaryWriterTests(unittest.TestCase):
             self.assertFalse(summary_json.exists())
             self.assertFalse(summary_md.exists())
 
+    def test_write_expected_corpus_failed_summary_rejects_nested_path_label(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            inventory = root / "inventory.json"
+            summary_json = root / "failed.json"
+            summary_md = root / "failed.md"
+
+            inventory.write_text(
+                json.dumps({"failed_fixtures": [{"path": {"name": "expected_results/example.expected.json"}}]}),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(TypeError, r"failed_fixtures\[0\]\.path"):
+                main([
+                    "write_expected_corpus_failed_summary.py",
+                    str(inventory),
+                    str(summary_json),
+                    str(summary_md),
+                ])
+
+            self.assertFalse(summary_json.exists())
+            self.assertFalse(summary_md.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
