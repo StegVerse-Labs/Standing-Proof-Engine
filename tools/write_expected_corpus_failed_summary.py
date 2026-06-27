@@ -22,6 +22,8 @@ def main(argv: list[str]) -> int:
 
     data = json.loads(inventory_path.read_text(encoding="utf-8"))
     failed = data.get("failed_fixtures") or []
+    if not isinstance(failed, list):
+        raise TypeError("expected 'failed_fixtures' to be a list")
 
     summary = {
         "failed_fixture_count": len(failed),
