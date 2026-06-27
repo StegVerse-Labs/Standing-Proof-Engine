@@ -78,6 +78,24 @@ class ExpectedCorpusInventoryTests(unittest.TestCase):
         self.assertEqual(inventory["failed_fixtures"], [item for item in inventory["fixtures"] if not item["passed"]])
         self.assertEqual(inventory["spe_result"], "FAIL")
 
+    def test_build_inventory_reports_pass_when_all_fixtures_pass(self) -> None:
+        first = expected_corpus_inventory.ROOT / "expected_results" / "a.expected.json"
+        second = expected_corpus_inventory.ROOT / "expected_results" / "b.expected.json"
+        with patch.object(expected_corpus_inventory, "EXPECTED_RESULTS") as expected_results:
+            expected_results.exists.return_value = True
+            expected_results.glob.return_value = [first, second]
+            with patch.object(expected_corpus_inventory, "_run_fixture") as run_fixture:
+                run_fixture.side_effect = [
+                    {"fixture": "expected_results/a.expected.json", "passed": True, "returncode": 0, "failed_checks": [], "stdout": "", "stderr": ""},
+                    {"fixture": "expected_results/b.expected.json", "passed": True, "returncode": 0, "failed_checks": [], "stdout": "", "stderr": ""},
+                ]
+                inventory = expected_corpus_inventory.build_inventory()
+
+        self.assertEqual(inventory["spe_result"], "PASS")
+        self.assertEqual(inventory["fixture_count"], 2)
+        self.assertEqual(inventory["failed_fixture_count"], 0)
+        self.assertEqual(inventory["failed_fixtures"], [])
+
     def test_run_fixture_records_passing_result_row(self) -> None:
         fixture = expected_corpus_inventory.ROOT / "expected_results" / "example.expected.json"
         completed = subprocess.CompletedProcess(args=[], returncode=0, stdout="ok\n", stderr="")
