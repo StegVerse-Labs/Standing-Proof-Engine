@@ -21,6 +21,9 @@ def main(argv: list[str]) -> int:
     summary_md_path = Path(argv[3])
 
     data = json.loads(inventory_path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise TypeError("expected inventory root to be an object")
+
     failed = data.get("failed_fixtures") or []
     if not isinstance(failed, list):
         raise TypeError("expected 'failed_fixtures' to be a list")
