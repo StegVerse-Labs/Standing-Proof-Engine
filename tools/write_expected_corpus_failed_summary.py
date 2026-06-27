@@ -9,6 +9,10 @@ from pathlib import Path
 Scalar = str | int | float | bool | None
 
 
+def _is_scalar(value: object) -> bool:
+    return value is None or isinstance(value, (str, int, float, bool))
+
+
 def main(argv: list[str]) -> int:
     if len(argv) != 4:
         print(
@@ -32,11 +36,14 @@ def main(argv: list[str]) -> int:
     for index, item in enumerate(failed):
         if not isinstance(item, dict):
             raise TypeError(f"expected failed_fixtures[{index}] to be an object")
+        for label_key in ("fixture", "path"):
+            if label_key in item and not _is_scalar(item[label_key]):
+                raise TypeError(f"expected failed_fixtures[{index}].{label_key} to be scalar")
         failed_checks = item.get("failed_checks") or []
         if not isinstance(failed_checks, list):
             raise TypeError(f"expected failed_fixtures[{index}].failed_checks to be a list")
         for check_index, check in enumerate(failed_checks):
-            if not isinstance(check, (str, int, float, bool)) and check is not None:
+            if not _is_scalar(check):
                 raise TypeError(
                     f"expected failed_fixtures[{index}].failed_checks[{check_index}] to be scalar"
                 )
