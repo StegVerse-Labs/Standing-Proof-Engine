@@ -34,6 +34,10 @@ class MixedExpectedCorpusInventoryTests(unittest.TestCase):
             [["spe_result"], ["decision"]],
         )
         self.assertEqual(
+            [item["stderr"] for item in inventory["failed_fixtures"]],
+            ["bad-b", "bad-c"],
+        )
+        self.assertEqual(
             [item["fixture"] for item in inventory["fixtures"]],
             ["expected_results/a.expected.json", "expected_results/b.expected.json", "expected_results/c.expected.json"],
         )
