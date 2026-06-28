@@ -1,0 +1,130 @@
+name: SPE Sandbox Sweep
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  sandbox-sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run workflow-equivalent sandbox sweep
+        shell: bash
+        run: |
+          mkdir -p reports/sandbox-sweep
+          cat > reports/sandbox-sweep/commands.txt <<'COMMANDS'
+          python -m spe.verify samples/pressure_demo_001.json
+          python -m spe.verify samples/stale_state_review_commit_001.json
+          python -m spe.verify samples/aegis_incident_standing_001.json
+          python -m spe.verify_manifest samples/manifest.json
+          python -m spe.verify_manifest samples/alane_commitment_candidate_manifest.json
+          python -m spe.verify_sdk_intake samples/sdk_intake_receipt_001.json
+          python -m spe.verify_sdk_intake samples/sdk_intake_cc_001.json
+          python -m spe.verify_pointer samples/master_records_pointer_001.json
+          python -m spe.verify_confirmation samples/master_records_confirmation_001.json
+          python -m spe.verify_destination_event samples/destination_event_001.json
+          python -m spe.verify_destination_event samples/destination_event_deferred_001.json
+          python -m spe.verify_event_replay samples/event_replay_001.json
+          python -m spe.verify_event_replay samples/event_replay_deferred_001.json
+          python -m spe.verify_source_bound samples/source_hash_bound_stale_state_001.json
+          python -m spe.verify_external_refs samples/external_source_ref_stale_state_001.json
+          python -m spe.verify_hash_manifest samples/hash_manifests/external_source_ref_stale_state_001.hashes.json
+          python -m tools.refresh_frozen_hashes --check
+          python -m spe.verify_heartbeat_path_selection samples/heartbeat_path_selection_001.json
+          python -m spe.verify_expected_result expected_results/external_source_ref_stale_state_001.expected.json
+          python -m spe.verify_expected_result expected_results/aegis_incident_standing_001.expected.json
+          python -m spe.verify_expected_result expected_results/sdk_intake_receipt_001.expected.json
+          python -m spe.verify_expected_result expected_results/sdk_intake_cc_001.expected.json
+          python -m spe.verify_expected_result expected_results/commitment_candidate_manifest.expected.json
+          python -m spe.verify_expected_result expected_results/pointer_001.expected.json
+          python -m spe.verify_expected_result expected_results/confirmation_001.expected.json
+          python -m spe.verify_expected_result expected_results/destination_event_001.expected.json
+          python -m spe.verify_expected_result expected_results/destination_event_deferred_001.expected.json
+          python -m spe.verify_expected_result expected_results/event_replay_001.expected.json
+          python -m spe.verify_expected_result expected_results/event_replay_deferred_001.expected.json
+          python -m spe.verify_expected_result expected_results/hash_import_001.expected.json
+          python -m spe.verify_expected_result expected_results/receipt_chain_001.expected.json
+          python tools/run_repo_standing.py
+          python tools/run_repo_standing.py --json
+          python tools/expected_corpus_inventory.py
+          python tools/write_expected_corpus_failed_summary.py reports/expected_corpus_inventory.json reports/expected_corpus_failed_fixtures.json reports/expected_corpus_failed_fixtures.md
+          python -m spe.verify_expected_corpus --json
+          python -m spe.verify_json samples/pressure_demo_001.json
+          python -m spe.verify_json samples/stale_state_review_commit_001.json
+          python -m spe.verify_json samples/aegis_incident_standing_001.json
+          python -m spe.verify_sdk_intake_json samples/sdk_intake_receipt_001.json
+          python -m spe.verify_sdk_intake_json samples/sdk_intake_cc_001.json
+          python -m spe.verify_confirmation_json samples/master_records_confirmation_001.json
+          python -m spe.verify_source_bound --json samples/source_hash_bound_stale_state_001.json
+          python -m spe.verify_external_refs --json samples/external_source_ref_stale_state_001.json
+          python tools/run_repo_standing.py --write-reports
+          python tools/write_release_readiness.py
+          python -m unittest discover -s tests -p 'test_*.py'
+          COMMANDS
+
+          failures=0
+          i=0
+          while IFS= read -r command; do
+            i=$((i + 1))
+            safe_name=$(printf '%03d' "$i")
+            echo "::group::${command}"
+            echo "${command}" > "reports/sandbox-sweep/${safe_name}.command.txt"
+            set +e
+            bash -lc "${command}" > "reports/sandbox-sweep/${safe_name}.stdout.txt" 2> "reports/sandbox-sweep/${safe_name}.stderr.txt"
+            rc=$?
+            set -e
+            echo "${rc}" > "reports/sandbox-sweep/${safe_name}.returncode.txt"
+            cat "reports/sandbox-sweep/${safe_name}.stdout.txt"
+            cat "reports/sandbox-sweep/${safe_name}.stderr.txt" >&2
+            if [ "${rc}" -ne 0 ]; then
+              failures=$((failures + 1))
+              echo "FAIL ${rc}: ${command}" | tee -a reports/sandbox-sweep/failures.txt
+            else
+              echo "PASS: ${command}" | tee -a reports/sandbox-sweep/passes.txt
+            fi
+            echo "::endgroup::"
+          done < reports/sandbox-sweep/commands.txt
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('reports/sandbox-sweep')
+          rows = []
+          for command_file in sorted(root.glob('*.command.txt')):
+              prefix = command_file.stem.split('.')[0]
+              rc_file = root / f'{prefix}.returncode.txt'
+              stdout_file = root / f'{prefix}.stdout.txt'
+              stderr_file = root / f'{prefix}.stderr.txt'
+              rows.append({
+                  'index': int(prefix),
+                  'command': command_file.read_text().strip(),
+                  'returncode': int(rc_file.read_text().strip()),
+                  'stdout_tail': stdout_file.read_text(errors='replace')[-2000:],
+                  'stderr_tail': stderr_file.read_text(errors='replace')[-2000:],
+              })
+          summary = {
+              'command_count': len(rows),
+              'failed_count': sum(1 for row in rows if row['returncode'] != 0),
+              'failures': [row for row in rows if row['returncode'] != 0],
+          }
+          (root / 'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n')
+          PY
+
+          cat reports/sandbox-sweep/summary.json
+          test "${failures}" -eq 0
+
+      - name: Upload sandbox sweep reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spe-sandbox-sweep
+          path: reports/sandbox-sweep/**
