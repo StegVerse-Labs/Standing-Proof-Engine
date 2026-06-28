@@ -1,0 +1,26 @@
+{
+  "receipt_id": "heartbeat-path-selection-001",
+  "receipt_type": "heartbeat_path_selection",
+  "selection_result": "SELECTED",
+  "selected_path": "sdk-to-spe-commitment-candidate",
+  "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "candidate_paths": [
+    {
+      "path_id": "sdk-to-spe-commitment-candidate",
+      "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+      "state": "ACTIVE",
+      "priority": 10
+    },
+    {
+      "path_id": "manual-review-handoff",
+      "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+      "state": "STANDBY",
+      "priority": 20
+    }
+  ],
+  "verification_profile": {
+    "requires_manifest": true,
+    "requires_receipt": true,
+    "requires_standing_check": true
+  }
+}
