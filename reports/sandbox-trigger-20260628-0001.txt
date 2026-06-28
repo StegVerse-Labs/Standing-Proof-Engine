@@ -1,0 +1,2 @@
+trigger: spe-sandbox-sweep
+reason: eliminate manual sandbox execution task
