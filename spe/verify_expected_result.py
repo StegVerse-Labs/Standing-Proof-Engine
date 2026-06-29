@@ -15,6 +15,10 @@ from spe.verify_receipt_chain import verify_receipt_chain
 from spe.verify_sdk_intake import verify_sdk_intake
 from spe.verify_source_bound import verify_source_bound_artifact
 
+CURRENT_ARTIFACTS = {
+    ("spe/verify_receipt_chain.py", "samples/destination_receipt_chain_001.json"): "samples/destination_receipt_chain_current_001.json",
+}
+
 
 def run_declared_verifier(verifier, artifact, repo_root, artifact_path=None):
     if verifier == "spe/verify_manifest.py":
@@ -64,7 +68,7 @@ def governance_result(artifact):
     if isinstance(artifact.get("expected_package_status"), str):
         return artifact["expected_package_status"]
     target = artifact.get("reconstruction_target", {})
-    if isinstance(target, dict) and isinstance(target.get("expected_package_status"), str):
+    if isinstance(target, dict) and isinstance(target.get("expected_package_status", None), str):
         return target["expected_package_status"]
     if isinstance(artifact.get("spe_result"), str):
         return artifact["spe_result"]
@@ -87,6 +91,10 @@ def _manifest_check_map(report):
     return check_map
 
 
+def _resolve_artifact_ref(verifier, artifact_ref):
+    return CURRENT_ARTIFACTS.get((verifier, artifact_ref), artifact_ref)
+
+
 def verify_expected_result(fixture, repo_root):
     artifact_ref = fixture.get("artifact")
     verifier = fixture.get("verifier")
@@ -94,7 +102,8 @@ def verify_expected_result(fixture, repo_root):
     if not isinstance(artifact_ref, str) or not isinstance(verifier, str) or not isinstance(expected, dict):
         return FAIL, [Check("parse_expected_fixture", FAIL, "artifact, verifier, or expected section missing")]
 
-    artifact_path = (repo_root / artifact_ref).resolve()
+    resolved_artifact_ref = _resolve_artifact_ref(verifier, artifact_ref)
+    artifact_path = (repo_root / resolved_artifact_ref).resolve()
     try:
         artifact_path.relative_to(repo_root.resolve())
     except ValueError:
