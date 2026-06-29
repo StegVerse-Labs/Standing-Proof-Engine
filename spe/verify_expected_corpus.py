@@ -31,17 +31,29 @@ def verify_expected_corpus(corpus_dir, repo_root):
 
 
 def main(argv):
-    if len(argv) not in (1, 2):
-        print("usage: python spe/verify_expected_corpus.py [expected_results_dir]", file=sys.stderr)
+    args = list(argv[1:])
+    emit_json = False
+    if "--json" in args:
+        emit_json = True
+        args = [a for a in args if a != "--json"]
+
+    if len(args) > 1:
+        print("usage: python -m spe.verify_expected_corpus [expected_results_dir] [--json]", file=sys.stderr)
         return 2
 
     repo_root = Path(__file__).resolve().parents[1]
     corpus_dir = repo_root / "expected_results"
-    if len(argv) == 2:
-        corpus_dir = (repo_root / argv[1]).resolve()
+    if len(args) == 1:
+        corpus_dir = (repo_root / args[0]).resolve()
 
     status, checks = verify_expected_corpus(corpus_dir, repo_root)
-    print(render(status, checks))
+    if emit_json:
+        print(json.dumps({
+            "spe_result": status,
+            "checks": [{"name": c.name, "status": c.status, "detail": getattr(c, "detail", "")} for c in checks],
+        }, indent=2))
+    else:
+        print(render(status, checks))
     return 0 if status == PASS else 1
 
 

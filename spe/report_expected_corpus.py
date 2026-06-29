@@ -4,7 +4,32 @@ import sys
 from pathlib import Path
 
 from spe.report import render_report
+from spe.verify import FAIL, PASS, Check
 from spe.verify_expected_result import governance_result, run_declared_verifier
+
+
+def _manifest_report_checks(report):
+    """Project a manifest verifier report dict into renderable Check rows.
+
+    The manifest verifier returns a summary dict (not per-check rows like the
+    other verifiers), so render_report cannot consume it directly. Each sample
+    becomes one check row keyed the same way the corpus matcher keys them.
+    """
+    checks = []
+    if not isinstance(report, dict):
+        return [Check("manifest_report", FAIL, "manifest verifier did not return a report")]
+    for sample in report.get("samples", []):
+        if not isinstance(sample, dict):
+            continue
+        label = sample.get("test_id") or sample.get("label") or sample.get("path")
+        status = PASS if sample.get("matches_expectation") is True else FAIL
+        detail = (
+            f"spe={sample.get('spe_result')} "
+            f"governance={sample.get('governance_result')} "
+            f"expected_spe={sample.get('expected_spe_result')}"
+        )
+        checks.append(Check(f"sample:{label}", status, detail))
+    return checks
 
 
 def verifier_alias(verifier_path):
@@ -27,10 +52,16 @@ def render_fixture_report(fixture_path, fixture, repo_root):
     expected = fixture.get("expected", {})
     artifact_path = repo_root / artifact_ref
     artifact = json.loads(artifact_path.read_text(encoding="utf-8"))
-    actual_status, checks = run_declared_verifier(verifier_path, artifact, repo_root)
+    actual_status, checks_or_report = run_declared_verifier(verifier_path, artifact, repo_root, artifact_path)
+    if verifier_path == "spe/verify_manifest.py":
+        report_dict = checks_or_report
+        checks = _manifest_report_checks(report_dict)
+        actual_governance = report_dict.get("spe_result") if isinstance(report_dict, dict) else None
+    else:
+        checks = checks_or_report
+        actual_governance = governance_result(artifact)
     expected_status = expected.get("spe_result")
     expected_governance = expected.get("governance_result")
-    actual_governance = governance_result(artifact)
 
     title = fixture.get("fixture_id") or fixture_path.stem
     report = render_report(
