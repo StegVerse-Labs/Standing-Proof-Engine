@@ -29,12 +29,18 @@
   },
   "review_time": {
     "transition_cell_id": "cell_negative_demo_001",
+    "evidence_packet_hash": "evidence_packet_hash",
+    "authority_state_hash": "authority_state_review_hash",
+    "policy_hash": "policy_state_review_hash",
     "decision": "APPROVED_FOR_REVIEW",
     "replayable": true,
     "review_standing": true
   },
   "commit_time": {
     "transition_cell_id": "cell_negative_demo_001",
+    "evidence_packet_hash": "evidence_packet_hash",
+    "authority_state_hash": "authority_state_commit_hash",
+    "policy_hash": "policy_state_commit_hash",
     "evidence_status": "STALE",
     "authority_status": "CHANGED",
     "policy_status": "CHANGED",
@@ -70,6 +76,6 @@
   },
   "formalism_expectation": {
     "expected_result": "DENY",
-    "expected_spe_status": "FAIL"
+    "expected_spe_status": "PASS"
   }
 }
