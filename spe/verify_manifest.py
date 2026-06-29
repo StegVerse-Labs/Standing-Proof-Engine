@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from spe.result_export import result_dict
+from spe.tt_registry import resolve_transition
 from spe.verify import FAIL, PARTIAL, PASS, verify_artifact
 
 
@@ -23,6 +24,8 @@ def _hash_label(value: str) -> str:
 
 def artifact_from_transition_case(test_case: dict[str, Any]) -> dict[str, Any]:
     transition_cell = test_case["transition_cell"]
+    tt_transition_id = test_case.get("tt_transition_id") or test_case.get("transition_id") or transition_cell
+    tt_resolution = resolve_transition(tt_transition_id)
     failed_dimensions = test_case.get("failed_dimensions", [])
     required_dimensions = test_case.get(
         "required_dimensions",
@@ -54,12 +57,13 @@ def artifact_from_transition_case(test_case: dict[str, Any]) -> dict[str, Any]:
     return {
         "artifact_type": "commitment_candidate_test",
         "test_id": test_case["test_id"],
-        "schema_version": "0.2",
+        "schema_version": "0.3",
         "generated_from": "transition_case_manifest",
         "scenario": test_case.get("scenario", test_case["test_id"]),
         "historical_review": {
             "review_id": test_case.get("historical_review_ref"),
             "transition_cell_id": transition_cell,
+            "tt_transition_id": tt_resolution.transition_id,
             "review_artifact_hash": f"review_{_hash_label(test_case.get('historical_review_ref', 'unknown'))}",
             "evidence_packet_hash": f"evidence_{_hash_label('_'.join(test_case.get('evidence_refs', ['unknown'])))}",
             "decision": "REVIEWED",
@@ -70,6 +74,8 @@ def artifact_from_transition_case(test_case: dict[str, Any]) -> dict[str, Any]:
             "candidate_id": test_case.get("candidate_id", f"candidate_{test_case['test_id']}"),
             "candidate_type": "commitment_candidate",
             "transition_cell_id": transition_cell,
+            "tt_transition_id": tt_resolution.transition_id,
+            "tt_code_ref": tt_resolution.code_ref,
             "requested_action": test_case.get("requested_action"),
             "actor": test_case.get("actor"),
             "target": test_case.get("target"),
@@ -105,6 +111,8 @@ def artifact_from_transition_case(test_case: dict[str, Any]) -> dict[str, Any]:
             "receipt_id": test_case.get("receipt_id", f"receipt_{test_case['test_id']}"),
             "receipt_type": "commit_time_standing_receipt",
             "transition_cell_id": transition_cell,
+            "tt_transition_id": tt_resolution.transition_id,
+            "tt_transition_receipt": tt_resolution.as_receipt(),
             "candidate_carries_authority": False,
             "commit_allowed": False,
             "failed_dimensions": failed_dimensions,
@@ -168,6 +176,8 @@ def verify_manifest(manifest_path: Path) -> tuple[str, dict[str, Any]]:
             "matches_expectation": matches,
             "artifact_hash": exported["hashes"]["artifact"],
             "artifact_type": exported["artifact_type"],
+            "tt_transition_id": artifact.get("receipt", {}).get("tt_transition_id"),
+            "tt_code_ref": artifact.get("commitment_candidate", {}).get("tt_code_ref"),
             "check_count": len(checks),
             "source": "path" if "path" in sample else "transition_case",
             "label": _sample_label(sample),
