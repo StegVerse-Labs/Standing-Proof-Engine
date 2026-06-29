@@ -1,0 +1,41 @@
+{
+  "expectation_id": "spe-commitment-candidate-receipt-chain-v0-1",
+  "manifest_path": "samples/alane_commitment_candidate_manifest.json",
+  "expected_sample_count": 6,
+  "expected_artifact_type": "commitment_candidate_test",
+  "required_chain_fields": [
+    "historical_review.review_id",
+    "historical_review.transition_cell_id",
+    "historical_review.tt_transition_id",
+    "commitment_candidate.candidate_id",
+    "commitment_candidate.tt_transition_id",
+    "commitment_candidate.tt_code_ref",
+    "standing_evaluation.result",
+    "receipt.receipt_id",
+    "receipt.tt_transition_id",
+    "receipt.tt_transition_receipt",
+    "receipt.decision"
+  ],
+  "required_tt_receipt_fields": [
+    "receipt_type",
+    "canonical_source",
+    "transition_id",
+    "transition_name",
+    "code_ref",
+    "implementation_status",
+    "fixture_ref",
+    "receipt_schema_ref",
+    "required_field",
+    "resolved",
+    "decision",
+    "reason"
+  ],
+  "expected_tt_source": "Admissible-Existence/TT",
+  "expected_tt_decision": "ALLOW",
+  "expected_final_decision": "FAIL_CLOSED",
+  "non_claims": [
+    "Receipt-chain integration does not grant commit-time permission.",
+    "Receipt-chain integration does not make a Commitment Candidate authorizing.",
+    "Receipt-chain integration does not move TT source authority into SPE."
+  ]
+}
