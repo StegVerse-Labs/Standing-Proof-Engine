@@ -1,5 +1,5 @@
 {
-  "schema": "spe_tt_transition_authority_manifest.v0.1",
+  "schema": "spe_tt_transition_authority_manifest.v0.2",
   "canonical_source": "Admissible-Existence/TT",
   "source_status": "TT handlers implemented for all current families",
   "activation_boundary": "SPE consumes TT transition identity and handler references; SPE still performs commit-time standing reconstruction.",
@@ -7,16 +7,20 @@
     "reviewed_candidate_to_commit_attempt": "T-221"
   },
   "transition_requirements": {
-    "T-221": {
-      "transition_name": "Irreversible External Commit",
-      "transition_family": "External Reality",
-      "code_ref": "engine/transition_handlers/external_reality.py::irreversible_external_commit",
-      "implementation_status": "implemented",
-      "fixture_ref": "fixtures/transition-elements/t-221.irreversible-external-commit.json",
-      "receipt_schema_ref": "schemas/transition-element-receipt.schema.json",
-      "required_field": "standing_reconstructed",
-      "fail_closed_when_missing": true
-    }
+    "T-220": {"transition_name":"Public Publication","transition_family":"External Reality","code_ref":"engine/transition_handlers/external_reality.py::public_publication","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-220.public-publication.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"publication_authorized","fail_closed_when_missing":true},
+    "T-221": {"transition_name":"Irreversible External Commit","transition_family":"External Reality","code_ref":"engine/transition_handlers/external_reality.py::irreversible_external_commit","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-221.irreversible-external-commit.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"standing_reconstructed","fail_closed_when_missing":true},
+    "T-222": {"transition_name":"Financial Transfer","transition_family":"External Reality","code_ref":"engine/transition_handlers/external_reality.py::financial_transfer","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-222.financial-transfer.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"transfer_authorized","fail_closed_when_missing":true},
+    "T-223": {"transition_name":"Legal State Change","transition_family":"External Reality","code_ref":"engine/transition_handlers/external_reality.py::legal_state_change","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-223.legal-state-change.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"legal_change_authorized","fail_closed_when_missing":true},
+    "T-224": {"transition_name":"Identity State Change","transition_family":"External Reality","code_ref":"engine/transition_handlers/external_reality.py::identity_state_change","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-224.identity-state-change.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"identity_change_authorized","fail_closed_when_missing":true},
+    "T-225": {"transition_name":"Credential Revocation","transition_family":"External Reality","code_ref":"engine/transition_handlers/external_reality.py::credential_revocation","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-225.credential-revocation.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"revocation_authorized","fail_closed_when_missing":true},
+    "T-226": {"transition_name":"Human-Affecting Decision","transition_family":"External Reality","code_ref":"engine/transition_handlers/external_reality.py::human_affecting_decision","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-226.human-affecting-decision.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"human_impact_reviewed","fail_closed_when_missing":true},
+    "T-227": {"transition_name":"Biological/Physical Support Change","transition_family":"External Reality","code_ref":"engine/transition_handlers/external_reality.py::biological_physical_support_change","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-227.biological-physical-support-change.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"support_change_authorized","fail_closed_when_missing":true},
+    "T-300": {"transition_name":"Receipt Reconstruction","transition_family":"Reconstruction","code_ref":"engine/transition_handlers/reconstruction.py::receipt_reconstruction","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-300.receipt-reconstruction.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"receipt_reconstructable","fail_closed_when_missing":true},
+    "T-301": {"transition_name":"State Replay","transition_family":"Reconstruction","code_ref":"engine/transition_handlers/reconstruction.py::state_replay","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-301.state-replay.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"state_replayable","fail_closed_when_missing":true},
+    "T-302": {"transition_name":"Bundle Reconstruction","transition_family":"Reconstruction","code_ref":"engine/transition_handlers/reconstruction.py::bundle_reconstruction","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-302.bundle-reconstruction.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"bundle_reconstructable","fail_closed_when_missing":true},
+    "T-303": {"transition_name":"Master-Record Reconstruction","transition_family":"Reconstruction","code_ref":"engine/transition_handlers/reconstruction.py::master_record_reconstruction","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-303.master-record-reconstruction.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"master_record_reconstructable","fail_closed_when_missing":true},
+    "T-304": {"transition_name":"Ecosystem Reconstruction","transition_family":"Reconstruction","code_ref":"engine/transition_handlers/reconstruction.py::ecosystem_reconstruction","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-304.ecosystem-reconstruction.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"ecosystem_reconstructable","fail_closed_when_missing":true},
+    "T-305": {"transition_name":"Reconstruction Gap Declaration","transition_family":"Reconstruction","code_ref":"engine/transition_handlers/reconstruction.py::reconstruction_gap_declaration","implementation_status":"implemented","fixture_ref":"fixtures/transition-elements/t-305.reconstruction-gap-declaration.json","receipt_schema_ref":"schemas/transition-element-receipt.schema.json","required_field":"reconstruction_gap_declared","fail_closed_when_missing":true}
   },
   "fail_closed_rule": "If a Commitment Candidate references a transition without a known TT transition id, implemented handler, fixture, or receipt schema, SPE must FAIL_CLOSED before standing can bind consequence.",
   "non_claims": [
