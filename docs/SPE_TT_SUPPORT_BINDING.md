@@ -9,13 +9,15 @@
 
 ## Done Definition
 
-This step is done when SPE has a checked support-family TT snapshot covering validation, classification, boundary, installation, runtime, durable, and quarantine/failure transitions.
+This step is done when SPE has a checked support-family TT snapshot covering validation, classification, boundary, installation, runtime, durable, and quarantine/failure transitions, and runtime support-transition cases resolve against the snapshot before standing reconstruction.
 
 ## Added Files
 
 ```text
 data/tt/tt_support_transition_authority_manifest.json
 spe/check_tt_support_manifest.py
+spe/verify_tt_support_cases.py
+samples/tt_support_transition_cases_manifest.json
 ```
 
 ## Covered Families
@@ -30,6 +32,22 @@ Commit
 Quarantine/Failure
 ```
 
+## Runtime Support Case Coverage
+
+The runtime support cases exercise one representative transition from each support family:
+
+```text
+T-020 Schema Validation
+T-041 Risk Classification
+T-102 Boundary Crossing
+T-123 Workflow Installation
+T-151 CI Execution
+T-181 Receipt Record
+T-261 Quarantine Transition
+```
+
+These cases verify that SPE can resolve TT support transitions, required fields, code references, and expected support decisions before the commit-time standing result is evaluated.
+
 ## Workflow
 
 ```text
@@ -43,6 +61,7 @@ The workflow now runs:
 ```bash
 python spe/check_tt_authority_manifest.py
 python spe/check_tt_support_manifest.py
+python spe/verify_tt_support_cases.py samples/tt_support_transition_cases_manifest.json
 python spe/verify_tt_manifest.py samples/alane_commitment_candidate_manifest.json
 python spe/verify_manifest.py samples/alane_commitment_candidate_manifest.json
 ```
