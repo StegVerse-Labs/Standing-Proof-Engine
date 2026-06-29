@@ -14,28 +14,19 @@ Active Goal: GitHub sandbox verification to green activation path
 
 ## Current Sandbox State
 
-The GitHub PR sandbox has advanced past these earlier failures:
+GitHub PR sandbox verification is now green.
+
+Sandbox PR:
 
 ```text
-tools.refresh_frozen_hashes import path
-spe.verify_heartbeat_path_selection import path
-hash import expected-result fixture
+PR: #11
+Head SHA: db74d7e18e3f5db512a7bea9e4665e5f04c04767
+Expected Corpus Inventory: success
+Verify Standing Proof: success
+Sandbox PR state: closed unmerged, not intended for merge
 ```
 
-The latest visible failing class was the receipt-chain expected fixture path. The screenshot confirmed:
-
-```text
-parse_expected_fixture: PASS
-expected_spe_result: FAIL - expected PASS, got FAIL
-expected_governance_result: PASS
-source_hash_import_binding: FAIL - expected PASS, got FAIL
-source_hash_import_verifies: PASS
-receipt_chain_order: PASS
-receipt_chain_artifacts_exist: PASS
-receipt_chain_final_binding: PASS
-receipt_chain_flags: PASS
-receipt_chain_result: PASS
-```
+The prior receipt-chain expected fixture failure was resolved by the current artifact resolver patch in `spe/verify_expected_result.py`.
 
 ## Installed Current Fixes
 
@@ -47,20 +38,17 @@ samples/destination_generated_event_hash_001.json
 spe/verify_hash_import.py
 samples/destination_receipt_chain_current_001.json
 spe/verify_expected_result.py
+SPE_MIRROR_HANDOFF.md
 ```
-
-`spe/verify_expected_result.py` now resolves the stale receipt-chain expected artifact reference to `samples/destination_receipt_chain_current_001.json` before invoking the strict receipt-chain verifier.
 
 ## Known Remaining Work
 
 Destination Org/Repo: `StegVerse-Labs/Standing-Proof-Engine`
 
 ```text
-1. Trigger a fresh GitHub PR sandbox from the latest main commit.
-2. Verify the receipt-chain expected fixture now passes through the resolver patch.
-3. Continue through the next failing workflow step, if any.
-4. Patch the exact failing module/sample/fixture and rerun the GitHub sandbox without manual user action.
-5. Once full green, close sandbox PRs/branches and record final activation evidence here.
+1. Tag/release v0.5.0 if release tooling is available.
+2. Verify propagation/update targets after tag candidate.
+3. Close or delete any remaining sandbox branches if branch-delete tooling is available.
 ```
 
 ## Known Downstream Destinations
@@ -75,18 +63,18 @@ stegguardian-wiki -> guardian/standing boundary propagation check after tag cand
 
 ## Tag/Release Readiness
 
-Current tag candidate remains blocked until the GitHub sandbox reaches full green verification.
+Current tag candidate:
 
 ```text
-v0.5.0 candidate: blocked by sandbox verification
+v0.5.0 candidate: sandbox verified green
 ```
 
 ## Next Integration Goal Candidate
 
-After full green verification, the next integration candidate is SDK-to-SPE commitment-candidate intake.
+After tag/release handling, the next integration candidate is SDK-to-SPE commitment-candidate intake.
 
 Reason: SPE should consume manifest/receipt-bound Commitment Candidate / Execution Authority Request material from the SDK at commit-time.
 
 ## Archive Note
 
-This thread is not archive-ready until the GitHub sandbox reaches green verification or this handoff records a precise successor task that owns the remaining failure.
+This thread is ready for archive after tag/release availability is checked and any release/update propagation successor task is recorded or created.
