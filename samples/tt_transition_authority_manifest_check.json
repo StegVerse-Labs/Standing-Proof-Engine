@@ -1,0 +1,28 @@
+{
+  "sample_id": "spe-tt-authority-manifest-check-v0-2",
+  "purpose": "Confirm SPE downstream TT authority snapshot covers External Reality and Reconstruction transitions needed for consequence and reconstructability checks.",
+  "expected_schema": "spe_tt_transition_authority_manifest.v0.2",
+  "expected_canonical_source": "Admissible-Existence/TT",
+  "required_transition_ids": [
+    "T-220",
+    "T-221",
+    "T-222",
+    "T-223",
+    "T-224",
+    "T-225",
+    "T-226",
+    "T-227",
+    "T-300",
+    "T-301",
+    "T-302",
+    "T-303",
+    "T-304",
+    "T-305"
+  ],
+  "expected_implementation_status": "implemented",
+  "non_claims": [
+    "This sample does not redefine TT semantics.",
+    "This sample does not grant commit-time permission.",
+    "This sample only checks SPE downstream binding coverage."
+  ]
+}
