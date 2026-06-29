@@ -1,0 +1,2 @@
+trigger: pr-sandbox
+reason: rerun GitHub sandbox after receipt-chain expected-result resolver and handoff update
