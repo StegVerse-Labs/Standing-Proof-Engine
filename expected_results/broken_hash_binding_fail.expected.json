@@ -11,7 +11,7 @@
       "standing_rule": "PASS",
       "standing_evaluation": "PASS",
       "receipt": "PASS",
-      "formalism_expectation": "FAIL",
+      "formalism_expectation": "PASS",
       "source_hash_bindings": "FAIL"
     }
   }
