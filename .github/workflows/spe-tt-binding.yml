@@ -7,16 +7,19 @@ on:
       - "data/tt/tt_transition_authority_manifest.json"
       - "data/tt/tt_support_transition_authority_manifest.json"
       - "spe/tt_registry.py"
+      - "spe/tt_full_snapshot.py"
       - "spe/verify_manifest.py"
       - "spe/verify_tt_manifest.py"
       - "spe/check_tt_authority_manifest.py"
       - "spe/check_tt_support_manifest.py"
+      - "spe/check_tt_full_snapshot.py"
       - "spe/verify_tt_support_cases.py"
       - "spe/verify_commitment_candidate_receipt_chain.py"
       - "samples/alane_commitment_candidate_manifest.json"
       - "samples/tt_transition_authority_manifest_check.json"
       - "samples/tt_support_transition_cases_manifest.json"
       - "samples/commitment_candidate_receipt_chain_expectation.json"
+      - "samples/tt_full_snapshot_expectation.json"
       - ".github/workflows/spe-tt-binding.yml"
 
 jobs:
@@ -33,6 +36,9 @@ jobs:
 
       - name: Check TT support manifest coverage
         run: python spe/check_tt_support_manifest.py
+
+      - name: Check full TT transition snapshot
+        run: python spe/check_tt_full_snapshot.py
 
       - name: Verify runtime support TT cases
         run: python spe/verify_tt_support_cases.py samples/tt_support_transition_cases_manifest.json
