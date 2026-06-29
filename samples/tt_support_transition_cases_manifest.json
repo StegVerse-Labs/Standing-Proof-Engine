@@ -1,0 +1,18 @@
+{
+  "manifest_id": "SPE-TT-SUPPORT-TRANSITION-CASES-001",
+  "purpose": "Verify SPE can resolve support-family TT transitions during runtime Commitment Candidate support evaluation.",
+  "samples": [
+    {"test_id": "support-t020-schema", "tt_transition_id": "T-020", "field": "schema_valid", "value": true, "expected_decision": "ALLOW"},
+    {"test_id": "support-t041-risk", "tt_transition_id": "T-041", "field": "risk_class", "value": "medium", "expected_decision": "ALLOW"},
+    {"test_id": "support-t102-boundary-crossing", "tt_transition_id": "T-102", "field": "crossing_authorized", "value": true, "expected_decision": "ALLOW"},
+    {"test_id": "support-t123-workflow-installation", "tt_transition_id": "T-123", "field": "workflow_valid", "value": true, "expected_decision": "ALLOW"},
+    {"test_id": "support-t151-ci-runtime", "tt_transition_id": "T-151", "field": "ci_runtime_allowed", "value": true, "expected_decision": "ALLOW"},
+    {"test_id": "support-t181-receipt-record", "tt_transition_id": "T-181", "field": "receipt_recorded", "value": true, "expected_decision": "ALLOW"},
+    {"test_id": "support-t261-quarantine", "tt_transition_id": "T-261", "field": "quarantine_required", "value": true, "expected_decision": "QUARANTINE"}
+  ],
+  "non_claims": [
+    "This manifest does not redefine TT semantics.",
+    "This manifest does not grant commit-time permission.",
+    "This manifest verifies support-transition resolution before standing reconstruction."
+  ]
+}
