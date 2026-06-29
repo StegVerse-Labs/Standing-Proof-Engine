@@ -1,0 +1,27 @@
+{
+  "schema": "spe_tt_transition_authority_manifest.v0.1",
+  "canonical_source": "Admissible-Existence/TT",
+  "source_status": "TT handlers implemented for all current families",
+  "activation_boundary": "SPE consumes TT transition identity and handler references; SPE still performs commit-time standing reconstruction.",
+  "legacy_transition_cell_aliases": {
+    "reviewed_candidate_to_commit_attempt": "T-221"
+  },
+  "transition_requirements": {
+    "T-221": {
+      "transition_name": "Irreversible External Commit",
+      "transition_family": "External Reality",
+      "code_ref": "engine/transition_handlers/external_reality.py::irreversible_external_commit",
+      "implementation_status": "implemented",
+      "fixture_ref": "fixtures/transition-elements/t-221.irreversible-external-commit.json",
+      "receipt_schema_ref": "schemas/transition-element-receipt.schema.json",
+      "required_field": "standing_reconstructed",
+      "fail_closed_when_missing": true
+    }
+  },
+  "fail_closed_rule": "If a Commitment Candidate references a transition without a known TT transition id, implemented handler, fixture, or receipt schema, SPE must FAIL_CLOSED before standing can bind consequence.",
+  "non_claims": [
+    "This manifest is a downstream consumer snapshot, not the canonical TT source.",
+    "This manifest does not redefine TT transition semantics.",
+    "This manifest does not grant commit-time permission."
+  ]
+}
