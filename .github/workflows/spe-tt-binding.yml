@@ -5,10 +5,12 @@ on:
   push:
     paths:
       - "data/tt/tt_transition_authority_manifest.json"
+      - "data/tt/tt_support_transition_authority_manifest.json"
       - "spe/tt_registry.py"
       - "spe/verify_manifest.py"
       - "spe/verify_tt_manifest.py"
       - "spe/check_tt_authority_manifest.py"
+      - "spe/check_tt_support_manifest.py"
       - "samples/alane_commitment_candidate_manifest.json"
       - "samples/tt_transition_authority_manifest_check.json"
       - ".github/workflows/spe-tt-binding.yml"
@@ -24,6 +26,9 @@ jobs:
 
       - name: Check TT authority manifest coverage
         run: python spe/check_tt_authority_manifest.py
+
+      - name: Check TT support manifest coverage
+        run: python spe/check_tt_support_manifest.py
 
       - name: Verify TT-bound Commitment Candidate manifest
         run: python spe/verify_tt_manifest.py samples/alane_commitment_candidate_manifest.json
