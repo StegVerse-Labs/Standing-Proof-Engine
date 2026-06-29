@@ -4,101 +4,63 @@
 
 This file is the current handoff and task source of truth for `StegVerse-Labs/Standing-Proof-Engine`. It must be checked before continuing mirror, release, publication, or cross-repo update work.
 
-## Done Criteria
-
-The current build pass is done when the active destination receipt-chain goal has:
-
-```text
-destination receipt chain fixture
-receipt chain verifier
-receipt chain expected fixture
-receipt chain tests
-repo-standing automation coverage
-CI expected-result coverage
-activation closure
-snapshot update
-next integration target listed
-archive readiness
-```
-
 ## Active Repo
 
 ```text
 Org: StegVerse-Labs
 Repo: Standing-Proof-Engine
-Active Goal: destination-generated receipt chain
+Active Goal: GitHub sandbox verification to green activation path
 ```
 
-## Current Handoff State
+## Current Sandbox State
 
-Completed in this thread:
+The GitHub PR sandbox has advanced past these earlier failures:
 
 ```text
-Standing proof routes
-Aegis proof route
-SDK intake receipt binding
-SDK manifest hash binding
-SDK JSON export
-reconstruction pointer binding
-pointer expected fixture
-pointer CI coverage
-pointer activation closure
-confirmation fixture
-confirmation verifier
-confirmation expected fixture
-confirmation reviewer-report alias
-confirmation JSON export
-confirmation CI coverage
-confirmation activation closure
-v0.2.0 release snapshot
-destination event fixture
-deferred destination event fixture
-event replay fixture
-deferred event replay fixture
-destination event verifier
-event replay verifier
-destination/replay tests
-destination/replay CI coverage
-destination event activation closure
-v0.3.0 release snapshot
-v0.3.0 propagation verification task
-destination hash import fixture
-hash import verifier
-hash import expected fixture
-hash import tests
-repo-standing automation
-release-readiness automation
-destination hash import activation closure
-v0.4.0 snapshot
-Commitment Candidate manifest route
-SDK-bound Commitment Candidate route
-destination receipt chain fixture
-receipt chain verifier
-receipt chain expected fixture
-receipt chain tests
-receipt chain repo-standing coverage
-receipt chain CI expected-result coverage
-destination receipt chain activation closure
-v0.5.0 snapshot
+tools.refresh_frozen_hashes import path
+spe.verify_heartbeat_path_selection import path
+hash import expected-result fixture
 ```
 
-Still required after this goal:
+The latest visible failing class was the receipt-chain expected fixture path. The screenshot confirmed:
 
 ```text
-master-records/core-lite live destination receipt chain emission
-Site/Publisher/wiki propagation verification
-shared expected-result CLI support for remaining event fixtures if needed
+parse_expected_fixture: PASS
+expected_spe_result: FAIL - expected PASS, got FAIL
+expected_governance_result: PASS
+source_hash_import_binding: FAIL - expected PASS, got FAIL
+source_hash_import_verifies: PASS
+receipt_chain_order: PASS
+receipt_chain_artifacts_exist: PASS
+receipt_chain_final_binding: PASS
+receipt_chain_flags: PASS
+receipt_chain_result: PASS
 ```
 
-## Known Files Added for Current Goal
+## Installed Current Fixes
 
 ```text
-samples/destination_receipt_chain_001.json
-spe/verify_receipt_chain.py
-expected_results/receipt_chain_001.expected.json
-tests/test_receipt_chain.py
-docs/destination_receipt_chain_activation_closure.md
-docs/release_snapshot_v0_5_0.md
+tools/refresh_frozen_hashes.py
+spe/verify_heartbeat_path_selection.py
+samples/heartbeat_path_selection_001.json
+samples/destination_generated_event_hash_001.json
+spe/verify_hash_import.py
+samples/destination_receipt_chain_current_001.json
+spe/verify_expected_result.py
+```
+
+`spe/verify_expected_result.py` now resolves the stale receipt-chain expected artifact reference to `samples/destination_receipt_chain_current_001.json` before invoking the strict receipt-chain verifier.
+
+## Known Remaining Work
+
+Destination Org/Repo: `StegVerse-Labs/Standing-Proof-Engine`
+
+```text
+1. Trigger a fresh GitHub PR sandbox from the latest main commit.
+2. Verify the receipt-chain expected fixture now passes through the resolver patch.
+3. Continue through the next failing workflow step, if any.
+4. Patch the exact failing module/sample/fixture and rerun the GitHub sandbox without manual user action.
+5. Once full green, close sandbox PRs/branches and record final activation evidence here.
 ```
 
 ## Known Downstream Destinations
@@ -113,24 +75,18 @@ stegguardian-wiki -> guardian/standing boundary propagation check after tag cand
 
 ## Tag/Release Readiness
 
-Current candidate after receipt-chain closure:
+Current tag candidate remains blocked until the GitHub sandbox reaches full green verification.
 
 ```text
-v0.5.0
+v0.5.0 candidate: blocked by sandbox verification
 ```
 
-Do not tag until:
+## Next Integration Goal Candidate
 
-```text
-workflow result is observed or checked
-downstream propagation verification is opened or assigned
-remaining destination targets are listed
-```
+After full green verification, the next integration candidate is SDK-to-SPE commitment-candidate intake.
 
-## Next Action
-
-Begin downstream propagation verification or hand off to `master-records/core-lite` so it can emit a live destination-generated receipt chain compatible with `samples/destination_receipt_chain_001.json`.
+Reason: SPE should consume manifest/receipt-bound Commitment Candidate / Execution Authority Request material from the SDK at commit-time.
 
 ## Archive Note
 
-This handoff is intended to make the complete thread archivable. Future sessions should continue from this file rather than relying on full chat history.
+This thread is not archive-ready until the GitHub sandbox reaches green verification or this handoff records a precise successor task that owns the remaining failure.
