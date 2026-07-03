@@ -13,6 +13,7 @@ on:
       - "spe/check_tt_authority_manifest.py"
       - "spe/check_tt_support_manifest.py"
       - "spe/check_tt_full_snapshot.py"
+      - "spe/check_full_snapshot_cases.py"
       - "spe/verify_tt_support_cases.py"
       - "spe/verify_commitment_candidate_receipt_chain.py"
       - "samples/alane_commitment_candidate_manifest.json"
@@ -39,6 +40,9 @@ jobs:
 
       - name: Check full TT transition snapshot
         run: python spe/check_tt_full_snapshot.py
+
+      - name: Check full snapshot case resolution
+        run: python spe/check_full_snapshot_cases.py samples/alane_commitment_candidate_manifest.json
 
       - name: Verify runtime support TT cases
         run: python spe/verify_tt_support_cases.py samples/tt_support_transition_cases_manifest.json
