@@ -1,0 +1,30 @@
+name: SPE TT Goal Status
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - SPE TT Binding
+    types:
+      - completed
+  push:
+    paths:
+      - "samples/spe_tt_activation_goal.json"
+      - "spe/write_tt_goal_status.py"
+      - ".github/workflows/spe-tt-goal-status.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout SPE
+        uses: actions/checkout@v4
+      - name: Write status locally
+        run: python spe/write_tt_goal_status.py
+      - name: Show status
+        run: |
+          cat docs/SPE_TT_GOAL_STATUS.md
+          cat docs/SPE_TT_GOAL_STATUS.json
