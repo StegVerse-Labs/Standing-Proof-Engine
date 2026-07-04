@@ -1,0 +1,37 @@
+{
+  "goal_id": "spe-tt-integration-activation-v0-1",
+  "repository": "StegVerse-Labs/Standing-Proof-Engine",
+  "required_checks": [
+    "tt_authority_manifest_coverage",
+    "tt_support_manifest_coverage",
+    "tt_full_snapshot_consumption",
+    "full_snapshot_case_resolution",
+    "runtime_support_tt_cases",
+    "commitment_candidate_receipt_chain",
+    "tt_bound_commitment_candidate_manifest",
+    "spe_manifest_route"
+  ],
+  "required_docs": [
+    "docs/SPE_TT_BINDING.md",
+    "docs/SPE_TT_SUPPORT_BINDING.md",
+    "docs/SPE_COMMITMENT_CANDIDATE_RECEIPT_CHAIN.md",
+    "docs/SPE_FULL_TT_SNAPSHOT.md",
+    "docs/SPE_FULL_SNAPSHOT_CASE_RESOLUTION.md"
+  ],
+  "required_scripts": [
+    "spe/check_tt_authority_manifest.py",
+    "spe/check_tt_support_manifest.py",
+    "spe/check_tt_full_snapshot.py",
+    "spe/check_full_snapshot_cases.py",
+    "spe/verify_tt_support_cases.py",
+    "spe/verify_commitment_candidate_receipt_chain.py",
+    "spe/verify_tt_manifest.py",
+    "spe/verify_manifest.py"
+  ],
+  "activation_state": "ready_when_all_checks_pass",
+  "non_claims": [
+    "Activation does not make SPE the TT source of truth.",
+    "Activation does not grant commit-time permission.",
+    "Activation does not make Commitment Candidates authorizing."
+  ]
+}
