@@ -6,21 +6,20 @@ on:
     paths:
       - "data/tt/tt_transition_authority_manifest.json"
       - "data/tt/tt_support_transition_authority_manifest.json"
-      - "spe/tt_registry.py"
       - "spe/tt_full_snapshot.py"
-      - "spe/verify_manifest.py"
-      - "spe/verify_tt_manifest.py"
       - "spe/check_tt_authority_manifest.py"
       - "spe/check_tt_support_manifest.py"
       - "spe/check_tt_full_snapshot.py"
       - "spe/check_full_snapshot_cases.py"
       - "spe/verify_tt_support_cases.py"
       - "spe/verify_commitment_candidate_receipt_chain.py"
+      - "spe/check_spe_tt_activation_goal.py"
       - "samples/alane_commitment_candidate_manifest.json"
       - "samples/tt_transition_authority_manifest_check.json"
       - "samples/tt_support_transition_cases_manifest.json"
       - "samples/commitment_candidate_receipt_chain_expectation.json"
       - "samples/tt_full_snapshot_expectation.json"
+      - "samples/spe_tt_activation_goal.json"
       - ".github/workflows/spe-tt-binding.yml"
 
 jobs:
@@ -31,27 +30,21 @@ jobs:
     steps:
       - name: Checkout SPE
         uses: actions/checkout@v4
-
       - name: Check TT authority manifest coverage
         run: python spe/check_tt_authority_manifest.py
-
       - name: Check TT support manifest coverage
         run: python spe/check_tt_support_manifest.py
-
       - name: Check full TT transition snapshot
         run: python spe/check_tt_full_snapshot.py
-
       - name: Check full snapshot case resolution
         run: python spe/check_full_snapshot_cases.py samples/alane_commitment_candidate_manifest.json
-
       - name: Verify runtime support TT cases
         run: python spe/verify_tt_support_cases.py samples/tt_support_transition_cases_manifest.json
-
       - name: Verify Commitment Candidate receipt chain
         run: python spe/verify_commitment_candidate_receipt_chain.py samples/commitment_candidate_receipt_chain_expectation.json
-
       - name: Verify TT-bound Commitment Candidate manifest
         run: python spe/verify_tt_manifest.py samples/alane_commitment_candidate_manifest.json
-
       - name: Verify SPE manifest route
         run: python spe/verify_manifest.py samples/alane_commitment_candidate_manifest.json
+      - name: Check SPE TT activation goal
+        run: python spe/check_spe_tt_activation_goal.py
