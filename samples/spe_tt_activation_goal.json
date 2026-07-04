@@ -32,6 +32,7 @@
     "spe/write_tt_goal_status.py"
   ],
   "goal_state": "ready_when_all_checks_pass",
+  "activation_state": "ready_when_all_checks_pass",
   "non_claims": [
     "This goal does not make SPE the TT source of truth.",
     "This goal does not grant commit-time permission.",
