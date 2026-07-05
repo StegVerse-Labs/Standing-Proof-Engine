@@ -12,7 +12,8 @@
     "spe_manifest_route",
     "goal_status_written",
     "unified_runner",
-    "mirror_handoff_present"
+    "mirror_handoff_present",
+    "no_manual_task_gate"
   ],
   "required_docs": [
     "docs/SPE_MIRROR_HANDOFF.md",
@@ -33,7 +34,8 @@
     "spe/verify_manifest.py",
     "spe/check_spe_tt_activation_goal.py",
     "spe/write_tt_goal_status.py",
-    "spe/run_tt_integration_checks.py"
+    "spe/run_tt_integration_checks.py",
+    "spe/check_no_manual_tt_tasks.py"
   ],
   "goal_state": "ready_when_all_checks_pass",
   "activation_state": "ready_when_all_checks_pass",
