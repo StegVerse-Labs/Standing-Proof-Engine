@@ -1,0 +1,38 @@
+{
+  "schema": "spe_tt_downstream_propagation_targets.v0.1",
+  "source_repository": "StegVerse-Labs/Standing-Proof-Engine",
+  "canonical_transition_source": "Admissible-Existence/TT",
+  "status": "ready_after_spe_tt_binding_workflow_passes",
+  "targets": [
+    {
+      "repository": "StegVerse-Labs/Site",
+      "purpose": "Render SPE TT integration status and link it to public TT implementation state.",
+      "required_artifacts": [
+        "docs/SPE_MIRROR_HANDOFF.md",
+        "docs/SPE_TT_STATUS.md"
+      ]
+    },
+    {
+      "repository": "StegVerse-Labs/admissibility-wiki",
+      "purpose": "Document the SPE Commitment Candidate boundary and TT-driven standing path.",
+      "required_artifacts": [
+        "docs/SPE_TT_BINDING.md",
+        "docs/SPE_COMMITMENT_CANDIDATE_RECEIPT_CHAIN.md",
+        "docs/SPE_FULL_TT_SNAPSHOT.md"
+      ]
+    },
+    {
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "purpose": "Generate SDK manifests and receipts that include TT transition identifiers and SPE route expectations.",
+      "required_artifacts": [
+        "samples/alane_commitment_candidate_manifest.json",
+        "samples/spe_tt_activation_goal.json"
+      ]
+    }
+  ],
+  "non_claims": [
+    "This target list does not perform downstream installation.",
+    "This target list does not redefine TT semantics.",
+    "This target list does not grant commit-time permission."
+  ]
+}
