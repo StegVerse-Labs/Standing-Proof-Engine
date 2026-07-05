@@ -2,6 +2,8 @@ name: SPE TT Binding
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '23 */6 * * *'
   push:
     paths:
       - "data/tt/tt_transition_authority_manifest.json"
