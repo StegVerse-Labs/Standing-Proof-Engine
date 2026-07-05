@@ -11,9 +11,11 @@
     "tt_bound_commitment_candidate_manifest",
     "spe_manifest_route",
     "goal_status_written",
-    "unified_runner"
+    "unified_runner",
+    "mirror_handoff_present"
   ],
   "required_docs": [
+    "docs/SPE_MIRROR_HANDOFF.md",
     "docs/SPE_TT_BINDING.md",
     "docs/SPE_TT_SUPPORT_BINDING.md",
     "docs/SPE_COMMITMENT_CANDIDATE_RECEIPT_CHAIN.md",
