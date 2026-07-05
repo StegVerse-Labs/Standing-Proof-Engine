@@ -15,6 +15,7 @@ CHECKS = [
     [sys.executable, "spe/verify_manifest.py", "samples/alane_commitment_candidate_manifest.json"],
     [sys.executable, "spe/check_spe_tt_activation_goal.py"],
     [sys.executable, "spe/write_tt_goal_status.py"],
+    [sys.executable, "spe/check_no_manual_tt_tasks.py"],
 ]
 
 
