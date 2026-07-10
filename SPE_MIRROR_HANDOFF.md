@@ -41,14 +41,25 @@ spe/verify_expected_result.py
 SPE_MIRROR_HANDOFF.md
 ```
 
+## TT Binding Repair
+
+The existing `.github/workflows/spe-tt-binding.yml` remains the stable task surface. Its integration runner must execute from the repository root as a module:
+
+```text
+python -m spe.run_tt_integration_checks
+```
+
+This prevents `ModuleNotFoundError: No module named 'spe'` caused by invoking the script path directly. No additional workflow is required.
+
 ## Known Remaining Work
 
 Destination Org/Repo: `StegVerse-Labs/Standing-Proof-Engine`
 
 ```text
-1. Tag/release v0.5.0 if release tooling is available.
-2. Verify propagation/update targets after tag candidate.
-3. Close or delete any remaining sandbox branches if branch-delete tooling is available.
+1. Verify SPE TT Binding passes after the module-path repair.
+2. Tag/release v0.5.0 if release tooling is available.
+3. Verify propagation/update targets after tag candidate.
+4. Close or delete any remaining sandbox branches if branch-delete tooling is available.
 ```
 
 ## Known Downstream Destinations
