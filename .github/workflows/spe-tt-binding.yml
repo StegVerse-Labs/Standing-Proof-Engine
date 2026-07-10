@@ -24,6 +24,7 @@ on:
       - "samples/commitment_candidate_receipt_chain_expectation.json"
       - "samples/tt_full_snapshot_expectation.json"
       - "samples/spe_tt_activation_goal.json"
+      - "SPE_MIRROR_HANDOFF.md"
       - ".github/workflows/spe-tt-binding.yml"
 
 jobs:
@@ -35,4 +36,4 @@ jobs:
       - name: Checkout SPE
         uses: actions/checkout@v4
       - name: Run SPE TT integration checks
-        run: python spe/run_tt_integration_checks.py
+        run: python -m spe.run_tt_integration_checks
