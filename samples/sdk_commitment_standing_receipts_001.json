@@ -1,0 +1,83 @@
+{
+  "ALLOW": {
+    "candidate_hash": "fa64ea26db289fdf30cbce4f08f18c4ef71f68f839396d10d71476f1451c4232",
+    "delegation_refs": [],
+    "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+    "envelope_hash": "000e932913031bbd5a9357d6f6cadade19594c8595c55ca7ef106bebb5a25af8",
+    "evidence_refs": [
+      "evidence://sdk/candidate/fixture/001"
+    ],
+    "execution_authorized": false,
+    "execution_performed": false,
+    "master_record_installed": false,
+    "next_boundary": "GOVERNED_EXECUTION_AUTHORITY",
+    "package_id": "transition.sdk.spe.fixture.001",
+    "policy_refs": [
+      "policy://sdk/spe-intake/v0.1"
+    ],
+    "reasons": [
+      "standing requirements satisfied for progression only"
+    ],
+    "receipt_hash": "f0435fd07f06c1e6f43d1b992f88ed399e4b3f41a431a4cc02a9fb6179267269",
+    "receipt_type": "SPE_STANDING_DETERMINATION",
+    "run_id": "run-sdk-spe-fixture-001",
+    "schema_version": "stegverse.spe.sdk_commitment_intake.v0.1",
+    "source_repo": "StegVerse-org/StegVerse-SDK",
+    "standing_result": "ALLOW",
+    "transition_id": "transition.sdk.spe.fixture.001"
+  },
+  "DENY": {
+    "candidate_hash": "fa64ea26db289fdf30cbce4f08f18c4ef71f68f839396d10d71476f1451c4232",
+    "delegation_refs": [],
+    "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+    "envelope_hash": "000e932913031bbd5a9357d6f6cadade19594c8595c55ca7ef106bebb5a25af8",
+    "evidence_refs": [
+      "evidence://sdk/candidate/fixture/001"
+    ],
+    "execution_authorized": false,
+    "execution_performed": false,
+    "master_record_installed": false,
+    "next_boundary": null,
+    "package_id": "transition.sdk.spe.fixture.001",
+    "policy_refs": [
+      "policy://sdk/spe-intake/v0.1"
+    ],
+    "reasons": [
+      "standing requirements not satisfied"
+    ],
+    "receipt_hash": "dd725bfbd2573bd6dc3ec7d52f015bce9753ed8f3d22b54366fab2955ec8d142",
+    "receipt_type": "SPE_STANDING_DETERMINATION",
+    "run_id": "run-sdk-spe-fixture-001",
+    "schema_version": "stegverse.spe.sdk_commitment_intake.v0.1",
+    "source_repo": "StegVerse-org/StegVerse-SDK",
+    "standing_result": "DENY",
+    "transition_id": "transition.sdk.spe.fixture.001"
+  },
+  "FAIL_CLOSED": {
+    "candidate_hash": "fa64ea26db289fdf30cbce4f08f18c4ef71f68f839396d10d71476f1451c4232",
+    "delegation_refs": [],
+    "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+    "envelope_hash": "000e932913031bbd5a9357d6f6cadade19594c8595c55ca7ef106bebb5a25af8",
+    "evidence_refs": [
+      "evidence://sdk/candidate/fixture/001"
+    ],
+    "execution_authorized": false,
+    "execution_performed": false,
+    "master_record_installed": false,
+    "next_boundary": null,
+    "package_id": "transition.sdk.spe.fixture.001",
+    "policy_refs": [
+      "policy://sdk/spe-intake/v0.1"
+    ],
+    "reasons": [
+      "required standing evidence unavailable or invalid"
+    ],
+    "receipt_hash": "00eea92475a41f78e0ae906fe8372395ca57d125ad24eb4565f2d69d999edec9",
+    "receipt_type": "SPE_STANDING_DETERMINATION",
+    "run_id": "run-sdk-spe-fixture-001",
+    "schema_version": "stegverse.spe.sdk_commitment_intake.v0.1",
+    "source_repo": "StegVerse-org/StegVerse-SDK",
+    "standing_result": "FAIL_CLOSED",
+    "transition_id": "transition.sdk.spe.fixture.001"
+  }
+}
