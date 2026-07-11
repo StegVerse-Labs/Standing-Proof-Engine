@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate a JSON inventory for expected-result fixtures."""
+"""Generate and persist a JSON inventory for expected-result fixtures."""
 from __future__ import annotations
 
 import json
@@ -10,6 +10,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_RESULTS = ROOT / "expected_results"
+REPORTS = ROOT / "reports"
+INVENTORY_PATH = REPORTS / "expected_corpus_inventory.json"
 
 
 def _run_fixture(path: Path) -> dict[str, object]:
@@ -47,7 +49,14 @@ def build_inventory() -> dict[str, object]:
 
 
 def main() -> int:
-    print(json.dumps(build_inventory(), indent=2, sort_keys=True))
+    inventory = build_inventory()
+    rendered = json.dumps(inventory, indent=2, sort_keys=True) + "\n"
+
+    REPORTS.mkdir(parents=True, exist_ok=True)
+    INVENTORY_PATH.write_text(rendered, encoding="utf-8")
+
+    print(rendered, end="")
+    print(f"wrote: {INVENTORY_PATH.relative_to(ROOT)}", file=sys.stderr)
     return 0
 
 
