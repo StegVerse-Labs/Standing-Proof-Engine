@@ -1,0 +1,21 @@
+{
+  "receipt_type": "spe_release_candidate_verification",
+  "release_candidate": "v0.5.0",
+  "repository": "StegVerse-Labs/Standing-Proof-Engine",
+  "branch": "main",
+  "verified_head": "60f3ce987b43c8021dd9ad662ac002ed2744bc13",
+  "reported_by": "repository_operator",
+  "verification_results": [
+    {
+      "workflow": "SPE TT Binding",
+      "result": "PASS"
+    },
+    {
+      "workflow": "SPE Sandbox Sweep",
+      "result": "PASS"
+    }
+  ],
+  "standing": "release_candidate_verified",
+  "release_authority_asserted": false,
+  "note": "Both required current-main verification workflows were manually dispatched by the repository operator and reported green. This receipt records verification evidence; it does not itself create a Git tag or GitHub release."
+}
