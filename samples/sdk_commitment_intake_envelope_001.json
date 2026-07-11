@@ -1,0 +1,68 @@
+{
+  "authority": {
+    "execution_authority_requested": false,
+    "fresh_standing_determination_required": true,
+    "sdk_authorizing": false
+  },
+  "candidate": {
+    "action": "evaluate_commit_time_standing",
+    "actor": "actor:sdk-fixture",
+    "authorizing": false,
+    "bounded_scope": {
+      "operation": "evaluate_commit_time_standing",
+      "repository": "StegVerse-org/StegVerse-SDK"
+    },
+    "candidate_hash": "fa64ea26db289fdf30cbce4f08f18c4ef71f68f839396d10d71476f1451c4232",
+    "candidate_type": "COMMITMENT_CANDIDATE",
+    "delegation_context": {
+      "refs": []
+    },
+    "evidence_refs": [
+      "evidence://sdk/candidate/fixture/001"
+    ],
+    "execution_context": {
+      "mode": "evaluation_only"
+    },
+    "implies_standing": false,
+    "inherits_review_authority": false,
+    "package_id": "transition.sdk.spe.fixture.001",
+    "policy_context": {
+      "refs": [
+        "policy://sdk/spe-intake/v0.1"
+      ]
+    },
+    "recoverability_profile": {
+      "reconstructable": true,
+      "rollback_supported": false
+    },
+    "requires_fresh_standing_determination": true,
+    "review_ref": "review://sdk/spe/fixture/001",
+    "run_id": "run-sdk-spe-fixture-001",
+    "source": {
+      "handoff_ref": "SDK_MIRROR_HANDOFF.md",
+      "origin_manifest_id": "origin.sdk.run-sdk-spe-fixture-001",
+      "repository_ref": "StegVerse-org/StegVerse-SDK",
+      "task_ref": "task:sdk-spe-intake"
+    },
+    "target": "target:governed-transition",
+    "transition_id": "transition.sdk.spe.fixture.001",
+    "validity_window": {
+      "not_after": null,
+      "not_before": null
+    }
+  },
+  "candidate_hash": "fa64ea26db289fdf30cbce4f08f18c4ef71f68f839396d10d71476f1451c4232",
+  "destination_repo": "StegVerse-Labs/Standing-Proof-Engine",
+  "envelope_hash": "000e932913031bbd5a9357d6f6cadade19594c8595c55ca7ef106bebb5a25af8",
+  "expected_result": [
+    "ALLOW",
+    "DENY",
+    "FAIL_CLOSED"
+  ],
+  "package_id": "transition.sdk.spe.fixture.001",
+  "receipt_required": true,
+  "route_purpose": "FRESH_STANDING_DETERMINATION",
+  "run_id": "run-sdk-spe-fixture-001",
+  "schema_version": "stegverse.sdk.spe_commitment_intake.v0.1",
+  "transition_id": "transition.sdk.spe.fixture.001"
+}
