@@ -38,28 +38,42 @@ samples/destination_generated_event_hash_001.json
 spe/verify_hash_import.py
 samples/destination_receipt_chain_current_001.json
 spe/verify_expected_result.py
+spe/run_tt_integration_checks.py
 SPE_MIRROR_HANDOFF.md
 ```
 
 ## TT Binding Repair
 
-The existing `.github/workflows/spe-tt-binding.yml` remains the stable task surface. Its integration runner must execute from the repository root as a module:
+The existing `.github/workflows/spe-tt-binding.yml` remains the stable task surface. Its integration runner executes from the repository root as a module:
 
 ```text
 python -m spe.run_tt_integration_checks
 ```
 
-This prevents `ModuleNotFoundError: No module named 'spe'` caused by invoking the script path directly. No additional workflow is required.
+The integration runner now also invokes every nested checker as a module, for example:
+
+```text
+python -m spe.check_tt_full_snapshot
+```
+
+This removes the remaining `ModuleNotFoundError: No module named 'spe'` failure caused by nested direct-script execution. No additional workflow was added.
+
+Repair commit:
+
+```text
+e9a024090808d35e83f724c85c0c3d227cac4bd1
+```
 
 ## Known Remaining Work
 
 Destination Org/Repo: `StegVerse-Labs/Standing-Proof-Engine`
 
 ```text
-1. Verify SPE TT Binding passes after the module-path repair.
-2. Tag/release v0.5.0 if release tooling is available.
-3. Verify propagation/update targets after tag candidate.
-4. Close or delete any remaining sandbox branches if branch-delete tooling is available.
+1. Verify SPE TT Binding passes after the nested module-path repair.
+2. Record the passing TT binding result in the current handoff or verification receipt.
+3. Tag/release v0.5.0 if release tooling is available and all required checks are green.
+4. Verify propagation/update targets after tag candidate.
+5. Close or delete any remaining sandbox branches if branch-delete tooling is available.
 ```
 
 ## Known Downstream Destinations
@@ -77,8 +91,10 @@ stegguardian-wiki -> guardian/standing boundary propagation check after tag cand
 Current tag candidate:
 
 ```text
-v0.5.0 candidate: sandbox verified green
+v0.5.0 candidate: sandbox verified green; TT binding verification pending
 ```
+
+Do not tag or publish release readiness until the repaired TT binding workflow is observed green.
 
 ## Next Integration Goal Candidate
 
@@ -88,4 +104,4 @@ Reason: SPE should consume manifest/receipt-bound Commitment Candidate / Executi
 
 ## Archive Note
 
-This thread is ready for archive after tag/release availability is checked and any release/update propagation successor task is recorded or created.
+This thread is ready for archive after TT binding verification, tag/release availability checking, and successor propagation work are recorded.
